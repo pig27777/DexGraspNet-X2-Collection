@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "renderer": "deterministic_x2_collision_hull_matplotlib",
+  "source_root": "data/x2_valid_5000/attempts/attempt_0000",
+  "selection": "lowest energy per f1..f5 on alternating front/back sides, with unique object ids",
+  "status": "raw_unvalidated",
+  "physx_simulation_run": false,
+  "overview_image": "grasp_samples_overview.png",
+  "overview_sha256": "00104f98ef977122e938a8e12d4b7cd784ee948221752ddf2340796a0f068871",
+  "samples": [
+    {
+      "raw_json": "data/x2_valid_5000/attempts/attempt_0000/cylinder/front/raw/cylinder_r018_h100_f1_front_000014.json",
+      "raw_sha256": "3ae57cbc150edd4d9097afebaaf5792141b57b53a689ba8396193454141ddf3f",
+      "pipeline_revision": "x2_mesh_grasp_unselected_finger_side_v6",
+      "validation_status": "not_run",
+      "physx_validation_run": false,
+      "object_id": "cylinder_r018_h100",
+      "object_mesh": "data/meshdata/x2_primitives/cylinder/cylinder_r018_h100.obj",
+      "active_side": "front",
+      "active_finger_count": 1,
+      "active_fingers": [
+        "ring"
+      ],
+      "energy_total": 0.1946276415760301,
+      "dense_maximum_penetration_m": 0.00033964119196347453,
+      "image": "sample_f1_front_cylinder_r018_h100.png",
+      "image_sha256": "4493d6e2bf1ae12fbec977fb25c6bdc1b9a8a9588b4ed40e019b6640b9ca69b4"
+    },
+    {
+      "raw_json": "data/x2_valid_5000/attempts/attempt_0000/sphere/back/raw/sphere_r020_f2_back_000001.json",
+      "raw_sha256": "d837f0a63f0413283be410bfc5f804ca8135aaed323c69e5912c89fadd39dfdf",
+      "pipeline_revision": "x2_mesh_grasp_unselected_finger_side_v6",
+      "validation_status": "not_run",
+      "physx_validation_run": false,
+      "object_id": "sphere_r020",
+      "object_mesh": "data/meshdata/x2_primitives/sphere/sphere_r020.obj",
+      "active_side": "back",
+      "active_finger_count": 2,
+      "active_fingers": [
+        "ring",
+        "thumb"
+      ],
+      "energy_total": 0.6962641527094603,
+      "dense_maximum_penetration_m": 0.0001846845197999384,
+      "image": "sample_f2_back_sphere_r020.png",
+      "image_sha256": "c29e38b960c5d6268ed4efbe6f4f7e537a209d23897df81097f2b7d9d058f438"
+    },
+    {
+      "raw_json": "data/x2_valid_5000/attempts/attempt_0000/cylinder/front/raw/cylinder_r025_h100_f3_front_000000.json",
+      "raw_sha256": "25695d872fa54c979e84f2507a23d446460ba93b7b54a39af050ffa56ca7f6b2",
+      "pipeline_revision": "x2_mesh_grasp_unselected_finger_side_v6",
+      "validation_status": "not_run",
+      "physx_validation_run": false,
+      "object_id": "cylinder_r025_h100",
+      "object_mesh": "data/meshdata/x2_primitives/cylinder/cylinder_r025_h100.obj",
+      "active_side": "front",
+      "active_finger_count": 3,
+      "active_fingers": [
+        "middle",
+        "ring",
+        "little"
+      ],
+      "energy_total": 0.7175316370634719,
+      "dense_maximum_penetration_m": 0.000761770991272951,
+      "image": "sample_f3_front_cylinder_r025_h100.png",
+      "image_sha256": "b3e8cfda69c46c141a5c522e3450ab80e10f27a0bce1aa821dde35f837b89b68"
+    },
+    {
+      "raw_json": "data/x2_valid_5000/attempts/attempt_0000/general/back/raw/003_f4_back_000002.json",
+      "raw_sha256": "a289c04d2783167f3cb135266c6c5ae9118bc0b579ff7cd996263e1bfc0412a5",
+      "pipeline_revision": "x2_mesh_grasp_unselected_finger_side_v6",
+      "validation_status": "not_run",
+      "physx_validation_run": false,
+      "object_id": "003",
+      "object_mesh": "data/meshdata/003/coacd/decomposed.obj",
+      "active_side": "back",
+      "active_finger_count": 4,
+      "active_fingers": [
+        "index",
+        "ring",
+        "little",
+        "thumb"
+      ],
+      "energy_total": 0.8838462276151785,
+      "dense_maximum_penetration_m": 0.0008265404733181082,
+      "image": "sample_f4_back_003.png",
+      "image_sha256": "d00bb4d0040eddeaeef66d06746dacdd44917a0e04167bc15730fd844f1c75a1"
+    },
+    {
+      "raw_json": "data/x2_valid_5000/attempts/attempt_0000/sphere/front/raw/sphere_r040_f5_front_000004.json",
+      "raw_sha256": "0053f0c53811bdc155ced833f61b43cfbaaae05e8afeeda6e0164e4bdf813e82",
+      "pipeline_revision": "x2_mesh_grasp_unselected_finger_side_v6",
+      "validation_status": "not_run",
+      "physx_validation_run": false,
+      "object_id": "sphere_r040",
+      "object_mesh": "data/meshdata/x2_primitives/sphere/sphere_r040.obj",
+      "active_side": "front",
+      "active_finger_count": 5,
+      "active_fingers": [
+        "index",
+        "middle",
+        "ring",
+        "little",
+        "thumb"
+      ],
+      "energy_total": 2.350790082706815,
+      "dense_maximum_penetration_m": 0.000982869448565446,
+      "image": "sample_f5_front_sphere_r040.png",
+      "image_sha256": "013df9daddf678d13de076c90a6709623b7a1af3cab3c4677c20ad83c434e0e2"
+    }
+  ]
+}

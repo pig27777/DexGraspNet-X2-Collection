@@ -1,0 +1,16 @@
+[Unit]
+Description=X2 formal 5000-valid collector supervisor
+After=graphical-session.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+WorkingDirectory=%h/DexGraspNet-X2-Collection
+ExecStart=/usr/bin/python3 %h/DexGraspNet-X2-Collection/scripts/supervise_x2_valid_collection.py --output-root %h/DexGraspNet-X2-Collection/data/x2_valid_5000 --poll-seconds 15 --health-log-seconds 300
+Restart=on-failure
+RestartSec=15s
+KillSignal=SIGINT
+TimeoutStopSec=120s
+
+[Install]
+WantedBy=default.target
