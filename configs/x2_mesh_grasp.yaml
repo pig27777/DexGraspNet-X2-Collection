@@ -1,0 +1,156 @@
+schema_version: 1
+pipeline_revision: x2_mesh_grasp_unselected_finger_side_v6
+
+# Hand-only X2 calibration for the side-conditioned generic mesh generator.
+robot:
+  model_name: x2_keypoints
+  usd_path: x2_mujoco/x2_keypoints.usda
+  source_prim_path: /robot
+  simulation_prim_path: /World/Robot
+  articulation_root_path: /robot/Physics/mujoco_root_joint
+  palm_link_path: /robot/Geometry/mujoco_root/rh_palm
+  palm_link_name: rh_palm
+  units: m
+  actuator_names:
+    [rh_LFJ3, rh_RFJ3, rh_MFJ3, rh_FFJ3,
+     rh_LFJ2, rh_RFJ2, rh_MFJ2, rh_FFJ2,
+     rh_THJ4, rh_THJ3, rh_THJ2, rh_THJ1]
+  active_non_thumb_actuators:
+    [rh_LFJ3, rh_RFJ3, rh_MFJ3, rh_FFJ3,
+     rh_LFJ2, rh_RFJ2, rh_MFJ2, rh_FFJ2]
+  thumb_actuators: [rh_THJ4, rh_THJ3, rh_THJ2, rh_THJ1]
+  fixed_thumb_position:
+    {rh_THJ4: -1.2, rh_THJ3: 0.4, rh_THJ2: 0.4, rh_THJ1: 0.7}
+  full_joint_names:
+    [rh_LFJ3, rh_RFJ3, rh_MFJ3, rh_FFJ3, rh_THJ4,
+     rh_LFJ2, rh_RFJ2, rh_MFJ2, rh_FFJ2, rh_THJ3,
+     rh_LFJ1, rh_RFJ1, rh_MFJ1, rh_FFJ1, rh_THJ2, rh_THJ1]
+  passive_joint_coupling:
+    rh_LFJ1: {driver: rh_LFJ2, multiplier: 1.0, offset: 0.0}
+    rh_RFJ1: {driver: rh_RFJ2, multiplier: 1.0, offset: 0.0}
+    rh_MFJ1: {driver: rh_MFJ2, multiplier: 1.0, offset: 0.0}
+    rh_FFJ1: {driver: rh_FFJ2, multiplier: 1.0, offset: 0.0}
+  finger_links:
+    index: [rh_ffproximal, rh_ffmiddle, rh_ffdistal]
+    middle: [rh_mfproximal, rh_mfmiddle, rh_mfdistal]
+    ring: [rh_rfproximal, rh_rfmiddle, rh_rfdistal]
+    little: [rh_lfproximal, rh_lfmiddle, rh_lfdistal]
+  thumb_links: [rh_thbase, rh_thproximal, rh_thmiddle, rh_thdistal]
+  self_collision_proxy_exclusions:
+    - links: [rh_palm, rh_thmiddle]
+      reason: audited_capsule_false_positive_convex_hulls_separated
+  # Unlike the legacy capsule proxy, the sampled hull model checks graph-distance
+  # two links.  This is the sole audited structural overlap in the canonical pose.
+  self_collision_hull_exclusions:
+    - links: [rh_palm, rh_thproximal]
+      reason: canonical_structural_hull_overlap
+  actuator_limits:
+    rh_LFJ3: [-1.308996939, 1.308996939]
+    rh_RFJ3: [-1.308996939, 1.308996939]
+    rh_MFJ3: [-1.308996939, 1.308996939]
+    rh_FFJ3: [-1.308996939, 1.308996939]
+    rh_LFJ2: [-1.308996939, 1.308996939]
+    rh_RFJ2: [-1.308996939, 1.308996939]
+    rh_MFJ2: [-1.308996939, 1.308996939]
+    rh_FFJ2: [-1.308996939, 1.308996939]
+    rh_THJ4: [-1.740000079, 1.740000079]
+    rh_THJ3: [-1.308996939, 1.308996939]
+    rh_THJ2: [-1.308996939, 1.308996939]
+    rh_THJ1: [-1.308996939, 1.308996939]
+
+palm_sides:
+  front:
+    frame_path: /robot/Geometry/mujoco_root/rh_palm
+    center_local: [0.28349982045153416, 0.017826681504529967, -0.01365977590593631]
+    normal_local: [0.0, 1.0, 0.0]
+    # Columns are tangent, binormal, outward palm normal in the shared root.
+    grasp_frame: [[1.0, 0.0, 0.0], [0.0, 0.0, 1.0], [0.0, -1.0, 0.0]]
+  back:
+    frame_path: /robot/Geometry/mujoco_root/rh_palm
+    center_local: [0.28349982045153416, -0.01784629577862851, -0.01365977590593631]
+    normal_local: [0.0, -1.0, 0.0]
+    grasp_frame: [[1.0, 0.0, 0.0], [0.0, 0.0, -1.0], [0.0, 1.0, 0.0]]
+
+contact_candidates:
+  path: data/contact_points/contact_points_x2_mesh.json
+  marker_radius: 0.0015
+  expected_finger_markers_per_finger: 47
+  expected_palm_markers_per_side: 41
+  expected_thumb_markers: 17
+  finger_keypoint_projection_tolerance: 0.001
+  palm_keypoint_projection_tolerance: 0.010
+  normal_side_threshold: 0.25
+  palm_normal_min_dot: 0.8191520443
+  palm_mirror_attribute: keypoints:mirrorSource
+  palm_mirror_tolerance: 1.0e-10
+  palm_center_tolerance: 1.0e-8
+  finger_joint_clearance: 0.008
+  duplicate_tolerance: 1.0e-7
+  # Authored thumb Sphere centers are projected to the owning low-vertex
+  # collision hull.  The current 17 markers are all within 0.9 mm.
+  thumb_keypoint_projection_tolerance: 0.0015
+  allow_thumb: true
+
+initialization:
+  canonical_open_actuator: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  jitter_strength: 0.10
+  hull_inflation: 0.20
+  distance_lower: 0.20
+  distance_upper: 0.30
+  theta_lower: -0.5235987755982988
+  theta_upper: 0.5235987755982988
+
+generation:
+  n_contact: 4
+  object_scale: 0.10
+  object_surface_samples: 256
+  hand_collision_samples_per_link: 24
+  # Formal v5 hard gate: each of the 17 links contributes exactly 256
+  # vertices, 256 centroids, and 256 independent face-interior samples.
+  dense_hand_surface_samples_per_set: 256
+  dense_object_surface_samples: 8192
+  dense_hand_object_penetration_threshold: 0.001
+
+# Differentiable link-link collision geometry.  Length values are metres.
+self_collision:
+  capsule_weight: 10.0
+  hull_weight: 100.0
+  # Each link retains this many vertex, face-centroid, and face-interior samples
+  # (64 x 3 directional samples in the current X2 pipeline).
+  surface_samples_per_link: 64
+  broadphase_margin: 0.001
+  clearance_margin: 0.0005
+  smoothness: 0.0001
+  feasibility_threshold: 0.0005
+  pair_weight_overrides:
+    thumb_index: 2.0
+  feasibility_protection:
+    enabled: true
+    hard_threshold: 0.001
+    maximum_allowed_increase: 0.0001
+
+optimization:
+  switch_possibility: 0.5
+  mu: 0.98
+  step_size: 0.005
+  stepsize_period: 50
+  starting_temperature: 18.0
+  annealing_period: 30
+  temperature_decay: 0.95
+  # Part of generic E_fc: each selected hand surface normal should oppose the
+  # nearest object outward normal.  This uses every candidate's authored local
+  # normal, never a shared palm normal.
+  normal_opposition_in_force_closure: 5.0
+  # An unselected finger is penalized only when its real-FK distal hull center
+  # moves from the canonical open pose toward the inactive palm side.  The
+  # displacement is normalized so 20 mm of wrong-side bending contributes 1.
+  unselected_finger_opposite_flex:
+    margin: 0.0
+    displacement_scale: 0.02
+  weights:
+    E_dis: 100.0
+    E_pen: 100.0
+    E_joints: 1.0
+    E_side: 1.0
+    E_unselected_opposite_flex: 1.0
+  side_margin: 0.005

@@ -1,0 +1,6086 @@
+{
+  "schema_version": 1,
+  "pipeline_revision": "x2_mesh_grasp_unselected_finger_side_v6",
+  "coordinate_convention": "local_position and local_surface_normal are in owning link frame",
+  "candidate_count": 287,
+  "region_counts": {
+    "back_finger_surface": 84,
+    "back_palm": 41,
+    "front_finger_surface": 84,
+    "front_palm": 41,
+    "shared_fingertip": 20,
+    "thumb": 17
+  },
+  "source": {
+    "keypoints": "x2_mujoco/x2_keypoints.usda",
+    "collision_hulls": "x2_mujoco/payloads/x2_physx_collision_hulls.usda",
+    "classification": "authored side metadata plus rest-FK normals for non-tip finger surfaces",
+    "thumb_candidates": "authored USD Sphere keypoints projected to owning collision hull; all support front and back"
+  },
+  "candidates": [
+    {
+      "point_id": "palm:front:000",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.31187297625439164,
+        0.013519406553999504,
+        0.0
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:001",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.3042211963944313,
+        0.01502253255911558,
+        0.0054019902019269254
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_01",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:002",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.2778202876287731,
+        0.019722725363533394,
+        -0.0023147917073758333
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_02",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:003",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.3090089414130472,
+        0.013783294626185112,
+        -0.014176433067411957
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_03",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:004",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.2676543211778128,
+        0.021630074753556047,
+        0.0
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_04",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:005",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.2969306390335697,
+        0.016198575825161862,
+        -0.0033392722006712105
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_05",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:006",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.28519624968718066,
+        0.018519368873208437,
+        0.0057948537561021245
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_06",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:007",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.2932564686348135,
+        0.0172239024281247,
+        0.026358521095687017
+      ],
+      "local_surface_normal": [
+        0.1569963250824583,
+        0.9831074964438807,
+        0.09408402811555229
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_07",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:008",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.31010101905697424,
+        0.014355596230520662,
+        0.027718268752428932
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_08",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:009",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.28229260432996184,
+        0.019208585550382358,
+        0.014287781254928664
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_09",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:010",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.2739252395877647,
+        0.01615593741663533,
+        -0.04506096092705305
+      ],
+      "local_surface_normal": [
+        0.13182309691178454,
+        0.961811925715688,
+        -0.23987599019423847
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_10",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:011",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.28650245539517766,
+        0.014387783896580068,
+        -0.045238817842994286
+      ],
+      "local_surface_normal": [
+        0.13182309691178454,
+        0.961811925715688,
+        -0.23987599019423847
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_11",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:012",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.29673875152579304,
+        0.012913093836442893,
+        -0.04521823991722094
+      ],
+      "local_surface_normal": [
+        0.14040605526436314,
+        0.9666833565380224,
+        -0.2140313711526496
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_12",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:013",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.30202924532498665,
+        0.01429127670843132,
+        -0.035523007866951214
+      ],
+      "local_surface_normal": [
+        0.14040605526436314,
+        0.9666833565380224,
+        -0.2140313711526496
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_13",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:014",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.2942887576914891,
+        0.016281298957244738,
+        -0.02512978561651131
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_14",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:015",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.2835424534646473,
+        0.0182640618392572,
+        -0.024497757694916664
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_15",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:016",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.27589924279834765,
+        0.019810928498111873,
+        -0.01663871335715838
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_16",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:017",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.2906692442048347,
+        0.0171605472880147,
+        -0.013452468508394294
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_17",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:018",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.25673640836923944,
+        0.023384571335238795,
+        -0.013452468508394294
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_18",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:019",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.2666784691134427,
+        0.02152749730384402,
+        -0.015268058923611442
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_19",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:020",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.2657689082717406,
+        0.021549305645992178,
+        -0.023131999934173048
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_20",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:021",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.2605126317032135,
+        0.018368129274823227,
+        -0.043561765439084035
+      ],
+      "local_surface_normal": [
+        0.13182309691178454,
+        0.961811925715688,
+        -0.23987599019423847
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_21",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:022",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.2489577172134274,
+        0.024629223414117656,
+        -0.023328415736033874
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_22",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:023",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.23586492907076045,
+        0.023610884281875175,
+        -0.036085369843321016
+      ],
+      "local_surface_normal": [
+        0.13182309691178454,
+        0.961811925715688,
+        -0.23987599019423847
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_23",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:024",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.30239561433551787,
+        0.014676734073639962,
+        0.034823107546395726
+      ],
+      "local_surface_normal": [
+        0.15201880653411787,
+        0.9793866707877414,
+        0.13301139629086953
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_24",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:025",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.2813991358741054,
+        0.018857798524509174,
+        -0.01361998636067116
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_25",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:026",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.27253244131127136,
+        0.02060462931917821,
+        -0.007086712847976415
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_26",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:027",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.2806433141531096,
+        0.01746529673612326,
+        -0.03521670650684378
+      ],
+      "local_surface_normal": [
+        0.14040605526436314,
+        0.9666833565380224,
+        -0.2140313711526496
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_27",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:028",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.2729869172181229,
+        0.020200117270884,
+        -0.02450105005710733
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_28",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:029",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.28830584213312604,
+        0.017792479379884263,
+        -0.0026925220506489773
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_29",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:030",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.26244893422859406,
+        0.02212268799958197,
+        -0.025060962032630765
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_30",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:031",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.2941735423266063,
+        0.016999731908746075,
+        0.012681111775279376
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_31",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:032",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.25486065934139845,
+        0.021471767666088205,
+        -0.03403488017581027
+      ],
+      "local_surface_normal": [
+        0.14040605526436314,
+        0.9666833565380224,
+        -0.2140313711526496
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_32",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:033",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.2681976684569509,
+        0.01942233426785851,
+        -0.03454207833502222
+      ],
+      "local_surface_normal": [
+        0.14040605526436314,
+        0.9666833565380224,
+        -0.2140313711526496
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_33",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:034",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.290617421640215,
+        0.016042893307741925,
+        -0.03509797920807679
+      ],
+      "local_surface_normal": [
+        0.14040605526436314,
+        0.9666833565380224,
+        -0.2140313711526496
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_34",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:035",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.305989491194859,
+        0.014144128174033958,
+        -0.0246417857272336
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_35",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:036",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.30043345399136057,
+        0.01536806819510232,
+        -0.013534321800873363
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_36",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:037",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.309704435817303,
+        0.013855336414902074,
+        -0.003352599334954423
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_37",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:038",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.3111037088288135,
+        0.013899921757367364,
+        0.012982198356199256
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_38",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:039",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.24855631161923952,
+        0.020900321536228547,
+        -0.0399791910705917
+      ],
+      "local_surface_normal": [
+        0.13182309691178454,
+        0.961811925715688,
+        -0.23987599019423847
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_39",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:front:040",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "front_palm",
+      "local_position": [
+        0.3026745886964893,
+        0.015551092693462037,
+        0.018680457717380916
+      ],
+      "local_surface_normal": [
+        0.18038244277792642,
+        0.9834293331718291,
+        -0.018136179164300978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_40",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:000",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.31187297625439164,
+        -0.013565575874207947,
+        0.0
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:001",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.3042211963944313,
+        -0.015017697553193737,
+        0.0054019902019269254
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_01_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:002",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.2778202876287731,
+        -0.01959719132082325,
+        -0.0023147917073758333
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_02_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:003",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.3090089414130472,
+        -0.013844349839600364,
+        -0.014176433067411957
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_03_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:004",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.2676543211778128,
+        -0.021446976158666795,
+        0.0
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_04_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:005",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.2969306390335697,
+        -0.016174275324625717,
+        -0.0033392722006712105
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_05_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:006",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.28519624968718066,
+        -0.018415067974674747,
+        0.0057948537561021245
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_06_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:007",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.2932564686348135,
+        -0.01731453623970948,
+        0.026358521095687017
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_07_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:008",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.31010101905697424,
+        -0.014334438199647711,
+        0.027718268752428932
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_08_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:009",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.28229260432996184,
+        -0.019071415435829457,
+        0.014287781254928664
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_09_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:010",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.2739252395877647,
+        -0.01655431391872693,
+        -0.04506096092705305
+      ],
+      "local_surface_normal": [
+        0.14485858678079686,
+        -0.9687723412873085,
+        -0.2012365289716983
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_10_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:011",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.28650245539517766,
+        -0.014636723028953972,
+        -0.045238817842994286
+      ],
+      "local_surface_normal": [
+        0.14485858678079686,
+        -0.9687723412873085,
+        -0.2012365289716983
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_11_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:012",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.29673875152579304,
+        -0.013110384695398998,
+        -0.04521823991722094
+      ],
+      "local_surface_normal": [
+        0.14485858678079686,
+        -0.9687723412873085,
+        -0.2012365289716983
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_12_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:013",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.30202924532498665,
+        -0.014333232767912608,
+        -0.035523007866951214
+      ],
+      "local_surface_normal": [
+        0.14485858678079686,
+        -0.9687723412873085,
+        -0.2012365289716983
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_13_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:014",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.2942887576914891,
+        -0.01628900697208981,
+        -0.02512978561651131
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_14_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:015",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.2835424534646473,
+        -0.018214725979549203,
+        -0.024497757694916664
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_15_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:016",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.27589924279834765,
+        -0.01970547899006374,
+        -0.01663871335715838
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_16_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:017",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.2906692442048347,
+        -0.01712499504209744,
+        -0.013452468508394294
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_17_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:018",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.25673640836923944,
+        -0.0231730817951658,
+        -0.013452468508394294
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_18_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:019",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.2666784691134427,
+        -0.021371364303058957,
+        -0.015268058923611442
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_19_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:020",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.2657689082717406,
+        -0.021404951568266755,
+        -0.023131999934173048
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_20_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:021",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.2605126317032135,
+        -0.018698182812208065,
+        -0.043561765439084035
+      ],
+      "local_surface_normal": [
+        0.09350878298004708,
+        -0.9111480308190406,
+        -0.40132950731309935
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_21_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:022",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.2489577172134274,
+        -0.024222076474886247,
+        -0.023328415736033874
+      ],
+      "local_surface_normal": [
+        0.15969758730508601,
+        -0.9834891456983381,
+        -0.08512215283043292
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_22_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:023",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.23586492907076045,
+        -0.02410983473320931,
+        -0.036085369843321016
+      ],
+      "local_surface_normal": [
+        0.14485858678079686,
+        -0.9687723412873085,
+        -0.2012365289716983
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_23_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:024",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.30239561433551787,
+        -0.014770567965581212,
+        0.034823107546395726
+      ],
+      "local_surface_normal": [
+        0.15147504152200233,
+        -0.9762698395985647,
+        0.15476599137439861
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_24_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:025",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.2813991358741054,
+        -0.018774533359467216,
+        -0.01361998636067116
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_25_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:026",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.27253244131127136,
+        -0.02046168775076475,
+        -0.007086712847976415
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_26_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:027",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.2806433141531096,
+        -0.017594654109564834,
+        -0.03521670650684378
+      ],
+      "local_surface_normal": [
+        0.14485858678079686,
+        -0.9687723412873085,
+        -0.2012365289716983
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_27_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:028",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.2729869172181229,
+        -0.02009605924884674,
+        -0.02450105005710733
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_28_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:029",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.28830584213312604,
+        -0.017722103861100215,
+        -0.0026925220506489773
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_29_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:030",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.26244893422859406,
+        -0.021881437650507974,
+        -0.025060962032630765
+      ],
+      "local_surface_normal": [
+        0.15969758730508601,
+        -0.9834891456983381,
+        -0.08512215283043292
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_30_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:031",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.2941735423266063,
+        -0.01692753293864094,
+        0.012681111775279376
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_31_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:032",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.25486065934139845,
+        -0.021695375609217936,
+        -0.03403488017581027
+      ],
+      "local_surface_normal": [
+        0.14485858678079686,
+        -0.9687723412873085,
+        -0.2012365289716983
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_32_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:033",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.2681976684569509,
+        -0.019595762518778825,
+        -0.03454207833502222
+      ],
+      "local_surface_normal": [
+        0.14485858678079686,
+        -0.9687723412873085,
+        -0.2012365289716983
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_33_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:034",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.290617421640215,
+        -0.01612790822415316,
+        -0.03509797920807679
+      ],
+      "local_surface_normal": [
+        0.14485858678079686,
+        -0.9687723412873085,
+        -0.2012365289716983
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_34_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:035",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.305989491194859,
+        -0.014211479358399677,
+        -0.0246417857272336
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_35_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:036",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.30043345399136057,
+        -0.015383313783648095,
+        -0.013534321800873363
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_36_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:037",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.309704435817303,
+        -0.013897294325987618,
+        -0.003352599334954423
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_37_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:038",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.3111037088288135,
+        -0.01391487193644834,
+        0.012982198356199256
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_38_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:039",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.24855631161923952,
+        -0.02140328057519604,
+        -0.0399791910705917
+      ],
+      "local_surface_normal": [
+        0.14485858678079686,
+        -0.9687723412873085,
+        -0.2012365289716983
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_39_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "palm:back:040",
+      "link_name": "rh_palm",
+      "finger_name": "palm",
+      "region": "back_palm",
+      "local_position": [
+        0.3026745886964893,
+        -0.015510386704898169,
+        0.018680457717380916
+      ],
+      "local_surface_normal": [
+        0.17544884958339976,
+        -0.984357079110544,
+        -0.016088566897636193
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_palm/Sphere_40_mirrored",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:000",
+      "link_name": "rh_ffdistal",
+      "finger_name": "index",
+      "region": "shared_fingertip",
+      "local_position": [
+        0.025861173960042144,
+        0.006996364182735305,
+        -0.00028420239988978394
+      ],
+      "local_surface_normal": [
+        0.28770813636560577,
+        0.8946368345497874,
+        0.3418317751990978
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/rh_ffdistal/TransferredMiddleFingerKeypoints/Sphere_01",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:001",
+      "link_name": "rh_ffdistal",
+      "finger_name": "index",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.018753031264074568,
+        0.0080357484407827,
+        -6.109469170386935e-05
+      ],
+      "local_surface_normal": [
+        0.07315115453544288,
+        0.911596094106953,
+        0.4045262288147446
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/rh_ffdistal/TransferredMiddleFingerKeypoints/Sphere_03",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:002",
+      "link_name": "rh_ffdistal",
+      "finger_name": "index",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.012267007777990354,
+        0.008499975163981661,
+        6.565318037613275e-05
+      ],
+      "local_surface_normal": [
+        0.07315115453544288,
+        0.911596094106953,
+        0.4045262288147446
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/rh_ffdistal/TransferredMiddleFingerKeypoints/Sphere_05",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:003",
+      "link_name": "rh_ffdistal",
+      "finger_name": "index",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.010011373698919029,
+        0.00943493051883856,
+        -0.004286989200849628
+      ],
+      "local_surface_normal": [
+        0.06345599245139598,
+        0.9834315854981295,
+        0.16981064061666978
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/rh_ffdistal/TransferredMiddleFingerKeypoints/Sphere_06",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:004",
+      "link_name": "rh_ffdistal",
+      "finger_name": "index",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.012123862382692464,
+        0.008261182518986413,
+        -0.009489048795172308
+      ],
+      "local_surface_normal": [
+        0.06622949603520595,
+        0.9163737901060925,
+        -0.3948072069523524
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/rh_ffdistal/TransferredMiddleFingerKeypoints/Sphere_07",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:005",
+      "link_name": "rh_ffdistal",
+      "finger_name": "index",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.01902663491125124,
+        0.007898594826917219,
+        -0.009172688592051906
+      ],
+      "local_surface_normal": [
+        0.06622949603520595,
+        0.9163737901060925,
+        -0.3948072069523524
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/rh_ffdistal/TransferredMiddleFingerKeypoints/Sphere_09",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:006",
+      "link_name": "rh_ffdistal",
+      "finger_name": "index",
+      "region": "shared_fingertip",
+      "local_position": [
+        0.029223959688484145,
+        0.006264034978211429,
+        -0.004452993757461896
+      ],
+      "local_surface_normal": [
+        0.4691858634850603,
+        0.883094766517388,
+        -0.0028738224333500003
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/rh_ffdistal/TransferredMiddleFingerKeypoints/Sphere_12",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:007",
+      "link_name": "rh_ffdistal",
+      "finger_name": "index",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.022682863613460075,
+        0.008006371094923838,
+        -0.004450294833954311
+      ],
+      "local_surface_normal": [
+        0.114955354461329,
+        0.9933354011009637,
+        -0.008369432493179691
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/rh_ffdistal/TransferredMiddleFingerKeypoints/Sphere_13",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:008",
+      "link_name": "rh_ffdistal",
+      "finger_name": "index",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.015918102907256412,
+        0.008791110664101761,
+        -0.004227564095286452
+      ],
+      "local_surface_normal": [
+        0.114955354461329,
+        0.9933354011009637,
+        -0.008369432493179691
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/rh_ffdistal/TransferredMiddleFingerKeypoints/Sphere_15",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:009",
+      "link_name": "rh_ffdistal",
+      "finger_name": "index",
+      "region": "shared_fingertip",
+      "local_position": [
+        0.025876969172745318,
+        0.006796277828941619,
+        -0.008957103427583865
+      ],
+      "local_surface_normal": [
+        0.28508038392496343,
+        0.8915649866113259,
+        -0.3519105701026066
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/rh_ffdistal/TransferredMiddleFingerKeypoints/Sphere_17",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:010",
+      "link_name": "rh_ffdistal",
+      "finger_name": "index",
+      "region": "shared_fingertip",
+      "local_position": [
+        0.026921178092837585,
+        -0.006758433588369794,
+        -0.008180030394402047
+      ],
+      "local_surface_normal": [
+        0.2875193065980915,
+        -0.8906703235756509,
+        -0.35219174186087615
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/rh_ffdistal/TransferredMiddleFingerKeypoints/Sphere_18",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:011",
+      "link_name": "rh_ffdistal",
+      "finger_name": "index",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.024082916191947433,
+        -0.007687494121417219,
+        -0.004747982298417088
+      ],
+      "local_surface_normal": [
+        0.25170952534591795,
+        -0.9677709509053382,
+        -0.007855026028616856
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/rh_ffdistal/TransferredMiddleFingerKeypoints/Sphere_19",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:012",
+      "link_name": "rh_ffdistal",
+      "finger_name": "index",
+      "region": "shared_fingertip",
+      "local_position": [
+        0.026793836078806355,
+        -0.006770769368905433,
+        -0.0005385280019258523
+      ],
+      "local_surface_normal": [
+        0.2793428867694887,
+        -0.886590610305721,
+        0.3686795916904243
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/rh_ffdistal/TransferredMiddleFingerKeypoints/Sphere_20",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:013",
+      "link_name": "rh_ffdistal",
+      "finger_name": "index",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.020530710556031753,
+        -0.008074633209968783,
+        -0.00034156790300215117
+      ],
+      "local_surface_normal": [
+        0.07055662259582633,
+        -0.9007191946749011,
+        0.4286335210317408
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/rh_ffdistal/TransferredMiddleFingerKeypoints/Sphere_21",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:014",
+      "link_name": "rh_ffdistal",
+      "finger_name": "index",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.013865901919658403,
+        -0.008644686736466243,
+        -0.0010857725863998072
+      ],
+      "local_surface_normal": [
+        0.058943360147183856,
+        -0.9829455372134122,
+        0.17419457846556546
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/rh_ffdistal/TransferredMiddleFingerKeypoints/Sphere_22",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:015",
+      "link_name": "rh_ffdistal",
+      "finger_name": "index",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.011540530927235264,
+        -0.00929325286326127,
+        -0.0048129804735533195
+      ],
+      "local_surface_normal": [
+        0.11435982502878199,
+        -0.9934007912025722,
+        -0.008757765553508361
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/rh_ffdistal/TransferredMiddleFingerKeypoints/Sphere_23",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:016",
+      "link_name": "rh_ffdistal",
+      "finger_name": "index",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.017981968985802444,
+        -0.00855175049048397,
+        -0.004809248298294054
+      ],
+      "local_surface_normal": [
+        0.11435982502878199,
+        -0.9934007912025722,
+        -0.008757765553508361
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/rh_ffdistal/TransferredMiddleFingerKeypoints/Sphere_24",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:017",
+      "link_name": "rh_ffdistal",
+      "finger_name": "index",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.020220685015903607,
+        -0.008103117574288566,
+        -0.008457742573186268
+      ],
+      "local_surface_normal": [
+        0.06050234986237674,
+        -0.9778280831224152,
+        -0.2004786909331608
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/rh_ffdistal/TransferredMiddleFingerKeypoints/Sphere_25",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:018",
+      "link_name": "rh_ffdistal",
+      "finger_name": "index",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.012360597318741139,
+        -0.008504371104754048,
+        -0.008872733337911784
+      ],
+      "local_surface_normal": [
+        0.06050234986237674,
+        -0.9778280831224152,
+        -0.2004786909331608
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/rh_ffdistal/TransferredMiddleFingerKeypoints/Sphere_26",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:019",
+      "link_name": "rh_ffmiddle",
+      "finger_name": "index",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.016916428140859172,
+        0.009233070771820237,
+        -0.0008867061709346792
+      ],
+      "local_surface_normal": [
+        -0.025217988426209603,
+        0.9881015593432948,
+        0.15172132837239782
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/TransferredMiddleFingerKeypoints/Sphere_02",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:020",
+      "link_name": "rh_ffmiddle",
+      "finger_name": "index",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.011359832812493236,
+        0.009094523789370508,
+        -0.0009079798264819998
+      ],
+      "local_surface_normal": [
+        -0.025217988426209603,
+        0.9881015593432948,
+        0.15172132837239782
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/TransferredMiddleFingerKeypoints/Sphere_03",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:021",
+      "link_name": "rh_ffmiddle",
+      "finger_name": "index",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.013599466481077075,
+        0.009542251229709212,
+        -0.00495291663770214
+      ],
+      "local_surface_normal": [
+        0.012679686867277077,
+        0.9991231779678867,
+        0.03990113768175548
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/TransferredMiddleFingerKeypoints/Sphere_04",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:022",
+      "link_name": "rh_ffmiddle",
+      "finger_name": "index",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.01654968215987476,
+        0.008966597619521796,
+        -0.0081320688560679
+      ],
+      "local_surface_normal": [
+        0.014561002019276735,
+        0.9587866437580229,
+        -0.28375367657780337
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/TransferredMiddleFingerKeypoints/Sphere_05",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:023",
+      "link_name": "rh_ffmiddle",
+      "finger_name": "index",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.010774677837210079,
+        0.009029305630817374,
+        -0.008114329264768991
+      ],
+      "local_surface_normal": [
+        -0.011529174799133393,
+        0.9817781559000188,
+        -0.18968060187064273
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/TransferredMiddleFingerKeypoints/Sphere_06",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:024",
+      "link_name": "rh_ffmiddle",
+      "finger_name": "index",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.01550048907664298,
+        -0.00949377064098852,
+        -0.0056670471483356525
+      ],
+      "local_surface_normal": [
+        -0.019184733631587573,
+        -0.9879321618225401,
+        -0.1536944684499986
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/TransferredMiddleFingerKeypoints/Sphere_07",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:025",
+      "link_name": "rh_ffmiddle",
+      "finger_name": "index",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.012924752646160054,
+        -0.00916110992978757,
+        -0.0009217150585001225
+      ],
+      "local_surface_normal": [
+        -0.021156953035313734,
+        -0.9816231295710971,
+        0.1896534071123077
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/TransferredMiddleFingerKeypoints/Sphere_08",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:026",
+      "link_name": "rh_ffmiddle",
+      "finger_name": "index",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.018387791395440008,
+        -0.009254638492956536,
+        -0.000796373501349338
+      ],
+      "local_surface_normal": [
+        -0.021156953035313734,
+        -0.9816231295710971,
+        0.1896534071123077
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/TransferredMiddleFingerKeypoints/Sphere_09",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:027",
+      "link_name": "rh_ffmiddle",
+      "finger_name": "index",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.0180316454072274,
+        -0.009066211013977338,
+        -0.008605393627500858
+      ],
+      "local_surface_normal": [
+        -0.016828623477024317,
+        -0.9866410445675217,
+        -0.162037793759908
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/TransferredMiddleFingerKeypoints/Sphere_10",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:028",
+      "link_name": "rh_ffmiddle",
+      "finger_name": "index",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.011827256001871445,
+        -0.008927715021667127,
+        -0.008804325596184345
+      ],
+      "local_surface_normal": [
+        -0.016828623477024317,
+        -0.9866410445675217,
+        -0.162037793759908
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/rh_ffmiddle/TransferredMiddleFingerKeypoints/Sphere_11",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:029",
+      "link_name": "rh_ffproximal",
+      "finger_name": "index",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.02617562280512903,
+        0.009063730108903495,
+        -0.0004036495012400703
+      ],
+      "local_surface_normal": [
+        -0.0027146256832847266,
+        0.9897669837697423,
+        0.1426672655052534
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/TransferredMiddleFingerKeypoints/Sphere_07",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:030",
+      "link_name": "rh_ffproximal",
+      "finger_name": "index",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.012198977324403962,
+        0.009026119111705339,
+        -0.00040902468948661973
+      ],
+      "local_surface_normal": [
+        -0.0027381554889704036,
+        0.9897990054671669,
+        0.14244448490807088
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/TransferredMiddleFingerKeypoints/Sphere_08",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:031",
+      "link_name": "rh_ffproximal",
+      "finger_name": "index",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.019267104946853998,
+        0.009045167842498895,
+        -0.0004063251085627502
+      ],
+      "local_surface_normal": [
+        -0.0027146256832847266,
+        0.9897669837697423,
+        0.1426672655052534
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/TransferredMiddleFingerKeypoints/Sphere_09",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:032",
+      "link_name": "rh_ffproximal",
+      "finger_name": "index",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.02289342295754332,
+        0.009411254021147765,
+        -0.005367582826328983
+      ],
+      "local_surface_normal": [
+        0.014618387878560736,
+        0.9998905017490072,
+        0.002299401650545532
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/TransferredMiddleFingerKeypoints/Sphere_10",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:033",
+      "link_name": "rh_ffproximal",
+      "finger_name": "index",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.015878057415231107,
+        0.009513705780163369,
+        -0.005318529247455107
+      ],
+      "local_surface_normal": [
+        0.014618387878560736,
+        0.9998905017490072,
+        0.002299401650545532
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/TransferredMiddleFingerKeypoints/Sphere_11",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:034",
+      "link_name": "rh_ffproximal",
+      "finger_name": "index",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.010099307189266464,
+        0.00945659697157124,
+        -0.00515504274353562
+      ],
+      "local_surface_normal": [
+        -0.04050690023343097,
+        0.9905266850691714,
+        -0.13121004991751775
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/TransferredMiddleFingerKeypoints/Sphere_12",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:035",
+      "link_name": "rh_ffproximal",
+      "finger_name": "index",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.012499967835070477,
+        0.008754070081618055,
+        -0.009610045567644367
+      ],
+      "local_surface_normal": [
+        -0.0016374234083112432,
+        0.956298612671972,
+        -0.29238721286376995
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/TransferredMiddleFingerKeypoints/Sphere_13",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:036",
+      "link_name": "rh_ffproximal",
+      "finger_name": "index",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.01863777627477547,
+        0.008770825761344733,
+        -0.00958961634981507
+      ],
+      "local_surface_normal": [
+        -0.0016374234083112432,
+        0.956298612671972,
+        -0.29238721286376995
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/TransferredMiddleFingerKeypoints/Sphere_14",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:037",
+      "link_name": "rh_ffproximal",
+      "finger_name": "index",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.025119740870483732,
+        0.008822628845733588,
+        -0.009456486392485267
+      ],
+      "local_surface_normal": [
+        -0.0016374234083112432,
+        0.956298612671972,
+        -0.29238721286376995
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/TransferredMiddleFingerKeypoints/Sphere_15",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:038",
+      "link_name": "rh_ffproximal",
+      "finger_name": "index",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.02589250712051547,
+        -0.008638432070200819,
+        0.0012050744812510841
+      ],
+      "local_surface_normal": [
+        -0.0006251625984450531,
+        -0.9520372359174977,
+        0.3059815527091402
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/TransferredMiddleFingerKeypoints/Sphere_16",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:039",
+      "link_name": "rh_ffproximal",
+      "finger_name": "index",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.018704235476684053,
+        -0.008623157733912595,
+        0.0012016824803475934
+      ],
+      "local_surface_normal": [
+        -0.00905901243409163,
+        -0.9083898649223897,
+        0.4180260609100846
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/TransferredMiddleFingerKeypoints/Sphere_17",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:040",
+      "link_name": "rh_ffproximal",
+      "finger_name": "index",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.012240467414450886,
+        -0.008560183934019538,
+        0.0011984515964514769
+      ],
+      "local_surface_normal": [
+        -0.00905901243409163,
+        -0.9083898649223897,
+        0.4180260609100846
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/TransferredMiddleFingerKeypoints/Sphere_18",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:041",
+      "link_name": "rh_ffproximal",
+      "finger_name": "index",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.016106413219632583,
+        -0.009511666332080034,
+        -0.0036757431344671574
+      ],
+      "local_surface_normal": [
+        0.013767572047536576,
+        -0.9999029333898866,
+        0.0021395696333792453
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/TransferredMiddleFingerKeypoints/Sphere_19",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:042",
+      "link_name": "rh_ffproximal",
+      "finger_name": "index",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.010342496495157357,
+        -0.009481490935408314,
+        -0.003461444100994821
+      ],
+      "local_surface_normal": [
+        -0.011917496643069481,
+        -0.9900357115287322,
+        0.14031130806731013
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/TransferredMiddleFingerKeypoints/Sphere_20",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:043",
+      "link_name": "rh_ffproximal",
+      "finger_name": "index",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.012503809042086412,
+        -0.008913195026457849,
+        -0.009035306341418862
+      ],
+      "local_surface_normal": [
+        0.0003574642805542292,
+        -0.9835487825833538,
+        -0.1806423662878973
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/TransferredMiddleFingerKeypoints/Sphere_21",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:044",
+      "link_name": "rh_ffproximal",
+      "finger_name": "index",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.019100027734268523,
+        -0.008958777362062449,
+        -0.008774069931433065
+      ],
+      "local_surface_normal": [
+        0.0003574642805542292,
+        -0.9835487825833538,
+        -0.1806423662878973
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/TransferredMiddleFingerKeypoints/Sphere_22",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:045",
+      "link_name": "rh_ffproximal",
+      "finger_name": "index",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.025287691464338083,
+        -0.00892388795187736,
+        -0.008951788861984764
+      ],
+      "local_surface_normal": [
+        0.0003574642805542292,
+        -0.9835487825833538,
+        -0.1806423662878973
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/TransferredMiddleFingerKeypoints/Sphere_23",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:index:046",
+      "link_name": "rh_ffproximal",
+      "finger_name": "index",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.022660370688123564,
+        -0.009421210726733431,
+        -0.0035753755276660437
+      ],
+      "local_surface_normal": [
+        0.013767572047536576,
+        -0.9999029333898866,
+        0.0021395696333792453
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_ffproximal/TransferredMiddleFingerKeypoints/Sphere_24",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:000",
+      "link_name": "rh_lfdistal",
+      "finger_name": "little",
+      "region": "shared_fingertip",
+      "local_position": [
+        0.02586117086739754,
+        0.006996354450574708,
+        -0.0002842062166419501
+      ],
+      "local_surface_normal": [
+        0.2877074295803218,
+        0.8946365036802887,
+        0.341833236018666
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/rh_lfdistal/TransferredMiddleFingerKeypoints/Sphere_01",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:001",
+      "link_name": "rh_lfdistal",
+      "finger_name": "little",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.018753030550172668,
+        0.008035739812914692,
+        -6.109846147841493e-05
+      ],
+      "local_surface_normal": [
+        0.07315130588443304,
+        0.9115962264954193,
+        0.40452590310969505
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/rh_lfdistal/TransferredMiddleFingerKeypoints/Sphere_03",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:002",
+      "link_name": "rh_lfdistal",
+      "finger_name": "little",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.012267007106284889,
+        0.00849996738798072,
+        6.564986009501765e-05
+      ],
+      "local_surface_normal": [
+        0.07315130588443304,
+        0.9115962264954193,
+        0.40452590310969505
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/rh_lfdistal/TransferredMiddleFingerKeypoints/Sphere_05",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:003",
+      "link_name": "rh_lfdistal",
+      "finger_name": "little",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.01001137351628805,
+        0.00943492735491173,
+        -0.004286989694505743
+      ],
+      "local_surface_normal": [
+        0.06345606103419764,
+        0.983431552179405,
+        0.1698108079482297
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/rh_lfdistal/TransferredMiddleFingerKeypoints/Sphere_06",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:004",
+      "link_name": "rh_lfdistal",
+      "finger_name": "little",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.012123862606374037,
+        0.008261185904624293,
+        -0.009489050216322696
+      ],
+      "local_surface_normal": [
+        0.06622965275541544,
+        0.9163736734203815,
+        -0.39480745149747765
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/rh_lfdistal/TransferredMiddleFingerKeypoints/Sphere_07",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:005",
+      "link_name": "rh_lfdistal",
+      "finger_name": "little",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.0190266350600327,
+        0.007898597257492687,
+        -0.009172689591240263
+      ],
+      "local_surface_normal": [
+        0.06622965275541544,
+        0.9163736734203815,
+        -0.39480745149747765
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/rh_lfdistal/TransferredMiddleFingerKeypoints/Sphere_09",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:006",
+      "link_name": "rh_lfdistal",
+      "finger_name": "little",
+      "region": "shared_fingertip",
+      "local_position": [
+        0.029223957780451133,
+        0.006264031219258297,
+        -0.004452993740659198
+      ],
+      "local_surface_normal": [
+        0.46918365865902234,
+        0.8830959374476418,
+        -0.0028739712602431863
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/rh_lfdistal/TransferredMiddleFingerKeypoints/Sphere_12",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:007",
+      "link_name": "rh_lfdistal",
+      "finger_name": "little",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.022682863525110744,
+        0.008006370100607785,
+        -0.00445029485809693
+      ],
+      "local_surface_normal": [
+        0.11495527544705961,
+        0.9933354110664075,
+        -0.008369335004762345
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/rh_lfdistal/TransferredMiddleFingerKeypoints/Sphere_13",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:008",
+      "link_name": "rh_lfdistal",
+      "finger_name": "little",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.015918102740718032,
+        0.008791109111181868,
+        -0.004227564098238471
+      ],
+      "local_surface_normal": [
+        0.11495527544705961,
+        0.9933354110664075,
+        -0.008369335004762345
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/rh_lfdistal/TransferredMiddleFingerKeypoints/Sphere_15",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:009",
+      "link_name": "rh_lfdistal",
+      "finger_name": "little",
+      "region": "shared_fingertip",
+      "local_position": [
+        0.025876969302096535,
+        0.006796278253245538,
+        -0.008957103570254393
+      ],
+      "local_surface_normal": [
+        0.2850804085233156,
+        0.8915649170148164,
+        -0.35191072649827415
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/rh_lfdistal/TransferredMiddleFingerKeypoints/Sphere_17",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:010",
+      "link_name": "rh_lfdistal",
+      "finger_name": "little",
+      "region": "shared_fingertip",
+      "local_position": [
+        0.02692117778144542,
+        -0.006758432644373421,
+        -0.008180029956699673
+      ],
+      "local_surface_normal": [
+        0.28751932092981286,
+        -0.8906710793717748,
+        -0.3521898187948893
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/rh_lfdistal/TransferredMiddleFingerKeypoints/Sphere_18",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:011",
+      "link_name": "rh_lfdistal",
+      "finger_name": "little",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.024082914680899587,
+        -0.007687488723748646,
+        -0.004747982233120059
+      ],
+      "local_surface_normal": [
+        0.2517097476398328,
+        -0.9677708927058536,
+        -0.007855073163700496
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/rh_lfdistal/TransferredMiddleFingerKeypoints/Sphere_19",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:012",
+      "link_name": "rh_lfdistal",
+      "finger_name": "little",
+      "region": "shared_fingertip",
+      "local_position": [
+        0.0267938333779995,
+        -0.006770760662386395,
+        -0.0005385316685392301
+      ],
+      "local_surface_normal": [
+        0.27934375409504625,
+        -0.8865907006338546,
+        0.36867871731042073
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/rh_lfdistal/TransferredMiddleFingerKeypoints/Sphere_20",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:013",
+      "link_name": "rh_lfdistal",
+      "finger_name": "little",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.020530710279594678,
+        -0.00807462995752444,
+        -0.00034156945939140806
+      ],
+      "local_surface_normal": [
+        0.07055616439126794,
+        -0.9007192959033035,
+        0.4286333837370226
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/rh_lfdistal/TransferredMiddleFingerKeypoints/Sphere_21",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:014",
+      "link_name": "rh_lfdistal",
+      "finger_name": "little",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.013865901751203558,
+        -0.00864468381085287,
+        -0.0010857731201575037
+      ],
+      "local_surface_normal": [
+        0.058943192531016736,
+        -0.982945485072239,
+        0.17419492940482587
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/rh_lfdistal/TransferredMiddleFingerKeypoints/Sphere_22",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:015",
+      "link_name": "rh_lfdistal",
+      "finger_name": "little",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.011540530770613625,
+        -0.009293251483713714,
+        -0.004812980461747083
+      ],
+      "local_surface_normal": [
+        0.11435991083387856,
+        -0.9934007812010227,
+        -0.008757779585333749
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/rh_lfdistal/TransferredMiddleFingerKeypoints/Sphere_23",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:016",
+      "link_name": "rh_lfdistal",
+      "finger_name": "little",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.017981968728564703,
+        -0.00855174855882265,
+        -0.0048092482756030815
+      ],
+      "local_surface_normal": [
+        0.11435991083387856,
+        -0.9934007812010227,
+        -0.008757779585333749
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/rh_lfdistal/TransferredMiddleFingerKeypoints/Sphere_24",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:017",
+      "link_name": "rh_lfdistal",
+      "finger_name": "little",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.02022068510454873,
+        -0.008103119033598094,
+        -0.008457742880553936
+      ],
+      "local_surface_normal": [
+        0.060502365621050665,
+        -0.9778280967368594,
+        -0.20047861977335132
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/rh_lfdistal/TransferredMiddleFingerKeypoints/Sphere_25",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:018",
+      "link_name": "rh_lfdistal",
+      "finger_name": "little",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.012360597412165025,
+        -0.008504372705112182,
+        -0.00887273369377322
+      ],
+      "local_surface_normal": [
+        0.060502365621050665,
+        -0.9778280967368594,
+        -0.20047861977335132
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/rh_lfdistal/TransferredMiddleFingerKeypoints/Sphere_26",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:019",
+      "link_name": "rh_lfmiddle",
+      "finger_name": "little",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.01691921373421964,
+        0.009169878395468718,
+        -0.0008949292540991857
+      ],
+      "local_surface_normal": [
+        -0.016828725171118483,
+        0.9866412365044593,
+        0.16203661449828743
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/TransferredMiddleFingerKeypoints/Sphere_02",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:020",
+      "link_name": "rh_lfmiddle",
+      "finger_name": "little",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.011360599418385041,
+        0.009074920256645747,
+        -0.0009109007131876267
+      ],
+      "local_surface_normal": [
+        -0.019178302681449582,
+        0.9879288562115646,
+        0.1537165175599827
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/TransferredMiddleFingerKeypoints/Sphere_03",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:021",
+      "link_name": "rh_lfmiddle",
+      "finger_name": "little",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.013598731798810226,
+        0.009497729592052839,
+        -0.0049699285562209835
+      ],
+      "local_surface_normal": [
+        0.011730754230753591,
+        0.9989148658500667,
+        -0.04507194458774846
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/TransferredMiddleFingerKeypoints/Sphere_04",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:022",
+      "link_name": "rh_lfmiddle",
+      "finger_name": "little",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.01655165883297987,
+        0.009161134056027097,
+        -0.008207655688665777
+      ],
+      "local_surface_normal": [
+        0.006766838798518446,
+        0.9154408043636239,
+        -0.40239575494624225
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/TransferredMiddleFingerKeypoints/Sphere_05",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:023",
+      "link_name": "rh_lfmiddle",
+      "finger_name": "little",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.010775974744452478,
+        0.009059107031624948,
+        -0.008120086599655145
+      ],
+      "local_surface_normal": [
+        -0.021157107894458956,
+        0.9816232825498743,
+        -0.1896525980353334
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/TransferredMiddleFingerKeypoints/Sphere_06",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:024",
+      "link_name": "rh_lfmiddle",
+      "finger_name": "little",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.015502961530483013,
+        -0.009444072859771169,
+        -0.00565388674158912
+      ],
+      "local_surface_normal": [
+        0.01267727616972912,
+        -0.9991232179611825,
+        -0.03990090224302986
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/TransferredMiddleFingerKeypoints/Sphere_07",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:025",
+      "link_name": "rh_lfmiddle",
+      "finger_name": "little",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.012922298800186248,
+        -0.009110973721718672,
+        -0.000931400863972138
+      ],
+      "local_surface_normal": [
+        -0.011529039581752679,
+        -0.9817780017365617,
+        0.1896814080306403
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/TransferredMiddleFingerKeypoints/Sphere_08",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:026",
+      "link_name": "rh_lfmiddle",
+      "finger_name": "little",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.0183714846862221,
+        -0.009021653535001006,
+        -0.0009010352292428091
+      ],
+      "local_surface_normal": [
+        0.014562544922574068,
+        -0.9587847229804409,
+        0.28376008751178744
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/TransferredMiddleFingerKeypoints/Sphere_09",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:027",
+      "link_name": "rh_lfmiddle",
+      "finger_name": "little",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.01802315810177207,
+        -0.009016014637303527,
+        -0.008493871828909915
+      ],
+      "local_surface_normal": [
+        0.0068400485319314005,
+        -0.9169006117119816,
+        -0.399056990890117
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/TransferredMiddleFingerKeypoints/Sphere_10",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:028",
+      "link_name": "rh_lfmiddle",
+      "finger_name": "little",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.011826433464575953,
+        -0.008930633982215374,
+        -0.008796263404276054
+      ],
+      "local_surface_normal": [
+        0.0068400485319314005,
+        -0.9169006117119816,
+        -0.399056990890117
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/rh_lfmiddle/TransferredMiddleFingerKeypoints/Sphere_11",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:029",
+      "link_name": "rh_lfproximal",
+      "finger_name": "little",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.026175622809979822,
+        0.00906372853384777,
+        -0.00040364974740374226
+      ],
+      "local_surface_normal": [
+        -0.002714628856359549,
+        0.9897669673825338,
+        0.14266737913256308
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/TransferredMiddleFingerKeypoints/Sphere_07",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:030",
+      "link_name": "rh_lfproximal",
+      "finger_name": "little",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.012198977330258938,
+        0.00902611748758904,
+        -0.00040902493982796786
+      ],
+      "local_surface_normal": [
+        -0.0027381621682189667,
+        0.9897989939085583,
+        0.14244456509655354
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/TransferredMiddleFingerKeypoints/Sphere_08",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:031",
+      "link_name": "rh_lfproximal",
+      "finger_name": "little",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.01926710495182387,
+        0.009045166246053412,
+        -0.0004063253599848681
+      ],
+      "local_surface_normal": [
+        -0.002714628856359549,
+        0.9897669673825338,
+        0.14266737913256308
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/TransferredMiddleFingerKeypoints/Sphere_09",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:032",
+      "link_name": "rh_lfproximal",
+      "finger_name": "little",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.022893422954616535,
+        0.009411253883683818,
+        -0.0053675828259775096
+      ],
+      "local_surface_normal": [
+        0.014618398920810724,
+        0.999890501606059,
+        0.002299393610486756
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/TransferredMiddleFingerKeypoints/Sphere_10",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:033",
+      "link_name": "rh_lfproximal",
+      "finger_name": "little",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.015878057414251155,
+        0.009513705720554889,
+        -0.0053185292475131825
+      ],
+      "local_surface_normal": [
+        0.014618398920810724,
+        0.999890501606059,
+        0.002299393610486756
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/TransferredMiddleFingerKeypoints/Sphere_11",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:034",
+      "link_name": "rh_lfproximal",
+      "finger_name": "little",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.010099307144201446,
+        0.009456598184155396,
+        -0.005155042896943516
+      ],
+      "local_surface_normal": [
+        -0.040506859649058695,
+        0.9905266952169571,
+        -0.13120998583928314
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/TransferredMiddleFingerKeypoints/Sphere_12",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:035",
+      "link_name": "rh_lfproximal",
+      "finger_name": "little",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.012499967823507752,
+        0.008754073598158699,
+        -0.009610046713423064
+      ],
+      "local_surface_normal": [
+        -0.0016374025220654872,
+        0.9562986875631467,
+        -0.29238696803719505
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/TransferredMiddleFingerKeypoints/Sphere_13",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:036",
+      "link_name": "rh_lfproximal",
+      "finger_name": "little",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.01863777627182574,
+        0.008770829179402806,
+        -0.009589617357901634
+      ],
+      "local_surface_normal": [
+        -0.0016374025220654872,
+        0.9562986875631467,
+        -0.29238696803719505
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/TransferredMiddleFingerKeypoints/Sphere_14",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:037",
+      "link_name": "rh_lfproximal",
+      "finger_name": "little",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.025119740861537353,
+        0.008822632076934006,
+        -0.00945648742391302
+      ],
+      "local_surface_normal": [
+        -0.0016374025220654872,
+        0.9562986875631467,
+        -0.29238696803719505
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/TransferredMiddleFingerKeypoints/Sphere_15",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:038",
+      "link_name": "rh_lfproximal",
+      "finger_name": "little",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.025894211954760753,
+        -0.008635682663057873,
+        0.0012439413656280406
+      ],
+      "local_surface_normal": [
+        0.012545918245033863,
+        -0.8218466775136545,
+        0.5695705738494189
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/TransferredMiddleFingerKeypoints/Sphere_16",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:039",
+      "link_name": "rh_lfproximal",
+      "finger_name": "little",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.018704280761648186,
+        -0.008620847589235727,
+        0.0012006191795035813
+      ],
+      "local_surface_normal": [
+        -0.00883967362690213,
+        -0.908392435660716,
+        0.4180251703002606
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/TransferredMiddleFingerKeypoints/Sphere_17",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:040",
+      "link_name": "rh_lfproximal",
+      "finger_name": "little",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.012240484959917827,
+        -0.008559161635165414,
+        0.0011979810818659258
+      ],
+      "local_surface_normal": [
+        -0.00883967362690213,
+        -0.908392435660716,
+        0.4180251703002606
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/TransferredMiddleFingerKeypoints/Sphere_18",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:041",
+      "link_name": "rh_lfproximal",
+      "finger_name": "little",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.016106180355736945,
+        -0.0095063797642733,
+        -0.003675882443030303
+      ],
+      "local_surface_normal": [
+        0.014672224068206561,
+        -0.9998882580962016,
+        0.0028630686747030273
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/TransferredMiddleFingerKeypoints/Sphere_19",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:042",
+      "link_name": "rh_lfproximal",
+      "finger_name": "little",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.01034052666147043,
+        -0.009479403446922751,
+        -0.0034633008814492017
+      ],
+      "local_surface_normal": [
+        -0.002226883339061732,
+        -0.9890236308400728,
+        0.1477406465077017
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/TransferredMiddleFingerKeypoints/Sphere_20",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:043",
+      "link_name": "rh_lfproximal",
+      "finger_name": "little",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.012503912685356753,
+        -0.008931621930122821,
+        -0.009013684224037616
+      ],
+      "local_surface_normal": [
+        -0.0001845598835205607,
+        -0.9503318551633075,
+        -0.3112383829149544
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/TransferredMiddleFingerKeypoints/Sphere_21",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:044",
+      "link_name": "rh_lfproximal",
+      "finger_name": "little",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.01910014358713068,
+        -0.009015968718068604,
+        -0.008760052139461958
+      ],
+      "local_surface_normal": [
+        -0.0001845598835205607,
+        -0.9503318551633075,
+        -0.3112383829149544
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/TransferredMiddleFingerKeypoints/Sphere_22",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:045",
+      "link_name": "rh_lfproximal",
+      "finger_name": "little",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.025287630508253896,
+        -0.008947115895039928,
+        -0.008973955682733207
+      ],
+      "local_surface_normal": [
+        -0.0001845598835205607,
+        -0.9503318551633075,
+        -0.3112383829149544
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/TransferredMiddleFingerKeypoints/Sphere_23",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:little:046",
+      "link_name": "rh_lfproximal",
+      "finger_name": "little",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.022660166928180295,
+        -0.009409919847666216,
+        -0.003575438306290672
+      ],
+      "local_surface_normal": [
+        0.014672224068206561,
+        -0.9998882580962016,
+        0.0028630686747030273
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_lfproximal/TransferredMiddleFingerKeypoints/Sphere_24",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:000",
+      "link_name": "rh_mfdistal",
+      "finger_name": "middle",
+      "region": "shared_fingertip",
+      "local_position": [
+        0.025861173911249754,
+        0.006996364237335343,
+        -0.00028420246905046806
+      ],
+      "local_surface_normal": [
+        0.28770897717377997,
+        0.8946361133277652,
+        0.34183295508684847
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_mfdistal/rh_rfdistal/Sphere_01",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:001",
+      "link_name": "rh_mfdistal",
+      "finger_name": "middle",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.018753031130308264,
+        0.008035746656695365,
+        -6.109550542707958e-05
+      ],
+      "local_surface_normal": [
+        0.07315108925648024,
+        0.9115960451784301,
+        0.4045263508791932
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_mfdistal/rh_rfdistal/Sphere_03",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:002",
+      "link_name": "rh_mfdistal",
+      "finger_name": "middle",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.012267007625917394,
+        0.008499973009622182,
+        6.565217561321858e-05
+      ],
+      "local_surface_normal": [
+        0.07315108925648024,
+        0.9115960451784301,
+        0.4045263508791932
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_mfdistal/rh_rfdistal/Sphere_05",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:003",
+      "link_name": "rh_mfdistal",
+      "finger_name": "middle",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.010011373616436772,
+        0.00943492961078507,
+        -0.00428698934719327
+      ],
+      "local_surface_normal": [
+        0.06345591388130896,
+        0.9834315846617093,
+        0.16981067482124707
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_mfdistal/rh_rfdistal/Sphere_06",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:004",
+      "link_name": "rh_mfdistal",
+      "finger_name": "middle",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.012123862522530005,
+        0.008261184744465517,
+        -0.009489049604249004
+      ],
+      "local_surface_normal": [
+        0.06622962964863713,
+        0.9163733542416417,
+        -0.39480819620738256
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_mfdistal/rh_rfdistal/Sphere_07",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:005",
+      "link_name": "rh_mfdistal",
+      "finger_name": "middle",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.019026634995512985,
+        0.007898596364691406,
+        -0.009172689062974382
+      ],
+      "local_surface_normal": [
+        0.06622962964863713,
+        0.9163733542416417,
+        -0.39480819620738256
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_mfdistal/rh_rfdistal/Sphere_09",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:006",
+      "link_name": "rh_mfdistal",
+      "finger_name": "middle",
+      "region": "shared_fingertip",
+      "local_position": [
+        0.029223961040855038,
+        0.006264037470219559,
+        -0.004452993783358281
+      ],
+      "local_surface_normal": [
+        0.4691851619403611,
+        0.8830951410788201,
+        -0.0028732591209357375
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_mfdistal/rh_rfdistal/Sphere_12",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:007",
+      "link_name": "rh_mfdistal",
+      "finger_name": "middle",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.022682863837825914,
+        0.008006372571039531,
+        -0.00445029477377144
+      ],
+      "local_surface_normal": [
+        0.11495519573490887,
+        0.9933354176328005,
+        -0.008369650519507407
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_mfdistal/rh_rfdistal/Sphere_13",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:008",
+      "link_name": "rh_mfdistal",
+      "finger_name": "middle",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.015918102985464935,
+        0.008791111111770996,
+        -0.004227564063248453
+      ],
+      "local_surface_normal": [
+        0.11495519573490887,
+        0.9933354176328005,
+        -0.008369650519507407
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_mfdistal/rh_rfdistal/Sphere_15",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:009",
+      "link_name": "rh_mfdistal",
+      "finger_name": "middle",
+      "region": "shared_fingertip",
+      "local_position": [
+        0.02587697002414574,
+        0.006796280421101664,
+        -0.008957104320698467
+      ],
+      "local_surface_normal": [
+        0.28508013367031365,
+        0.891564726681653,
+        -0.35191143136247455
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_mfdistal/rh_rfdistal/Sphere_17",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:010",
+      "link_name": "rh_mfdistal",
+      "finger_name": "middle",
+      "region": "shared_fingertip",
+      "local_position": [
+        0.02692117800169603,
+        -0.006758433350521825,
+        -0.008180030209389356
+      ],
+      "local_surface_normal": [
+        0.28751916991710186,
+        -0.8906714344765291,
+        -0.3521890440341706
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_mfdistal/rh_rfdistal/Sphere_18",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:011",
+      "link_name": "rh_mfdistal",
+      "finger_name": "middle",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.024082915206587195,
+        -0.007687489934296661,
+        -0.004747982484018856
+      ],
+      "local_surface_normal": [
+        0.2517093111429349,
+        -0.9677710105628612,
+        -0.007854539966646656
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_mfdistal/rh_rfdistal/Sphere_19",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:012",
+      "link_name": "rh_mfdistal",
+      "finger_name": "middle",
+      "region": "shared_fingertip",
+      "local_position": [
+        0.026793835404554094,
+        -0.00677076742774642,
+        -0.000538528822597625
+      ],
+      "local_surface_normal": [
+        0.2793417718314146,
+        -0.8865910042008968,
+        0.36867948923167876
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_mfdistal/rh_rfdistal/Sphere_20",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:013",
+      "link_name": "rh_mfdistal",
+      "finger_name": "middle",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.020530710431183992,
+        -0.008074631651129338,
+        -0.0003415686333747859
+      ],
+      "local_surface_normal": [
+        0.07055655651792823,
+        -0.9007191033238682,
+        0.4286337238713017
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_mfdistal/rh_rfdistal/Sphere_21",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:014",
+      "link_name": "rh_mfdistal",
+      "finger_name": "middle",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.013865901856305884,
+        -0.008644685709019924,
+        -0.0010857727673778564
+      ],
+      "local_surface_normal": [
+        0.05894340127906167,
+        -0.982945539286026,
+        0.17419455285214613
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_mfdistal/rh_rfdistal/Sphere_22",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:015",
+      "link_name": "rh_mfdistal",
+      "finger_name": "middle",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.011540530857274153,
+        -0.009293252228593497,
+        -0.004812980462269104
+      ],
+      "local_surface_normal": [
+        0.11435994672435715,
+        -0.9934007791842456,
+        -0.008757539685085337
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_mfdistal/rh_rfdistal/Sphere_23",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:016",
+      "link_name": "rh_mfdistal",
+      "finger_name": "middle",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.017981968773218348,
+        -0.008551749072526251,
+        -0.004809248376314639
+      ],
+      "local_surface_normal": [
+        0.11435994672435715,
+        -0.9934007791842456,
+        -0.008757539685085337
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_mfdistal/rh_rfdistal/Sphere_24",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:017",
+      "link_name": "rh_mfdistal",
+      "finger_name": "middle",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.020220685034457515,
+        -0.008103117961744394,
+        -0.00845774266198385
+      ],
+      "local_surface_normal": [
+        0.060502399745126265,
+        -0.9778280968220548,
+        -0.20047860905951856
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_mfdistal/rh_rfdistal/Sphere_25",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:018",
+      "link_name": "rh_mfdistal",
+      "finger_name": "middle",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.012360597349535707,
+        -0.008504371899821379,
+        -0.0088727335326957
+      ],
+      "local_surface_normal": [
+        0.060502399745126265,
+        -0.9778280968220548,
+        -0.20047860905951856
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_mfdistal/rh_rfdistal/Sphere_26",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:019",
+      "link_name": "rh_mfmiddle",
+      "finger_name": "middle",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.01691921371170229,
+        0.009169879729798491,
+        -0.0008949290323234781
+      ],
+      "local_surface_normal": [
+        -0.016828723398391816,
+        0.9866412335296898,
+        0.16203663279577402
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_rfmiddle/Sphere_02",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:020",
+      "link_name": "rh_mfmiddle",
+      "finger_name": "middle",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.01136059939387384,
+        0.009074921500684263,
+        -0.0009109005213021541
+      ],
+      "local_surface_normal": [
+        -0.019178310975225314,
+        0.987928861839797,
+        0.15371648035282623
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_rfmiddle/Sphere_03",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:021",
+      "link_name": "rh_mfmiddle",
+      "finger_name": "middle",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.01359873179248438,
+        0.009497729287902615,
+        -0.004969928539251746
+      ],
+      "local_surface_normal": [
+        0.011730738882078848,
+        0.9989148668450887,
+        -0.04507192653015005
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_rfmiddle/Sphere_04",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:022",
+      "link_name": "rh_mfmiddle",
+      "finger_name": "middle",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.016551658796701132,
+        0.009161131155770493,
+        -0.008207654514249057
+      ],
+      "local_surface_normal": [
+        0.00676672849437734,
+        0.9154405350095295,
+        -0.40239636957476377
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_rfmiddle/Sphere_05",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:023",
+      "link_name": "rh_mfmiddle",
+      "finger_name": "middle",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.010775974788231567,
+        0.009059105237363547,
+        -0.008120086185405155
+      ],
+      "local_surface_normal": [
+        -0.021157136157330548,
+        0.9816232083498967,
+        -0.1896529789338295
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_rfmiddle/Sphere_06",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:024",
+      "link_name": "rh_mfmiddle",
+      "finger_name": "middle",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.015500489071434916,
+        -0.009493770919774524,
+        -0.005667047187044291
+      ],
+      "local_surface_normal": [
+        -0.01918473167128919,
+        -0.9879321690993822,
+        -0.1536944219198938
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_rfmiddle/Sphere_07",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:025",
+      "link_name": "rh_mfmiddle",
+      "finger_name": "middle",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.012926865245908976,
+        -0.009131376309992046,
+        -0.0009149330993133851
+      ],
+      "local_surface_normal": [
+        -0.025564132204657516,
+        -0.9876742853812637,
+        0.15442144003095198
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_rfmiddle/Sphere_08",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:026",
+      "link_name": "rh_mfmiddle",
+      "finger_name": "middle",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.01838931272261171,
+        -0.009252336183394664,
+        -0.0007842920890453557
+      ],
+      "local_surface_normal": [
+        -0.025564132204657516,
+        -0.9876742853812637,
+        0.15442144003095198
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_rfmiddle/Sphere_09",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:027",
+      "link_name": "rh_mfmiddle",
+      "finger_name": "middle",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.018031645400768213,
+        -0.009066211584950187,
+        -0.008605393752213877
+      ],
+      "local_surface_normal": [
+        -0.01682863350399716,
+        -0.9866410591539504,
+        -0.16203770390239144
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_rfmiddle/Sphere_10",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:028",
+      "link_name": "rh_mfmiddle",
+      "finger_name": "middle",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.01182725599311137,
+        -0.008927715555272789,
+        -0.008804325687039375
+      ],
+      "local_surface_normal": [
+        -0.01682863350399716,
+        -0.9866410591539504,
+        -0.16203770390239144
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_mfmiddle/rh_rfmiddle/Sphere_11",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:029",
+      "link_name": "rh_mfproximal",
+      "finger_name": "middle",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.026175622805948758,
+        0.009063729665895314,
+        -0.00040364957655731454
+      ],
+      "local_surface_normal": [
+        -0.002714623259398886,
+        0.9897669739643038,
+        0.1426673335774684
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_rfproximal/Sphere_07",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:030",
+      "link_name": "rh_mfproximal",
+      "finger_name": "middle",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.01219897732818888,
+        0.009026118666283254,
+        -0.0004090247381944359
+      ],
+      "local_surface_normal": [
+        -0.0027381680971930475,
+        0.9897990161282516,
+        0.14244441058538126
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_rfproximal/Sphere_08",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:031",
+      "link_name": "rh_mfproximal",
+      "finger_name": "middle",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.01926710494758288,
+        0.009045167416248832,
+        -0.00040632518276758814
+      ],
+      "local_surface_normal": [
+        -0.002714623259398886,
+        0.9897669739643038,
+        0.1426673335774684
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_rfproximal/Sphere_09",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:032",
+      "link_name": "rh_mfproximal",
+      "finger_name": "middle",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.022893422958459406,
+        0.009411254118616506,
+        -0.005367582825586741
+      ],
+      "local_surface_normal": [
+        0.01461839400633284,
+        0.9998905016737683,
+        0.00229939541091757
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_rfproximal/Sphere_10",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:033",
+      "link_name": "rh_mfproximal",
+      "finger_name": "middle",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.015878057417228853,
+        0.00951370592092421,
+        -0.005318529247070095
+      ],
+      "local_surface_normal": [
+        0.01461839400633284,
+        0.9998905016737683,
+        0.00229939541091757
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_rfproximal/Sphere_11",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:034",
+      "link_name": "rh_mfproximal",
+      "finger_name": "middle",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.010099307171476741,
+        0.009456597098144212,
+        -0.00515504275376693
+      ],
+      "local_surface_normal": [
+        -0.04050701470548816,
+        0.9905266881808579,
+        -0.13120999108722994
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_rfproximal/Sphere_12",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:035",
+      "link_name": "rh_mfproximal",
+      "finger_name": "middle",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.01249996782101527,
+        0.008754071883022824,
+        -0.009610046243836582
+      ],
+      "local_surface_normal": [
+        -0.0016373820339168777,
+        0.9562987457145965,
+        -0.29238677795817736
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_rfproximal/Sphere_13",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:036",
+      "link_name": "rh_mfproximal",
+      "finger_name": "middle",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.01863777627777998,
+        0.008770827362732169,
+        -0.009589616773746052
+      ],
+      "local_surface_normal": [
+        -0.0016373820339168777,
+        0.9562987457145965,
+        -0.29238677795817736
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_rfproximal/Sphere_14",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:037",
+      "link_name": "rh_mfproximal",
+      "finger_name": "middle",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.025119740861597135,
+        0.008822630088704316,
+        -0.00945648684978177
+      ],
+      "local_surface_normal": [
+        -0.0016373820339168777,
+        0.9562987457145965,
+        -0.29238677795817736
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_rfproximal/Sphere_15",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:038",
+      "link_name": "rh_mfproximal",
+      "finger_name": "middle",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.025892507115673813,
+        -0.008638431221910842,
+        0.0012050741921566313
+      ],
+      "local_surface_normal": [
+        -0.0006252094751457242,
+        -0.9520372774914956,
+        0.3059814232591473
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_rfproximal/Sphere_16",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:039",
+      "link_name": "rh_mfproximal",
+      "finger_name": "middle",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.01870423548599501,
+        -0.008623156130522322,
+        0.0012016817164697399
+      ],
+      "local_surface_normal": [
+        -0.009059077625609747,
+        -0.9083899594539427,
+        0.41802585407584236
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_rfproximal/Sphere_17",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:040",
+      "link_name": "rh_mfproximal",
+      "finger_name": "middle",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.012240467432050685,
+        -0.008560181946096571,
+        0.001198450672972556
+      ],
+      "local_surface_normal": [
+        -0.009059077625609747,
+        -0.9083899594539427,
+        0.41802585407584236
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_rfproximal/Sphere_18",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:041",
+      "link_name": "rh_mfproximal",
+      "finger_name": "middle",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.016106413221814504,
+        -0.009511666468019925,
+        -0.003675743136527491
+      ],
+      "local_surface_normal": [
+        0.01376757024038173,
+        -0.999902933385453,
+        0.0021395833338809065
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_rfproximal/Sphere_19",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:042",
+      "link_name": "rh_mfproximal",
+      "finger_name": "middle",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.01034249650696004,
+        -0.009481490236023496,
+        -0.0034614442166708654
+      ],
+      "local_surface_normal": [
+        -0.011917513108014614,
+        -0.9900357000478024,
+        0.1403113876781868
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_rfproximal/Sphere_20",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:043",
+      "link_name": "rh_mfproximal",
+      "finger_name": "middle",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.01250380904563013,
+        -0.00891319543436174,
+        -0.00903530645537457
+      ],
+      "local_surface_normal": [
+        0.00035744692475218534,
+        -0.9835488180694072,
+        -0.18064217311017994
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_rfproximal/Sphere_21",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:044",
+      "link_name": "rh_mfproximal",
+      "finger_name": "middle",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.01910002773845913,
+        -0.00895877783006283,
+        -0.008774070063612716
+      ],
+      "local_surface_normal": [
+        0.00035744692475218534,
+        -0.9835488180694072,
+        -0.18064217311017994
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_rfproximal/Sphere_22",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:045",
+      "link_name": "rh_mfproximal",
+      "finger_name": "middle",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.025287691462776173,
+        -0.008923888572353347,
+        -0.008951788955392455
+      ],
+      "local_surface_normal": [
+        0.00035744692475218534,
+        -0.9835488180694072,
+        -0.18064217311017994
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_rfproximal/Sphere_23",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:middle:046",
+      "link_name": "rh_mfproximal",
+      "finger_name": "middle",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.02266037069021553,
+        -0.00942121087314026,
+        -0.0035753755279293057
+      ],
+      "local_surface_normal": [
+        0.01376757024038173,
+        -0.999902933385453,
+        0.0021395833338809065
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_mfproximal/rh_rfproximal/Sphere_24",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:000",
+      "link_name": "rh_rfdistal",
+      "finger_name": "ring",
+      "region": "shared_fingertip",
+      "local_position": [
+        0.025861171911292086,
+        0.006996357804908035,
+        -0.00028420497141919295
+      ],
+      "local_surface_normal": [
+        0.28770788809405146,
+        0.8946361786004462,
+        0.3418337008951158
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/rh_rfdistal/TransferredMiddleFingerKeypoints/Sphere_01",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:001",
+      "link_name": "rh_rfdistal",
+      "finger_name": "ring",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.018753030975378462,
+        0.008035745466572635,
+        -6.109608657546464e-05
+      ],
+      "local_surface_normal": [
+        0.07315146489724506,
+        0.9115958916590403,
+        0.4045266289056215
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/rh_rfdistal/TransferredMiddleFingerKeypoints/Sphere_03",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:002",
+      "link_name": "rh_rfdistal",
+      "finger_name": "ring",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.012267007582015859,
+        0.008499974101909143,
+        6.56525429467516e-05
+      ],
+      "local_surface_normal": [
+        0.07315146489724506,
+        0.9115958916590403,
+        0.4045266289056215
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/rh_rfdistal/TransferredMiddleFingerKeypoints/Sphere_05",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:003",
+      "link_name": "rh_rfdistal",
+      "finger_name": "ring",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.010011373656427803,
+        0.009434929160559257,
+        -0.004286989531742785
+      ],
+      "local_surface_normal": [
+        0.06345614366087411,
+        0.983431629122836,
+        0.16981033146571317
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/rh_rfdistal/TransferredMiddleFingerKeypoints/Sphere_06",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:004",
+      "link_name": "rh_rfdistal",
+      "finger_name": "ring",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.012123862434121353,
+        0.00826118359370711,
+        -0.009489049020051201
+      ],
+      "local_surface_normal": [
+        0.06622965247884088,
+        0.9163731003243341,
+        -0.3948087817342719
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/rh_rfdistal/TransferredMiddleFingerKeypoints/Sphere_07",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:005",
+      "link_name": "rh_rfdistal",
+      "finger_name": "ring",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.019026634902025677,
+        0.007898595163930338,
+        -0.009172688432515924
+      ],
+      "local_surface_normal": [
+        0.06622965247884088,
+        0.9163731003243341,
+        -0.3948087817342719
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/rh_rfdistal/TransferredMiddleFingerKeypoints/Sphere_09",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:006",
+      "link_name": "rh_rfdistal",
+      "finger_name": "ring",
+      "region": "shared_fingertip",
+      "local_position": [
+        0.029223957836661228,
+        0.006264031290271107,
+        -0.004452993731940087
+      ],
+      "local_surface_normal": [
+        0.46918320092191107,
+        0.8830961797136212,
+        -0.002874256056314087
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/rh_rfdistal/TransferredMiddleFingerKeypoints/Sphere_12",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:007",
+      "link_name": "rh_rfdistal",
+      "finger_name": "ring",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.02268286342006827,
+        0.00800636935142149,
+        -0.004450294772100319
+      ],
+      "local_surface_normal": [
+        0.11495532952096603,
+        0.9933354027948086,
+        -0.008369574015539649
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/rh_rfdistal/TransferredMiddleFingerKeypoints/Sphere_13",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:008",
+      "link_name": "rh_rfdistal",
+      "finger_name": "ring",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.015918102693727114,
+        0.00879110878328534,
+        -0.004227564056182206
+      ],
+      "local_surface_normal": [
+        0.11495532952096603,
+        0.9933354027948086,
+        -0.008369574015539649
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/rh_rfdistal/TransferredMiddleFingerKeypoints/Sphere_15",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:009",
+      "link_name": "rh_rfdistal",
+      "finger_name": "ring",
+      "region": "shared_fingertip",
+      "local_position": [
+        0.02587696800354156,
+        0.006796274141428299,
+        -0.008957101843244893
+      ],
+      "local_surface_normal": [
+        0.28508022079134027,
+        0.8915647056416407,
+        -0.35191141409123905
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/rh_rfdistal/TransferredMiddleFingerKeypoints/Sphere_17",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:010",
+      "link_name": "rh_rfdistal",
+      "finger_name": "ring",
+      "region": "shared_fingertip",
+      "local_position": [
+        0.026921177772029715,
+        -0.0067584325976527086,
+        -0.008180029932065366
+      ],
+      "local_surface_normal": [
+        0.28751952171634143,
+        -0.8906710959684357,
+        -0.35218961290530937
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/rh_rfdistal/TransferredMiddleFingerKeypoints/Sphere_18",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:011",
+      "link_name": "rh_rfdistal",
+      "finger_name": "ring",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.024082915361339784,
+        -0.007687490885532951,
+        -0.004747982573289767
+      ],
+      "local_surface_normal": [
+        0.25170950379439005,
+        -0.9677709619255005,
+        -0.007854358877294711
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/rh_rfdistal/TransferredMiddleFingerKeypoints/Sphere_19",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:012",
+      "link_name": "rh_rfdistal",
+      "finger_name": "ring",
+      "region": "shared_fingertip",
+      "local_position": [
+        0.026793834707500942,
+        -0.006770765041641949,
+        -0.0005385298193842775
+      ],
+      "local_surface_normal": [
+        0.2793427795447214,
+        -0.8865907654171853,
+        0.36867929992501447
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/rh_rfdistal/TransferredMiddleFingerKeypoints/Sphere_20",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:013",
+      "link_name": "rh_rfdistal",
+      "finger_name": "ring",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.020530710508104313,
+        -0.008074632681666584,
+        -0.000341568156595424
+      ],
+      "local_surface_normal": [
+        0.07055648391525302,
+        -0.900719221777081,
+        0.4286334869078784
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/rh_rfdistal/TransferredMiddleFingerKeypoints/Sphere_21",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:014",
+      "link_name": "rh_rfdistal",
+      "finger_name": "ring",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.013865901874655326,
+        -0.008644685985916806,
+        -0.0010857727262607467
+      ],
+      "local_surface_normal": [
+        0.05894335838653149,
+        -0.9829455095844802,
+        0.17419473496585156
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/rh_rfdistal/TransferredMiddleFingerKeypoints/Sphere_22",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:015",
+      "link_name": "rh_rfdistal",
+      "finger_name": "ring",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.011540530948668635,
+        -0.009293253017429476,
+        -0.004812980467181583
+      ],
+      "local_surface_normal": [
+        0.11435996967784946,
+        -0.9934007772562391,
+        -0.008757458648580097
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/rh_rfdistal/TransferredMiddleFingerKeypoints/Sphere_23",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:016",
+      "link_name": "rh_rfdistal",
+      "finger_name": "ring",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.017981968837724443,
+        -0.00855174971358546,
+        -0.0048092484144513946
+      ],
+      "local_surface_normal": [
+        0.11435996967784946,
+        -0.9934007772562391,
+        -0.008757458648580097
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/rh_rfdistal/TransferredMiddleFingerKeypoints/Sphere_24",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:017",
+      "link_name": "rh_rfdistal",
+      "finger_name": "ring",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.020220685015155414,
+        -0.0081031176181188,
+        -0.008457742573224717
+      ],
+      "local_surface_normal": [
+        0.060502380072321754,
+        -0.977828065400144,
+        -0.20047876825588304
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/rh_rfdistal/TransferredMiddleFingerKeypoints/Sphere_25",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:018",
+      "link_name": "rh_rfdistal",
+      "finger_name": "ring",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.012360597322851385,
+        -0.008504371361040227,
+        -0.008872733360079222
+      ],
+      "local_surface_normal": [
+        0.060502380072321754,
+        -0.977828065400144,
+        -0.20047876825588304
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/rh_rfdistal/TransferredMiddleFingerKeypoints/Sphere_26",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:019",
+      "link_name": "rh_rfmiddle",
+      "finger_name": "ring",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.01691642812389102,
+        0.009233070649058692,
+        -0.0008867062259490006
+      ],
+      "local_surface_normal": [
+        -0.025218087494932886,
+        0.9881015834446029,
+        0.15172115494342403
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/TransferredMiddleFingerKeypoints/Sphere_02",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:020",
+      "link_name": "rh_rfmiddle",
+      "finger_name": "ring",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.011359832823307214,
+        0.009094523118948553,
+        -0.0009079799407522592
+      ],
+      "local_surface_normal": [
+        -0.025218087494932886,
+        0.9881015834446029,
+        0.15172115494342403
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/TransferredMiddleFingerKeypoints/Sphere_03",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:021",
+      "link_name": "rh_rfmiddle",
+      "finger_name": "ring",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.013599466485195836,
+        0.009542251306253392,
+        -0.0049529166224239665
+      ],
+      "local_surface_normal": [
+        0.012679700899113779,
+        0.9991231756129244,
+        0.03990119219089206
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/TransferredMiddleFingerKeypoints/Sphere_04",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:022",
+      "link_name": "rh_rfmiddle",
+      "finger_name": "ring",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.016549682166301177,
+        0.008966597827361419,
+        -0.008132068888747299
+      ],
+      "local_surface_normal": [
+        0.014560955008565872,
+        0.9587865355658194,
+        -0.2837540445648877
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/TransferredMiddleFingerKeypoints/Sphere_05",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:023",
+      "link_name": "rh_rfmiddle",
+      "finger_name": "ring",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.010774677830880618,
+        0.009029305444644788,
+        -0.008114329124953171
+      ],
+      "local_surface_normal": [
+        -0.011529131382511491,
+        0.9817780603311023,
+        -0.18968109916927242
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/TransferredMiddleFingerKeypoints/Sphere_06",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:024",
+      "link_name": "rh_rfmiddle",
+      "finger_name": "ring",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.015500489056024108,
+        -0.009493771460953383,
+        -0.005667047269780141
+      ],
+      "local_surface_normal": [
+        -0.019184781801751725,
+        -0.9879321704101577,
+        -0.1536944072368752
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/TransferredMiddleFingerKeypoints/Sphere_07",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:025",
+      "link_name": "rh_rfmiddle",
+      "finger_name": "ring",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.01292475266721893,
+        -0.009161109433830686,
+        -0.0009217152111205626
+      ],
+      "local_surface_normal": [
+        -0.02115698511842306,
+        -0.9816230954222266,
+        0.1896535802835924
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/TransferredMiddleFingerKeypoints/Sphere_08",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:026",
+      "link_name": "rh_rfmiddle",
+      "finger_name": "ring",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.018387791414403314,
+        -0.009254638152178056,
+        -0.0007963736308298816
+      ],
+      "local_surface_normal": [
+        -0.02115698511842306,
+        -0.9816230954222266,
+        0.1896535802835924
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/TransferredMiddleFingerKeypoints/Sphere_09",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:027",
+      "link_name": "rh_rfmiddle",
+      "finger_name": "ring",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.018031645382362262,
+        -0.00906621131360337,
+        -0.008605393569620994
+      ],
+      "local_surface_normal": [
+        -0.016828563723202055,
+        -0.9866409944996053,
+        -0.162038104826748
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/TransferredMiddleFingerKeypoints/Sphere_10",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:028",
+      "link_name": "rh_rfmiddle",
+      "finger_name": "ring",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.011827255989880842,
+        -0.00892771560413552,
+        -0.008804325680699566
+      ],
+      "local_surface_normal": [
+        -0.016828563723202055,
+        -0.9866409944996053,
+        -0.162038104826748
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/rh_rfmiddle/TransferredMiddleFingerKeypoints/Sphere_11",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:029",
+      "link_name": "rh_rfproximal",
+      "finger_name": "ring",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.02617525606471589,
+        0.009158290805695303,
+        -0.00040155132263072627
+      ],
+      "local_surface_normal": [
+        -0.0011258197560924915,
+        0.9546093590004973,
+        0.2978585305787575
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/TransferredMiddleFingerKeypoints/Sphere_07",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:030",
+      "link_name": "rh_rfproximal",
+      "finger_name": "ring",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.012200382053825457,
+        0.009068368749656771,
+        -0.0004017940944950176
+      ],
+      "local_surface_normal": [
+        -0.012244759001018584,
+        0.990716524467507,
+        0.13539141045144157
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/TransferredMiddleFingerKeypoints/Sphere_08",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:031",
+      "link_name": "rh_rfproximal",
+      "finger_name": "ring",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.019266696052271576,
+        0.009150866041962111,
+        -0.0004038680076648832
+      ],
+      "local_surface_normal": [
+        -0.0011258197560924915,
+        0.9546093590004973,
+        0.2978585305787575
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/TransferredMiddleFingerKeypoints/Sphere_09",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:032",
+      "link_name": "rh_rfproximal",
+      "finger_name": "ring",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.022893457724921792,
+        0.009411782342477663,
+        -0.005367302112446371
+      ],
+      "local_surface_normal": [
+        0.014290710913471321,
+        0.9998972903999779,
+        -0.001088224411550532
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/TransferredMiddleFingerKeypoints/Sphere_10",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:033",
+      "link_name": "rh_rfproximal",
+      "finger_name": "ring",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.015878543940672018,
+        0.00947075363167192,
+        -0.0053103015659072186
+      ],
+      "local_surface_normal": [
+        -0.006419226190566193,
+        0.9881098471359137,
+        -0.1536155054939306
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/TransferredMiddleFingerKeypoints/Sphere_11",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:034",
+      "link_name": "rh_rfproximal",
+      "finger_name": "ring",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.010099307123058291,
+        0.009456598038633591,
+        -0.005155042885488607
+      ],
+      "local_surface_normal": [
+        -0.040507104480909696,
+        0.9905266761470797,
+        -0.1312100542168591
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/TransferredMiddleFingerKeypoints/Sphere_12",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:035",
+      "link_name": "rh_rfproximal",
+      "finger_name": "ring",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.012500369482739988,
+        0.008757595345362667,
+        -0.009641998247498252
+      ],
+      "local_surface_normal": [
+        -0.003297831178036597,
+        0.9839051313078166,
+        -0.17866117903917852
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/TransferredMiddleFingerKeypoints/Sphere_13",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:036",
+      "link_name": "rh_rfproximal",
+      "finger_name": "ring",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.018637495366315468,
+        0.008790022511755041,
+        -0.009576701184154239
+      ],
+      "local_surface_normal": [
+        -0.003297831178036597,
+        0.9839051313078166,
+        -0.17866117903917852
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/TransferredMiddleFingerKeypoints/Sphere_14",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:037",
+      "link_name": "rh_rfproximal",
+      "finger_name": "ring",
+      "region": "front_finger_surface",
+      "local_position": [
+        0.025119971411150292,
+        0.008829838970942491,
+        -0.009477085212798718
+      ],
+      "local_surface_normal": [
+        -0.003297831178036597,
+        0.9839051313078166,
+        -0.17866117903917852
+      ],
+      "supported_sides": [
+        "front"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/TransferredMiddleFingerKeypoints/Sphere_15",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:038",
+      "link_name": "rh_rfproximal",
+      "finger_name": "ring",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.025892507117760408,
+        -0.008638430394696568,
+        0.0012050739599525817
+      ],
+      "local_surface_normal": [
+        -0.0006251960260539876,
+        -0.9520371924095632,
+        0.305981688012282
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/TransferredMiddleFingerKeypoints/Sphere_16",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:039",
+      "link_name": "rh_rfproximal",
+      "finger_name": "ring",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.018704235499664608,
+        -0.008623155297717806,
+        0.001201681316431836
+      ],
+      "local_surface_normal": [
+        -0.00905902664050516,
+        -0.9083900212283367,
+        0.4180257209420357
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/TransferredMiddleFingerKeypoints/Sphere_17",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:040",
+      "link_name": "rh_rfproximal",
+      "finger_name": "ring",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.012240467439168904,
+        -0.008560181411517884,
+        0.0011984504213733813
+      ],
+      "local_surface_normal": [
+        -0.00905902664050516,
+        -0.9083900212283367,
+        0.4180257209420357
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/TransferredMiddleFingerKeypoints/Sphere_18",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:041",
+      "link_name": "rh_rfproximal",
+      "finger_name": "ring",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.01610641321991698,
+        -0.009511666382580511,
+        -0.003675743129834395
+      ],
+      "local_surface_normal": [
+        0.013767574442724034,
+        -0.999902933413323,
+        0.0021395432680953686
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/TransferredMiddleFingerKeypoints/Sphere_19",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:042",
+      "link_name": "rh_rfproximal",
+      "finger_name": "ring",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.010342496511495219,
+        -0.009481489943720566,
+        -0.003461444248749054
+      ],
+      "local_surface_normal": [
+        -0.011917518172335707,
+        -0.9900357063605142,
+        0.14031134270560505
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/TransferredMiddleFingerKeypoints/Sphere_20",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:043",
+      "link_name": "rh_rfproximal",
+      "finger_name": "ring",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.01250380905196842,
+        -0.00891319560058016,
+        -0.00903530649047336
+      ],
+      "local_surface_normal": [
+        0.00035741481280112156,
+        -0.9835488222345822,
+        -0.18064215049544158
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/TransferredMiddleFingerKeypoints/Sphere_21",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:044",
+      "link_name": "rh_rfproximal",
+      "finger_name": "ring",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.019100027746026538,
+        -0.008958778198466825,
+        -0.008774070136687006
+      ],
+      "local_surface_normal": [
+        0.00035741481280112156,
+        -0.9835488222345822,
+        -0.18064215049544158
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/TransferredMiddleFingerKeypoints/Sphere_22",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:045",
+      "link_name": "rh_rfproximal",
+      "finger_name": "ring",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.02528769145967815,
+        -0.008923889141675155,
+        -0.008951789057550076
+      ],
+      "local_surface_normal": [
+        0.00035741481280112156,
+        -0.9835488222345822,
+        -0.18064215049544158
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/TransferredMiddleFingerKeypoints/Sphere_23",
+      "enabled": true
+    },
+    {
+      "point_id": "finger:ring:046",
+      "link_name": "rh_rfproximal",
+      "finger_name": "ring",
+      "region": "back_finger_surface",
+      "local_position": [
+        0.02266037068853861,
+        -0.009421210764188594,
+        -0.003575375526476379
+      ],
+      "local_surface_normal": [
+        0.013767574442724034,
+        -0.999902933413323,
+        0.0021395432680953686
+      ],
+      "supported_sides": [
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_rfproximal/TransferredMiddleFingerKeypoints/Sphere_24",
+      "enabled": true
+    },
+    {
+      "point_id": "thumb:rh_thdistal:Sphere_14",
+      "link_name": "rh_thdistal",
+      "finger_name": "thumb",
+      "region": "thumb",
+      "local_position": [
+        0.02725582345227167,
+        0.0001481109818887003,
+        -0.006864701765171683
+      ],
+      "local_surface_normal": [
+        0.2691131732066205,
+        -0.003331469032469996,
+        -0.9631027989372418
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_thbase/rh_thproximal/rh_thmiddle/rh_thdistal/rh_thdistal/Sphere_14",
+      "enabled": true
+    },
+    {
+      "point_id": "thumb:rh_thdistal:Sphere_15",
+      "link_name": "rh_thdistal",
+      "finger_name": "thumb",
+      "region": "thumb",
+      "local_position": [
+        0.02430086321942702,
+        -0.0037484409316978743,
+        -0.007593661460335131
+      ],
+      "local_surface_normal": [
+        0.2547851812821247,
+        -0.016090018518183754,
+        -0.9668638077325676
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_thbase/rh_thproximal/rh_thmiddle/rh_thdistal/rh_thdistal/Sphere_15",
+      "enabled": true
+    },
+    {
+      "point_id": "thumb:rh_thdistal:Sphere_16",
+      "link_name": "rh_thdistal",
+      "finger_name": "thumb",
+      "region": "thumb",
+      "local_position": [
+        0.018441880130947726,
+        0.004333602138241568,
+        -0.008052841517429049
+      ],
+      "local_surface_normal": [
+        0.07314759237512385,
+        0.404515921138215,
+        -0.9116009539680311
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_thbase/rh_thproximal/rh_thmiddle/rh_thdistal/rh_thdistal/Sphere_16",
+      "enabled": true
+    },
+    {
+      "point_id": "thumb:rh_thdistal:Sphere_17",
+      "link_name": "rh_thdistal",
+      "finger_name": "thumb",
+      "region": "thumb",
+      "local_position": [
+        0.014375808429011976,
+        0.004925419051070015,
+        -0.008116492165808344
+      ],
+      "local_surface_normal": [
+        0.07314759237512385,
+        0.404515921138215,
+        -0.9116009539680311
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_thbase/rh_thproximal/rh_thmiddle/rh_thdistal/rh_thdistal/Sphere_17",
+      "enabled": true
+    },
+    {
+      "point_id": "thumb:rh_thdistal:Sphere_18",
+      "link_name": "rh_thdistal",
+      "finger_name": "thumb",
+      "region": "thumb",
+      "local_position": [
+        0.019210489996026876,
+        -0.004480068488759972,
+        -0.008021250151700457
+      ],
+      "local_surface_normal": [
+        0.066232479986531,
+        -0.3948146537201889,
+        -0.9163703660652941
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_thbase/rh_thproximal/rh_thmiddle/rh_thdistal/rh_thdistal/Sphere_18",
+      "enabled": true
+    },
+    {
+      "point_id": "thumb:rh_thdistal:Sphere_19",
+      "link_name": "rh_thdistal",
+      "finger_name": "thumb",
+      "region": "thumb",
+      "local_position": [
+        0.023519293248356613,
+        0.003983375116483365,
+        -0.007724386533384954
+      ],
+      "local_surface_normal": [
+        0.1144315604555542,
+        0.5453533001803129,
+        -0.8303584743676363
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_thbase/rh_thproximal/rh_thmiddle/rh_thdistal/rh_thdistal/Sphere_19",
+      "enabled": true
+    },
+    {
+      "point_id": "thumb:rh_thdistal:Sphere_20",
+      "link_name": "rh_thdistal",
+      "finger_name": "thumb",
+      "region": "thumb",
+      "local_position": [
+        0.015018312480274902,
+        -0.004697430416803108,
+        -0.008230598517998516
+      ],
+      "local_surface_normal": [
+        0.066232479986531,
+        -0.3948146537201889,
+        -0.9163703660652941
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_thbase/rh_thproximal/rh_thmiddle/rh_thdistal/rh_thdistal/Sphere_20",
+      "enabled": true
+    },
+    {
+      "point_id": "thumb:rh_thdistal:Sphere_22",
+      "link_name": "rh_thdistal",
+      "finger_name": "thumb",
+      "region": "thumb",
+      "local_position": [
+        0.01939790504946179,
+        9.387486633346902e-05,
+        -0.008387911738493441
+      ],
+      "local_surface_normal": [
+        0.11495532923947986,
+        -0.008376095902890544,
+        -0.9933353478543228
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_thbase/rh_thproximal/rh_thmiddle/rh_thdistal/rh_thdistal/Sphere_22",
+      "enabled": true
+    },
+    {
+      "point_id": "thumb:rh_thdistal:Sphere_23",
+      "link_name": "rh_thdistal",
+      "finger_name": "thumb",
+      "region": "thumb",
+      "local_position": [
+        0.01284040030620649,
+        -0.0003940143884908166,
+        -0.009142675485883933
+      ],
+      "local_surface_normal": [
+        0.11495532923947986,
+        -0.008376095902890544,
+        -0.9933353478543228
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_thbase/rh_thproximal/rh_thmiddle/rh_thdistal/rh_thdistal/Sphere_23",
+      "enabled": true
+    },
+    {
+      "point_id": "thumb:rh_thmiddle:Sphere_21",
+      "link_name": "rh_thmiddle",
+      "finger_name": "thumb",
+      "region": "thumb",
+      "local_position": [
+        0.01147266384033279,
+        0.00020351521049198152,
+        -0.009538097723161845
+      ],
+      "local_surface_normal": [
+        0.01267947857585484,
+        0.03989420243860204,
+        -0.9991234575540864
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_thbase/rh_thproximal/rh_thmiddle/rh_thmiddle/Sphere_21",
+      "enabled": true
+    },
+    {
+      "point_id": "thumb:rh_thmiddle:Sphere_22",
+      "link_name": "rh_thmiddle",
+      "finger_name": "thumb",
+      "region": "thumb",
+      "local_position": [
+        0.013264931420958503,
+        0.00429524445901767,
+        -0.0089737401410605
+      ],
+      "local_surface_normal": [
+        0.007009477708104117,
+        0.40030454732383397,
+        -0.9163553549874197
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_thbase/rh_thproximal/rh_thmiddle/rh_thmiddle/Sphere_22",
+      "enabled": true
+    },
+    {
+      "point_id": "thumb:rh_thmiddle:Sphere_23",
+      "link_name": "rh_thmiddle",
+      "finger_name": "thumb",
+      "region": "thumb",
+      "local_position": [
+        0.013843818319008074,
+        -0.004088586287566552,
+        -0.00890901978747126
+      ],
+      "local_surface_normal": [
+        0.014561337164947735,
+        -0.28376108546209167,
+        -0.9587844459717441
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_thbase/rh_thproximal/rh_thmiddle/rh_thmiddle/Sphere_23",
+      "enabled": true
+    },
+    {
+      "point_id": "thumb:rh_thmiddle:Sphere_24",
+      "link_name": "rh_thmiddle",
+      "finger_name": "thumb",
+      "region": "thumb",
+      "local_position": [
+        0.017124149214387544,
+        0.0004884282553673685,
+        -0.009455000618610833
+      ],
+      "local_surface_normal": [
+        0.01267947857585484,
+        0.03989420243860204,
+        -0.9991234575540864
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_thbase/rh_thproximal/rh_thmiddle/rh_thmiddle/Sphere_24",
+      "enabled": true
+    },
+    {
+      "point_id": "thumb:rh_thproximal:Sphere_24",
+      "link_name": "rh_thproximal",
+      "finger_name": "thumb",
+      "region": "thumb",
+      "local_position": [
+        0.024949386386095403,
+        2.110256714813819e-05,
+        -0.009383502389077026
+      ],
+      "local_surface_normal": [
+        0.014290673823034342,
+        -0.0010910499745794546,
+        -0.9998972878509256
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_thbase/rh_thproximal/rh_thproximal/Sphere_24",
+      "enabled": true
+    },
+    {
+      "point_id": "thumb:rh_thproximal:Sphere_25",
+      "link_name": "rh_thproximal",
+      "finger_name": "thumb",
+      "region": "thumb",
+      "local_position": [
+        0.01781514531150556,
+        -7.504556718525637e-07,
+        -0.009485442128958651
+      ],
+      "local_surface_normal": [
+        0.014290673823034342,
+        -0.0010910499745794546,
+        -0.9998972878509256
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_thbase/rh_thproximal/rh_thproximal/Sphere_25",
+      "enabled": true
+    },
+    {
+      "point_id": "thumb:rh_thproximal:Sphere_26",
+      "link_name": "rh_thproximal",
+      "finger_name": "thumb",
+      "region": "thumb",
+      "local_position": [
+        0.020251661396449246,
+        0.004139646553306725,
+        -0.009100005505396865
+      ],
+      "local_surface_normal": [
+        -0.0011258916003332768,
+        0.2978561635045893,
+        -0.9546100974902957
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_thbase/rh_thproximal/rh_thproximal/Sphere_26",
+      "enabled": true
+    },
+    {
+      "point_id": "thumb:rh_thproximal:Sphere_27",
+      "link_name": "rh_thproximal",
+      "finger_name": "thumb",
+      "region": "thumb",
+      "local_position": [
+        0.020721928898152133,
+        -0.0036967113689964247,
+        -0.009069963128417088
+      ],
+      "local_surface_normal": [
+        -0.0032976194663184672,
+        -0.17866739517808777,
+        -0.9839040032473354
+      ],
+      "supported_sides": [
+        "front",
+        "back"
+      ],
+      "source": "authored_keypoint:/robot/Geometry/mujoco_root/rh_palm/rh_thbase/rh_thproximal/rh_thproximal/Sphere_27",
+      "enabled": true
+    }
+  ]
+}
