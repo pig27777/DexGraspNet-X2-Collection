@@ -1,0 +1,64 @@
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Python and tooling
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage*
+htmlcov/
+.venv/
+
+# IDE and operating-system files
+.vscode/
+.idea/
+.DS_Store
+
+# Original large-data links
+meshdata
+experiments
+graspdata
+dataset
+
+# Generated datasets, caches, and runtime state
+data/*
+!data/contact_points/
+!data/x2_valid_5000/
+data/contact_points/*
+!data/contact_points/contact_points_x2_mesh.json
+data/x2_valid_5000/*
+!data/x2_valid_5000/sample_visualizations_20260716/
+data/x2_valid_5000/sample_visualizations_20260716/*
+!data/x2_valid_5000/sample_visualizations_20260716/manifest.json
+!data/x2_valid_5000/sample_visualizations_20260716/grasp_samples_overview.png
+!data/x2_valid_5000/sample_visualizations_20260716/sample_f1_front_cylinder_r018_h100.png
+!data/x2_valid_5000/sample_visualizations_20260716/sample_f2_back_sphere_r020.png
+!data/x2_valid_5000/sample_visualizations_20260716/sample_f3_front_cylinder_r025_h100.png
+!data/x2_valid_5000/sample_visualizations_20260716/sample_f4_back_003.png
+!data/x2_valid_5000/sample_visualizations_20260716/sample_f5_front_sphere_r040.png
+**/.staging/
+**/raw/
+**/valid/
+**/failed/
+*.log
+*.lock
+*.pid
+
+# Model checkpoints and simulator outputs
+*.pt
+*.pth
+*.ckpt
+.omniverse/
+logs/
+outputs/
+
+# X2 robot USD/mesh assets are local dependencies with separate licensing.
+x2_mujoco/
