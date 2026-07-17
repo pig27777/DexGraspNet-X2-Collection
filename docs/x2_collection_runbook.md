@@ -139,7 +139,7 @@ conda run -n isaaclab --no-capture-output \
   --generation-device cuda \
   --jobs 2 \
   --validation-device cuda:0 \
-  --validation-batch-size 32 \
+  --validation-batch-size 8 \
   --sim-steps 100 \
   --general-mesh-root data/meshdata \
   --output-root data/x2_valid_5000 \
@@ -156,6 +156,9 @@ conda run -n isaaclab --no-capture-output \
 [collector] resuming attempt_0000
 [resume] reusable_groups=<已提交层数> regenerate_groups=<待生成层数>
 ```
+
+若复杂通用 mesh 触发 CUDA OOM，正式 wrapper 会立即输出明确根因并失败，不自动降低 batch。
+已经完成的 route 仍会原子保留，查明并修复后可继续 `--resume`。
 
 不要添加 `--overwrite`，也不要改 seed、6000 iterations、100 sim steps、30-mesh 列表或输出根目录。
 恢复命令若报告 `Attempt metadata changed`，禁止修改 `attempt.json` 来绕过；应先恢复与原 attempt

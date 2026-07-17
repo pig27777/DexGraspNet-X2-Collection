@@ -147,6 +147,8 @@ Isaac Sim/Isaac Lab 版本及 validator protocol revision。
 - 同一 mesh 的正式分层数据可同时包含 4-contact（f1..f4）与 5-contact（f5）记录；
   validator 先按 contact 数分组，再按 `--batch-size` 切分，禁止把 ragged contact ID
   直接构造成同一个 tensor；
+- wrapper 会识别子进程结构化 `physx_batch_error` 中的 CUDA OOM，并立即以明确错误退出；
+  不自动降低 batch 或掩盖问题，已原子路由的样本仍可在人工修复后由 `--resume` 复用；
 - density 默认 `500 kg/m³`；
 - hand/object friction 默认 `3.0`；
 - X2 contact offset 默认 `0.001 m`；没有照搬 ShadowHand validator 的 `0.01 m`，因为对本数据集中
@@ -183,7 +185,7 @@ conda run -n isaaclab --no-capture-output \
   --input-root data/x2_primitive_grasps \
   --mesh-path data/meshdata/x2_primitives/sphere/sphere_r020.obj \
   --side both \
-  --batch-size 32 \
+  --batch-size 8 \
   --sim-steps 100 \
   --criterion dexgraspnet-contact \
   --collision-approximation convex-hull \
@@ -213,7 +215,7 @@ conda run -n isaaclab --no-capture-output \
   --input-root data/x2_primitive_grasps \
   --shapes sphere cylinder cuboid cube \
   --side both \
-  --batch-size 32 \
+  --batch-size 8 \
   --sim-steps 100 \
   --criterion dexgraspnet-contact \
   --device cuda:0 \
@@ -231,7 +233,7 @@ conda run -n isaaclab --no-capture-output \
   --include-general-meshes \
   --general-mesh-root data/meshdata \
   --side both \
-  --batch-size 32 \
+  --batch-size 8 \
   --sim-steps 100 \
   --criterion dexgraspnet-contact \
   --device cuda:0 \

@@ -102,7 +102,7 @@ class X2CollectionSupervisorTest(unittest.TestCase):
             ("--target-valid", "5000"),
             ("--n-iterations", "6000"),
             ("--jobs", "2"),
-            ("--validation-batch-size", "32"),
+            ("--validation-batch-size", "8"),
             ("--sim-steps", "100"),
         ):
             self.assertEqual(command[command.index(flag) + 1], value)

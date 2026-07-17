@@ -267,8 +267,19 @@ collector/supervisor/final-audit 的 15 项 unittest 全部通过，6 张图片�
 
 **计划。** 总 raw target 为 6250；f1、f2、f3、f4、f5 各 1250 条，生成器会在 front/back
 间使用互补 finger mask，并轮询 12 个 primitive 和固定 30 个通用 mesh。全部候选使用 6000
-iterations、64-row stratified batches 和 v6；生成完成后才运行 v7（batch 32、100 logical steps、
+iterations、64-row stratified batches 和 v6；生成完成后才运行 v7（batch 8、100 logical steps、
 2 substeps）。
+
+**2026-07-17 20:40，PhysX OOM 恢复。** `attempt_0000` 已生成完 6250/6250 raw；PhysX
+在完成前 16/42 个物体、发布 301 valid + 2099 failed 后，固定停在通用 mesh `012`。
+保留原始 stdout 的单物体复现确认 batch 32 在第一批占满 31.35 GiB GPU，并以 CUDA OOM
+结束；Isaac 进程错误地返回 0 且未写 summary，使 supervisor 只能反复恢复到同一点。
+batch 16 仅完成首批 16 条后再次 OOM；batch 8 随后连续完成剩余 134 条（17 个小批次），
+`012` 共发布 150 条 PhysX 路由，累计达到 308 valid + 2242 failed = 2550 条。wrapper 只增加
+结构化 OOM 的 fail-fast 诊断，不自动降低 batch；batch 只控制同一协议的并行环境数，不改变
+v7 判据、100
+logical steps、2 substeps、seed 或候选内容；正式 collector、supervisor 和恢复命令因此统一降为
+8，已有 raw/valid/failed 均由 `--resume` 复用。
 
 **预计时间。** 依据 EXP-042 小批实测和暂定 10% valid 率，完整 5000 条的当前宽区间为连续
 运行约 8--14 天；乐观 5--7 天，低有效率分层可能使总时长达到 2--3 周。该估计不作为结果，

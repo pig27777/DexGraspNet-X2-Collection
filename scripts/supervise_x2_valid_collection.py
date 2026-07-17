@@ -149,7 +149,7 @@ def formal_collector_command(
         "--validation-device",
         "cuda:0",
         "--validation-batch-size",
-        "32",
+        "8",
         "--sim-steps",
         "100",
         "--general-mesh-root",

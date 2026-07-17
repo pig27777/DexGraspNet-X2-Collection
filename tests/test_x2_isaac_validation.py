@@ -1377,6 +1377,56 @@ class X2IsaacValidationTests(unittest.TestCase):
                 0.0015,
             )
 
+    def test_primitive_wrapper_cuda_oom_is_fail_fast(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            input_root = root / "grasps"
+            mesh_root = root / "meshes"
+            summary_dir = root / "summaries"
+            spec = selected_specs(("sphere",))[0]
+            mesh = mesh_root / spec.relative_path
+            mesh.parent.mkdir(parents=True, exist_ok=True)
+            mesh.write_text("o mesh\n", encoding="utf-8")
+            self._write_raw(input_root, mesh)
+
+            oom = SimpleNamespace(
+                returncode=0,
+                stdout=json.dumps(
+                    {
+                        "physx_batch_error": "OutOfMemoryError",
+                        "message": "CUDA out of memory",
+                    }
+                ),
+            )
+            argv = [
+                "--input-root",
+                str(input_root),
+                "--mesh-root",
+                str(mesh_root),
+                "--shapes",
+                "sphere",
+                "--side",
+                "front",
+                "--resume",
+                "--batch-size",
+                "8",
+                "--summary-dir",
+                str(summary_dir),
+            ]
+            with (
+                patch.object(primitive_validator, "build_dataset"),
+                patch.object(primitive_validator, "selected_specs", return_value=[spec]),
+                patch.object(primitive_validator.subprocess, "run", return_value=oom) as run_mock,
+                self.assertRaisesRegex(
+                    primitive_validator.PrimitiveValidationError,
+                    "validator reported CUDA OOM",
+                ),
+            ):
+                primitive_validator.main(argv)
+
+            self.assertEqual(run_mock.call_count, 1)
+            self.assertFalse((summary_dir / f"{spec.instance_name}.json").exists())
+
     def test_primitive_wrapper_never_reuses_stale_published_summary(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -1399,7 +1449,15 @@ class X2IsaacValidationTests(unittest.TestCase):
                 temporary = Path(command[command.index("--summary-json") + 1])
                 self.assertNotEqual(temporary, published_path)
                 # A zero exit without writing its unique summary must not fall back to the old file.
-                return SimpleNamespace(returncode=0, stdout="")
+                return SimpleNamespace(
+                    returncode=0,
+                    stdout=json.dumps(
+                        {
+                            "physx_batch_error": "RuntimeError",
+                            "message": "articulation mapping failed",
+                        }
+                    ),
+                )
 
             argv = [
                 "--input-root",
@@ -1419,7 +1477,9 @@ class X2IsaacValidationTests(unittest.TestCase):
             with (
                 patch.object(primitive_validator, "build_dataset"),
                 patch.object(primitive_validator, "selected_specs", return_value=[spec]),
-                patch.object(primitive_validator.subprocess, "run", side_effect=fake_run),
+                patch.object(
+                    primitive_validator.subprocess, "run", side_effect=fake_run
+                ) as run_mock,
                 self.assertRaisesRegex(
                     primitive_validator.PrimitiveValidationError,
                     "temporary validator summary",
@@ -1427,6 +1487,7 @@ class X2IsaacValidationTests(unittest.TestCase):
             ):
                 primitive_validator.main(argv)
 
+            self.assertEqual(run_mock.call_count, 1)
             self.assertEqual(published_path.read_bytes(), stale_bytes)
             self.assertEqual(list(summary_dir.glob(f".{spec.instance_name}.*.summary.json")), [])
 

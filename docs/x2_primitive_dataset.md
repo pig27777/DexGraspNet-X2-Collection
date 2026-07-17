@@ -289,7 +289,7 @@ conda run -n isaaclab --no-capture-output \
   --target-valid 5000 \
   --n-iterations 6000 \
   --generation-device cuda --jobs 2 \
-  --validation-device cuda:0 --validation-batch-size 32 --sim-steps 100 \
+  --validation-device cuda:0 --validation-batch-size 8 --sim-steps 100 \
   --general-mesh-root data/meshdata \
   --output-root data/x2_valid_5000
 ```
@@ -342,7 +342,7 @@ conda run -n isaaclab --no-capture-output \
   --input-root data/x2_primitive_grasps \
   --shapes sphere cylinder cuboid cube \
   --side both \
-  --batch-size 32 \
+  --batch-size 8 \
   --sim-steps 100 \
   --device cuda:0 \
   --resume

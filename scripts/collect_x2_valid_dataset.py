@@ -1822,7 +1822,7 @@ def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--jobs", type=_positive_int, default=2)
     parser.add_argument("--generation-device", default="cuda")
     parser.add_argument("--validation-device", default="cuda:0")
-    parser.add_argument("--validation-batch-size", type=_positive_int, default=32)
+    parser.add_argument("--validation-batch-size", type=_positive_int, default=8)
     parser.add_argument("--sim-steps", type=_positive_int, default=100)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument(

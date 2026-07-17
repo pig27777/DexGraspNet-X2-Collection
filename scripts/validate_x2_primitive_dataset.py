@@ -206,6 +206,35 @@ def _strict_json(path: Path, label: str) -> dict[str, Any]:
     return payload
 
 
+_CUDA_OOM_MARKERS = (
+    "cuda out of memory",
+    "cudaerroroutofmemory",
+    "outofmemoryerror",
+    "out of memory",
+    "memory allocation failed",
+    "failed to allocate",
+)
+
+
+def _reports_cuda_oom(output: str) -> bool:
+    """Recognize only structured PhysX batch failures that explicitly report OOM."""
+
+    for line in output.splitlines():
+        try:
+            payload = json.loads(line.strip())
+        except (json.JSONDecodeError, TypeError):
+            continue
+        if not isinstance(payload, dict) or "physx_batch_error" not in payload:
+            continue
+        message = (
+            f"{payload.get('physx_batch_error', '')} "
+            f"{payload.get('message', '')}"
+        ).casefold()
+        if any(marker in message for marker in _CUDA_OOM_MARKERS):
+            return True
+    return False
+
+
 def _report_count(report: dict[str, Any], key: str, *, default: int | None = None) -> int:
     value = report.get(key, default)
     if isinstance(value, bool) or not isinstance(value, int) or value < 0:
@@ -571,7 +600,7 @@ def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--shapes", nargs="+", choices=SHAPES, default=list(SHAPES))
     parser.add_argument("--side", choices=("front", "back", "both"), default="both")
-    parser.add_argument("--batch-size", type=_positive_int, default=32)
+    parser.add_argument("--batch-size", type=_positive_int, default=8)
     parser.add_argument("--sim-steps", type=_positive_int, default=100)
     parser.add_argument("--substeps", type=_positive_int, default=2)
     parser.add_argument(
@@ -697,8 +726,12 @@ def main(argv: Sequence[str] | None = None) -> int:
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
             )
+            tail = "\n".join(completed.stdout.splitlines()[-120:])
+            if _reports_cuda_oom(completed.stdout):
+                raise PrimitiveValidationError(
+                    f"{spec.instance_name}: validator reported CUDA OOM\n{tail}"
+                )
             if completed.returncode != 0:
-                tail = "\n".join(completed.stdout.splitlines()[-120:])
                 raise PrimitiveValidationError(
                     f"{spec.instance_name}: validator exited {completed.returncode}\n{tail}"
                 )

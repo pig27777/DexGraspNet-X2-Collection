@@ -120,7 +120,7 @@ conda run -n isaaclab --no-capture-output \
   --generation-device cuda \
   --jobs 2 \
   --validation-device cuda:0 \
-  --validation-batch-size 32 \
+  --validation-batch-size 8 \
   --sim-steps 100 \
   --general-mesh-root data/meshdata \
   --output-root data/x2_valid_5000 \
