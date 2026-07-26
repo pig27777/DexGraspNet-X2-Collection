@@ -1,6 +1,6 @@
 # X2 正式数据采集运行日志与断点恢复手册
 
-最后更新：2026-07-16 22:50 CST
+最后更新：2026-07-17 22:22 CST
 
 ## 技术摘要
 
@@ -24,22 +24,24 @@
 
 | 项目 | 当前值 |
 |---|---|
-| 启动时间 | 2026-07-16 17:06 CST |
+| 首次启动 / 最近恢复 | 2026-07-16 17:06 / 2026-07-17 20:56:10 CST |
 | 输出根目录 | `data/x2_valid_5000` |
-| 当前 attempt | `attempt_0000` |
-| raw 计划 | 6250；f1、f2、f3、f4、f5 各 1250 |
+| 已完成 / 当前 attempt | `attempt_0000` / `attempt_0001` |
+| `attempt_0001` raw target | 66757；f1--f5 为 16081/14247/11955/12746/11728；非全局 cap |
 | catalog | 12 primitive + 固定 30 general mesh |
 | 生成协议 | `x2_mesh_grasp_unselected_finger_side_v6`，6000 iterations |
 | 验证协议 | `x2_object_centered_dexgraspnet_six_orientation_v7` |
 | 采集协议 | `x2_balanced_complementary_30mesh_5000_v6` |
-| 22:50 状态 | 12 个 primitive 已原子发布；正在生成首批通用 mesh `000`、`003` |
-| 已发布 raw/valid/failed | 1800/0/0；首个 attempt 的 raw 生成进度 28.8% |
-| raw 静态审计 | 1800 finite、自碰撞通过；1775 dense `<1 mm`，25 dense infeasible |
-| raw 分层/配对 | front/back × f1--f5 每格 180；720 个生成互补 pair，其中 696 对双方 dense feasible |
-| 正式计数 | 0/5000；`attempt_0000` 尚无 `complete.json` |
+| 21:19 状态 | `attempt_0000` 完成；`attempt_0001` 已自动开始生成 |
+| 已完成 raw/valid/failed | 6250/642/5608；42/42 物体；`complete.json passed=true` |
+| 首轮 valid 分层 | front f1--f5 = 45/67/86/72/74；back = 62/53/57/63/63 |
+| 首轮互补 / f5 | pair f1--f4 = 32/35/41/33；f5 front/back = 74/63 |
+| 验证执行策略 | 固定 `batch=8`；明确 OOM fail-fast；不自动降 batch，不设 attempt raw cap |
+| 已审计候选池 / 最终完成 | 642 valid / 0 of 5000；尚无最终 `manifest.json` |
 
-当前没有趋势图：还没有 completed attempt，partial raw 不能作为正式吞吐或有效率分母。每个
-attempt 完成后再追加同协议下的 raw/valid/failed 与 side/finger_count 表格。
+当前没有趋势图：还没有 completed attempt。partial route 可用于诊断，但不能作为正式
+吞吐或完成证明。每个 attempt 完成后再追加同协议下的 raw/valid/failed 与
+side/finger_count 表格。
 
 ## 跨会话后台守护
 
@@ -57,6 +59,33 @@ tail -f data/x2_valid_5000/collector_supervisor.log
 运行 `audit_x2_valid_dataset.py`。只有全量审计报告与当前 manifest SHA-256 绑定且通过，服务才
 发布 `final_audit.json` 并退出；失败报告保存为 `final_audit_failed.json`，不能提前结束 goal。
 
+### 独立终端仪表盘
+
+不需要保持 Codex 对话打开。在仓库根目录新开一个终端执行：
+
+```bash
+python3 scripts/watch_x2_collection.py
+```
+
+仪表盘默认每 5 秒刷新，显示：
+
+- 最终 manifest / independent audit 状态；
+- 已审计 valid 候选池、f1--f4 互补 pair 和 front/back f5 进度；
+- 每个 attempt 的 raw target、raw/valid/failed、阶段和 42-object 验证进度；
+- supervisor/collector/generator/validator PID、耗时、CPU、RSS、当前物体；
+- GPU 显存、利用率、温度、功耗和最近结构化事件。
+
+`Ctrl+C` 只关闭仪表盘，不会停止 collector。它不获取文件锁、不写数据、不发送
+任何进程信号。其他常用模式：
+
+```bash
+# 只打印一次，适合 SSH 或脚本检查
+python3 scripts/watch_x2_collection.py --once
+
+# 每 10 秒刷新，不清屏，便于保留终端历史
+python3 scripts/watch_x2_collection.py --interval 10 --no-clear
+```
+
 若要**主动暂停**，必须先阻止守护器重启任务：
 
 ```bash
@@ -65,8 +94,8 @@ systemctl --user stop x2-valid-collector-supervisor.service
 pgrep -af 'collect_x2_valid_dataset.py|generate_x2_mesh_grasps_stratified.py|validate_x2_mesh_grasps_physx.py'
 ```
 
-若 `pgrep` 仍显示本次 17:06 从旧 PTY 启动的 collector，再对其顶层 PID 发送一次 `SIGINT` 并等待
-全部 child 退出。重新续采时删除 sentinel 并启动服务：
+若 `pgrep` 仍显示顶层 collector，再对其 PID 发送一次 `SIGINT` 并等待全部 child 退出。
+重新续采时删除 sentinel 并启动服务：
 
 ```bash
 rm -f data/x2_valid_5000/.stop_supervisor
@@ -146,9 +175,9 @@ conda run -n isaaclab --no-capture-output \
   2>&1 | tee -a data/x2_valid_5000/collector_console.log
 ```
 
-`tee -a` 让后续恢复运行拥有持久控制台日志；`set -o pipefail` 保证 collector 失败时整条管道也
-返回失败。当前 17:06 启动的首个进程没有经过 `tee`，不应为了补日志而主动停止；它的权威状态
-仍由 attempt 文件证明。
+`tee -a` 让恢复运行拥有持久控制台日志；`set -o pipefail` 保证 collector 失败时整条管道也
+返回失败。当前 supervisor 恢复进程已写入 `collector_console.log`；权威状态仍以 attempt
+文件为准，不应为了日志主动停止采集。
 
 正常恢复开头应出现类似：
 
@@ -159,6 +188,7 @@ conda run -n isaaclab --no-capture-output \
 
 若复杂通用 mesh 触发 CUDA OOM，正式 wrapper 会立即输出明确根因并失败，不自动降低 batch。
 已经完成的 route 仍会原子保留，查明并修复后可继续 `--resume`。
+为让问题尽快暴露，正式路径不做 8→4→2→1 自动回退，也不为下一 attempt 添加人为数量上限。
 
 不要添加 `--overwrite`，也不要改 seed、6000 iterations、100 sim steps、30-mesh 列表或输出根目录。
 恢复命令若报告 `Attempt metadata changed`，禁止修改 `attempt.json` 来绕过；应先恢复与原 attempt
@@ -240,9 +270,10 @@ attempt 数据仍可复用。
 
 ### CUDA OOM、驱动错误或非有限值
 
-先确认 GPU 上没有残留生成/验证进程，再用 `nvidia-smi` 检查显存。不要直接降低 batch、修改
-drive 或放宽 v7 门槛来接着写同一 attempt；参数改变会破坏可比性。先保存错误日志，再按同参数
-重试；相同对象连续复现时才进入独立故障实验和代码修复。
+先确认 GPU 上没有残留生成/验证进程，再用 `nvidia-smi` 检查显存。不要未复现就自动降 batch、
+修改 drive 或放宽 v7 门槛。先保存错误日志并按同参数复现；确认 batch 32 和 16 均在
+`012` OOM、batch 8 可完整路由后，正式并行数才统一锁定为 8。后续再出现 OOM 会直接失败，
+不由 wrapper 自动改参。
 
 ### 磁盘满
 
@@ -292,6 +323,16 @@ drive 或放宽 v7 门槛来接着写同一 attempt；参数改变会破坏可�
 | 2026-07-16 18:23 | 自动最终审计回归 | 0000 | 300/0/0 | 生成继续；manifest 尚不存在 | 15/15 collector+audit+supervisor tests；服务已热重载 | `audit_x2_valid_dataset.py` |
 | 2026-07-16 18:24 | 正式 catalog 独立复核 | 0000 | 300/0/0 | 12 primitive + 30 general | 42 个 mesh 文件/scale/SHA 全匹配；30 个 ID 唯一 | `attempt_0000/attempt.json` |
 | 2026-07-16 22:50 | 12 primitive 完成 | 0000 | 1800/0/0 | 开始 general 000/003 | 每侧 f1--f5 各 180；1775 dense feasible、25 将静态失败 | raw 全量复核 |
+| 2026-07-17 20:40 | PhysX OOM 根因确认 | 0000 | 6250/308/2242 | general `012` 完成 | batch 32/16 均 OOM；实测 batch 8 完成剩余 134 条 | `collector_console.log` + `validation_summaries/012.json` |
+| 2026-07-17 20:56 | fail-fast 版本受控恢复 | 0000 | 6250/476/3464 | 从 partial `042` 恢复 | 固定 batch 8；不自动降批/限流；复用已落盘 route | systemd journal + `collector_console.log` |
+| 2026-07-17 21:14 | PhysX 健康快照 | 0000 | 6250/624/4926 | 37/42 物体完成；正在 `075` | 5550/6250 已路由；无新 OOM 或参数回退 | 37 个 `validation_summaries/*.json` |
+| 2026-07-17 21:19 | attempt 完成 | 0000 | 6250/642/5608 | 42/42 物体完成；10.27% valid | completion proof 通过；7 个 general mesh 为 0 valid | `attempt_0000/complete.json` |
+| 2026-07-17 21:19 | 自适应补采启动 | 0001 | 0/0/0 | 生成；seed 1009 | 按真实缺口计划 66757 raw；无 cap | `attempt_0001/attempt.json` |
+| 2026-07-17 21:23 | passed 样本 GUI 重放 | 0000 | 6250/642/5608 | general 030 / back f2 | identity passed；0.311 mm 位移；11.59 N 接触力 | Isaac Sim viewer stdout |
+| 2026-07-17 21:31 | ETA 重算 | 0001 | target 66757 raw | 首批 sphere worker 运行 | 生成 73.5--261.8 h；PhysX 9--12 h；中心区间 6--9 天 | 首轮 24.51 h + batch-8 7656 raw/h |
+| 2026-07-17 21:58 | 30 分钟长批健康检查 | 0001 | 0/0/0 | sphere_r020/r030 仍在内存优化 | 两 worker 持续 100% CPU、GPU 75--87%、无 OOM/退出；不重启 | 进程/GPU/文件快照 |
+| 2026-07-17 22:04 | 独立终端仪表盘 | 0001 | 6250/642/5608 completed pool | 首批 sphere worker 继续 | 4 项单测通过；真实 `--once` 快照复核通过 | `scripts/watch_x2_collection.py` |
+| 2026-07-17 22:22 | supervisor 健康日志修复 | 0001 | 0/0/0（本轮） | sphere_r020/r030 继续满载生成 | 自有 child 改为只读周期日志；11 项相关测试通过；不重启当前任务 | `supervise_x2_valid_collection.py` |
 
 追加示例：
 
@@ -342,9 +383,7 @@ conda run -n isaaclab --no-capture-output python -m unittest -v \
 
 ## 下一步与待回答问题
 
-1. 首个物体原子提交后记录实际每物体生成耗时，并校准 `attempt_0000` ETA。
-2. `attempt_0000` 完成后记录 f1--f5/front-back 的有效率和主要失败原因。
-3. 验证一次真实中断恢复演练应在何时进行：优先等待至少一个物体已提交，避免为了演练主动
-   丢弃当前两个仍在内存中的长批次。
-4. 当前环境没有安装 `tmux`；本轮不改变正在运行的进程。后续若需要跨终端持久会话，可单独
-   增加受控服务或会话管理，但它不能取代 collector 自身的 resume 与 completion 审计。
+1. 继续 `attempt_0001` 的 66757 raw 生成，以首个原子 group 实测重算 ETA。
+2. 完成后继续固定 batch 8 的 PhysX fail-fast 验证，不自动改参。
+3. 每个 completed attempt 后重算 f1--f5 缺口、互补 pair 和 30-mesh 覆盖。
+4. 保留 passed 记录的 Isaac Sim GUI 重放流程，不用 raw 图片充当 valid 证据。

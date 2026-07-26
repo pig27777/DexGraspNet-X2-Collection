@@ -1,6 +1,6 @@
 # X2 抓取数据采集实验日志
 
-最后更新：2026-07-16 22:50 CST
+最后更新：2026-07-17 22:22 CST
 
 ## 技术摘要
 
@@ -11,11 +11,15 @@
 - 当前生成协议为 `x2_mesh_grasp_unselected_finger_side_v6`，验证协议为
   `x2_object_centered_dexgraspnet_six_orientation_v7`，采集协议为
   `x2_balanced_complementary_30mesh_5000_v6`。
-- 截至本次快照，正式目录中仍为 **0/5000 valid**；`attempt_0000` 已原子发布 1800 条 raw，尚未
-  进入 PhysX v7。042 通用物体的跨 side、f1--f5 pilot 已完成：
-  20/20 v6 raw 通过静态门，PhysX v7 得到 2/20 valid；正式 collector 的 `attempt_0000` 已于
-  2026-07-16 17:06 CST 启动。attempt 完成证明写出前，pilot、历史样本、演示样本和运行中的
-  raw 都不能计入正式配额。
+- `attempt_0000` 已于 2026-07-17 21:19:40 CST 通过完成审计：**6250 raw = 642 valid +
+  5608 failed**，完整通过率 10.27%；42/42 个物体均有验证 summary，`complete.json`
+  `passed=true`。这 642 条现在可进入累计候选池，但最终 `manifest.json` 尚未生成，
+  因此还不是完成的 5000 条数据集。
+- collector 已于 21:19:42 自动创建 `attempt_0001`并开始生成：seed 1009，
+  f1--f5 raw target 为 16081/14247/11955/12746/11728，总计 **66757 raw**。
+- 正式验证固定 `batch=8`。wrapper 只对明确的结构化 CUDA OOM 做 fail-fast 报错；
+  不自动降 batch、不设 attempt raw 上限、不隐藏子进程错误，以便低通过率或资源故障
+  直接暴露。恢复只复用已通过 SHA/协议审计的原子 route。
 - 当前最重要的负结果是：静态 dense/self-collision gate 全部通过并不保证动态 valid。
   041/back/f3 的 4 条 top-16 候选为 4/4 静态通过，但 PhysX 为 0/4 valid。因此正式启动前
   必须保留六方向 PhysX 闭环，不能用能量或静态穿透代替。
@@ -81,7 +85,8 @@
 | EXP-041-TOP16 | mesh 041；back f3；4条；seed 95001 | v5 top-16 / v7 | dense 4/4，自碰撞 4/4 | 0/4 valid；最大 mimic `0.001941 rad` | dense gate 不是动态持握替代品 | 否，生成版本旧 |
 | EXP-SPHERE-V7-DEMO | sphere_r020；front；1条历史 raw | 历史生成 / 当前 v7 复核 | 静态门通过；旧 raw 不具备正式 v6 provenance | 1/1 valid；六方向通过；最大 mimic `0.003162 rad` | 证明当前 v7 重放链可得到真实 valid，仅用于窗口演示 | 否，生成版本旧 |
 | EXP-042-V6-CROSS | 正式 mesh 042；front/back × f1--f5；每层2条 | v6 / v7 | dense 20/20，自碰撞 20/20，finite 20/20 | 2/20 valid；front f2、f3 各1条；120/120 orientation finite | 正式链路能产生真实 valid；主要瓶颈是动态丢失接触 | 否，pilot |
-| EXP-COLLECT-A0000 | 12 primitive + 30 mesh；f1--f5 各1250 raw | v6 / v7 | 生成中 | 待生成完成后运行 | 首个正式 6250-raw attempt | 尚未；无 `complete.json` |
+| EXP-COLLECT-A0000 | 12 primitive + 30 mesh；f1--f5 各1250 raw | v6 / v7 | 6250/6250 raw 生成完成 | 642 valid + 5608 failed；10.27% | 42/42 物体完成，completion proof 通过 | 可进入候选池；尚未满 5000 |
+| EXP-A0000-VIEW-030 | general `030`；back f2；index + middle | v6 / v7 GUI 重放 | raw 只作为重放输入 | route `passed`；identity 位移 0.311 mm；接触力 11.59 N | Isaac Sim 已显示 `validated-final` | 是，来自 completed attempt |
 
 ## 逐实验记录
 
@@ -224,7 +229,8 @@ raw/valid/failed、运行日志、缓存、checkpoint、88 个通用 mesh 和许
 collector/supervisor/final-audit 的 15 项 unittest 全部通过，6 张图片的 SHA、解码和 metadata
 复核通过。公开仓库是代码与日志镜像，不是正式数据集发布位置。
 
-> **状态提醒：以下均为 raw optimizer pose，尚未经过 Isaac Sim / PhysX valid，不能计入正式数据集。**
+> **状态提醒：以下 PNG 只展示 raw optimizer pose。对应候选现在可能已有 valid/failed
+> sibling route，但图片本身不是 Isaac Sim / PhysX 通过证据，不能据此计入正式数据集。**
 
 ![X2 1--5 指 raw 抓取姿态总览](../data/x2_valid_5000/sample_visualizations_20260716/grasp_samples_overview.png)
 
@@ -265,10 +271,10 @@ collector/supervisor/final-audit 的 15 项 unittest 全部通过，6 张图片�
 接入 supervisor：5 项守护测试通过，最终共 15/15；服务已在不影响 collector PID 的情况下热
 重载。它只在审计报告绑定当前 manifest SHA-256 后发布 `final_audit.json` 并正常退出。
 
-**计划。** 总 raw target 为 6250；f1、f2、f3、f4、f5 各 1250 条，生成器会在 front/back
+**计划。** `attempt_0000` 的 raw target 为 6250；f1、f2、f3、f4、f5 各 1250 条，生成器会在 front/back
 间使用互补 finger mask，并轮询 12 个 primitive 和固定 30 个通用 mesh。全部候选使用 6000
 iterations、64-row stratified batches 和 v6；生成完成后才运行 v7（batch 8、100 logical steps、
-2 substeps）。
+2 substeps）。collector 没有全局 attempt 数量上限；本轮完成后按实际分层缺口继续补采。
 
 **2026-07-17 20:40，PhysX OOM 恢复。** `attempt_0000` 已生成完 6250/6250 raw；PhysX
 在完成前 16/42 个物体、发布 301 valid + 2099 failed 后，固定停在通用 mesh `012`。
@@ -281,9 +287,70 @@ v7 判据、100
 logical steps、2 substeps、seed 或候选内容；正式 collector、supervisor 和恢复命令因此统一降为
 8，已有 raw/valid/failed 均由 `--resume` 复用。
 
-**预计时间。** 依据 EXP-042 小批实测和暂定 10% valid 率，完整 5000 条的当前宽区间为连续
-运行约 8--14 天；乐观 5--7 天，低有效率分层可能使总时长达到 2--3 周。该估计不作为结果，
-`attempt_0000` 完成后必须用 42 个物体的实际每层吞吐和有效率重算。
+**2026-07-17 21:14，fail-fast 续验快照。** 20:56:10 为让运行中进程加载当前
+fail-fast 代码做了一次受控重启；之前已落盘 route 经 `--resume` 复核后全部复用。
+`042` 从已路由的 40 条继续并完整结束，随后 `045`--`072` 也在固定 batch 8 下直接
+完成，没有出现新 OOM、自动重试或参数切换。截至快照时：
+
+| 指标 | 快照值 |
+|---|---:|
+| raw | 6250 |
+| 已完整验证物体 | 37/42 |
+| 已路由 | 5550/6250 |
+| partial valid / failed | 624 / 4926 |
+| front f1--f5 valid | 45 / 67 / 84 / 70 / 72 |
+| back f1--f5 valid | 61 / 49 / 55 / 60 / 61 |
+| 剩余物体 | `075,078,081,084,087` |
+
+上表 partial valid 只用于运行诊断。`validation_summary.csv` 和 `complete.json` 写出并经
+全量审计前，它们不进入累计配额。当前不增加自动降批、attempt cap 或覆盖低通过率的
+回退逻辑；后续以实际失败证据决定是否修复根因。
+
+**2026-07-17 21:19，`attempt_0000` 完成。** 最后 5 个 mesh 直接完成，无新 OOM。
+`validation_summary.csv` 含 42 行，completion proof 审计为 6250 raw、642 valid、5608 failed，
+通过率 10.272%。valid 分层为：
+
+| side | f1 | f2 | f3 | f4 | f5 | 合计 |
+|---|---:|---:|---:|---:|---:|---:|
+| front | 45 | 67 | 86 | 72 | 74 | 344 |
+| back | 62 | 53 | 57 | 63 | 63 | 298 |
+
+可构成的互补 pair 数为 f1=32、f2=35、f3=41、f4=33；f5 单侧候选为
+front=74、back=63。general mesh 合计 345/4450 valid，其中 7 个物体
+`000,003,006,024,033,045,075` 本轮为 0 valid；这是真实负结果，未被回退逻辑隐藏。
+
+**2026-07-17 21:19，`attempt_0001` 自动启动。** collector 依上述真实缺口与通过率计算
+f1--f5 为 16081/14247/11955/12746/11728 raw，总 target 66757，seed 1009。本轮没有
+attempt cap；该大批量正是在“不加过多保护”条件下由低配对率直接暴露的计划结果。
+
+**2026-07-17 21:23，passed 样本 GUI 重放。** 从 completed attempt 抽取 general `030`、
+back f2（index + middle）的 `030_f2_back_000002.json`。对应 route 的
+`validation.status=passed`；viewer 用 raw sibling 重跑同一 v7，输出 `identity_passed=True`、
+最终物体位移 `0.000311381 m`、接触力 `11.5904 N`，并在 Isaac Sim 中冻结显示
+identity 结果，其余五个重力方向环境以 0.8 m 间距排列。
+
+**2026-07-17 22:04，脱离 Codex 的终端监控。** 新增只读
+`scripts/watch_x2_collection.py`，每 5 秒刷新 attempt 路由数、completion/manifest/audit、互补
+pair、service/进程、当前物体和 GPU。它不获取 collector lock、不写文件、不发信号；
+4 项临时目录单测通过，并对正在运行的 `attempt_0001` 执行 `--once` 真实快照复核。
+
+**2026-07-17 22:22，supervisor 自有子进程健康日志。** 已确认 supervisor 原先在自己启动
+collector 后阻塞于无超时 `child.wait()`，因此该路径不会写 `--health-log-seconds` 周期日志。
+现改为带超时的等待，只读取并记录已发布 raw/valid/failed；不发信号、不根据增长率重启、
+不改变退出码和恢复参数。supervisor 相关单测 7/7、终端仪表盘单测 4/4 通过，当前正式
+collector 未重启；补丁在 supervisor 下次自然启动时生效。
+
+**预计时间（2026-07-17 21:31 重算）。** `attempt_0000` 从 17:06 启动到最后 raw
+原子发布实耗 24.51 小时。`attempt_0001` 的 66757 raw 是首轮的 10.681 倍；同时
+420 个 object/side/finger group 均从 1 个优化 chunk 变为 3 个，总 chunk 数从 420 增到
+1260。按“每 chunk 耗时不增”的乐观边界，生成约 73.5 小时；按 raw 工作量近似线性
+的保守缩放，约 261.8 小时。固定 batch 8 的最近 2200 条 PhysX 实测吞吐为
+7656 条/小时，66757 条约需 8.7 小时，加启动/物体切换预留为 9--12 小时。
+
+因此 `attempt_0001` 的证据边界为约 **3.4--11.4 天**，当前用于运行安排的中心区间是
+**6--9 天**。若该轮同时补齐四类 pair、front/back f5 和 30-mesh 覆盖，再加最终
+物化/审计后，整个数据集可在同一时间窗内完成。若首轮 7 个零 valid mesh 在本轮仍有
+零值，或互补 pair 仍不足，collector 会直接开下一 attempt，总 ETA 将超过该区间。
 
 **证据。**
 
@@ -291,7 +358,7 @@ logical steps、2 substeps、seed 或候选内容；正式 collector、superviso
 - 守护日志：`data/x2_valid_5000/collector_supervisor.log`
 - 守护实现：`scripts/supervise_x2_valid_collection.py`
 - 最终独立审计：`scripts/audit_x2_valid_dataset.py`
-- 正式完成证明（尚未生成）：`data/x2_valid_5000/attempts/attempt_0000/complete.json`
+- 首轮完成证明：`data/x2_valid_5000/attempts/attempt_0000/complete.json`
 - 最终 manifest（尚未生成）：`data/x2_valid_5000/manifest.json`
 
 ## 方法与审计边界
@@ -316,9 +383,11 @@ logical steps、2 substeps、seed 或候选内容；正式 collector、superviso
 
 ## 下一步
 
-1. 持续监控 `attempt_0000`；生成结束后核对 6250 条 raw 和全部分层，再运行并审计 PhysX v7。
-2. 每个 completed attempt 后追加 raw/valid/failed、分层有效率、累计配对数和 30-mesh 覆盖。
-3. 达到配额后复核最终 manifest、5000 个 SHA-256、2000 个双侧 pair、1000 个单侧 f5 条目
+1. 持续生成 `attempt_0001` 的 66757 raw，记录首个原子提交耗时并校准 ETA。
+2. 保持当前 passed 样本的 Isaac Sim `validated-final` 窗口供人工查看；关闭窗口不影响采集。
+3. 每个 completed attempt 后追加 raw/valid/failed、分层有效率、累计配对数和 30-mesh 覆盖；
+   按真实缺口让 collector 创建下一 attempt。
+4. 达到配额后复核最终 manifest、5000 个 SHA-256、2000 个双侧 pair、1000 个单侧 f5 条目
    以及全部 attempt completion proofs。
 
 ## 待回答问题

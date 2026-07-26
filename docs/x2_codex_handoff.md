@@ -1,6 +1,6 @@
 # X2 5000-valid 采集的 Codex 账号交接
 
-最后更新：2026-07-16 22:50 CST
+最后更新：2026-07-17 22:04 CST
 
 ## 给新 Codex 会话的接手提示
 
@@ -32,8 +32,9 @@ goal 标记 complete。
 
 - 旧账号的 Codex 对话、active goal 状态、tool session ID 和对话内存不能假设会出现在新账号。
 - 当前 collector 的 Codex PTY session ID 是旧会话内部状态，新会话不要依赖该编号。
-- 当前 collector 若因旧 PTY 关闭而退出，已启用的用户级 supervisor 会在文件锁释放后按原参数
-  自动恢复；未到原子提交点的最多两个物体仍需重算。
+- 当前 collector 若因 PTY/会话关闭而退出，已启用的用户级 supervisor 会在文件锁释放后
+  按原参数自动恢复。生成阶段复用已提交 group；PhysX 阶段复用已审计的逐 JSON route，
+  只丢失尚未原子落盘的当前小批。
 
 ## 可以继续使用的本地事实
 
@@ -46,30 +47,37 @@ goal 标记 complete。
 
 ## 当前权威快照
 
-截至 2026-07-16 23:47 CST：
+截至 2026-07-17 21:23 CST：
 
 | 项目 | 状态 |
 |---|---|
 | 正式输出 | `data/x2_valid_5000` |
-| 当前 attempt | `attempt_0000` |
-| raw target | 6250；f1--f5 各 1250 |
+| 已完成 / 当前 attempt | `attempt_0000` / `attempt_0001` |
+| `attempt_0001` raw target | 66757；f1--f5 = 16081/14247/11955/12746/11728；无 cap |
 | catalog | 12 primitive + 30 general mesh，共 42 个物体 |
 | catalog 文件审计 | 42/42 路径、scale、SHA 匹配；30 个通用 ID 唯一 |
-| generator | v6，6000 iterations，2 CUDA workers |
-| validator | PhysX v7，六方向，100 logical steps，2 substeps |
-| 已完成生成对象 | 12 个 primitive + 通用 mesh `000`、`003` |
-| 正在计算 | 通用 mesh `006`、`009` |
-| 已发布 raw/valid/failed | 2100 / 0 / 0 |
-| 分层 | front/back × f1--f5 每格 210 |
-| raw 静态审计 | 最近完整审计的 primitive 子集：1800 finite/self-collision；1775 dense feasible，25 明确静态失败；新增通用 raw 待全量阶段审计 |
-| 互补 | 已生成 840 pair；primitive 子集 720 pair 中 696 对双方 dense feasible；仍待 PhysX |
+| generator | v6，6000 iterations；正在生成 `attempt_0001` |
+| validator | PhysX v7，六方向，100 logical steps，2 substeps，固定 batch 8 |
+| 首轮完成结果 | 6250 raw = 642 valid + 5608 failed；42/42 物体；10.27% |
+| 首轮 valid 分层 | front f1--f5 = 45/67/86/72/74；back = 62/53/57/63/63 |
+| 首轮 pair / f5 | f1--f4 pair = 32/35/41/33；f5 front/back = 74/63 |
+| 正在计算 | `attempt_0001`；seed 1009；首批 sphere 生成 worker |
+| 故障策略 | 结构化 CUDA OOM 直接 fail-fast；不自动降 batch，不设 attempt raw cap |
+| 当前 ETA | `attempt_0001` 证据边界 3.4--11.4 天，运行中心区间 6--9 天；若需新 attempt 则延长 |
 | 后台守护 | `x2-valid-collector-supervisor.service` active + enabled |
 | 最终审计 | 守护器会自动运行；仅 `final_audit.json passed=true` 且绑定 manifest SHA 后退出 |
-| `complete.json` | 尚未生成 |
+| `complete.json` | `attempt_0000/complete.json passed=true` |
 | `manifest.json` | 尚未生成 |
-| 正式完成度 | 0/5000；不能用运行时间代替已验证记录 |
+| 已审计候选池 / 最终完成 | 642 valid / 0 of 5000；尚无 manifest |
 
 这个快照会过时。新会话必须运行下面的只读检查，以文件和进程的最新状态为准。
+用户也可在仓库根目录长期运行不依赖 Codex 的只读仪表盘：
+
+```bash
+python3 scripts/watch_x2_collection.py
+```
+
+`Ctrl+C` 只退出仪表盘，不影响 collector 或 supervisor。
 
 ## 新账号接手后的第一组检查
 
@@ -130,6 +138,10 @@ conda run -n isaaclab --no-capture-output \
 不要修改 `attempt.json`，不要使用 `--overwrite`，不要删 `.collector.lock`、`.staging`、raw、
 valid 或 failed。若命令报告 metadata/protocol/hash 不匹配，先保存错误并查明协议漂移，不能改
 JSON 绕过。
+
+正式参数固定 `--validation-batch-size 8`。wrapper 不会自动改成 4/2/1；出现结构化
+`physx_batch_error`/CUDA OOM 时会硬失败并保留已原子路由的记录。collector 也没有 attempt raw cap，
+下一 attempt 将用完成证明中的真实分层通过率计算补采量。
 
 ## 完成标准
 

@@ -2,12 +2,15 @@ from __future__ import annotations
 
 import fcntl
 import json
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import Mock, patch
 
 from scripts.supervise_x2_valid_collection import (
     PROJECT_ROOT,
+    _wait_for_collector_child,
     audit_report_proves_complete,
     collector_lock_is_held,
     formal_audit_command,
@@ -18,6 +21,81 @@ from scripts.supervise_x2_valid_collection import (
 
 
 class X2CollectionSupervisorTest(unittest.TestCase):
+    def test_owned_child_wait_logs_route_counts_at_health_interval(self) -> None:
+        child = Mock()
+        child.pid = 1234
+        child.wait.side_effect = [
+            subprocess.TimeoutExpired("collector", 5.0),
+            subprocess.TimeoutExpired("collector", 5.0),
+            0,
+        ]
+
+        with (
+            patch(
+                "scripts.supervise_x2_valid_collection.time.monotonic",
+                side_effect=[10.0, 20.0],
+            ),
+            patch(
+                "scripts.supervise_x2_valid_collection.route_counts",
+                side_effect=[(11, 2, 9), (23, 4, 19)],
+            ) as mocked_counts,
+            patch("scripts.supervise_x2_valid_collection._log") as mocked_log,
+        ):
+            return_code, last_health_log = _wait_for_collector_child(
+                child,
+                output_root=Path("/tmp/output"),
+                supervisor_log=Mock(),
+                poll_seconds=5.0,
+                health_log_seconds=10.0,
+                last_health_log=0.0,
+            )
+
+        self.assertEqual((return_code, last_health_log), (0, 20.0))
+        self.assertEqual(child.wait.call_count, 3)
+        for call in child.wait.call_args_list:
+            self.assertEqual(call.kwargs, {"timeout": 5.0})
+        self.assertEqual(mocked_counts.call_count, 2)
+        messages = [call.args[1] for call in mocked_log.call_args_list]
+        self.assertIn(
+            "collector child running pid=1234; published raw/valid/failed=11/2/9",
+            messages,
+        )
+        self.assertIn(
+            "collector child running pid=1234; published raw/valid/failed=23/4/19",
+            messages,
+        )
+        child.terminate.assert_not_called()
+        child.kill.assert_not_called()
+        child.send_signal.assert_not_called()
+
+    def test_owned_child_wait_preserves_immediate_exit_without_intervention(
+        self,
+    ) -> None:
+        child = Mock()
+        child.pid = 5678
+        child.wait.return_value = 23
+
+        with (
+            patch("scripts.supervise_x2_valid_collection.route_counts") as counts,
+            patch("scripts.supervise_x2_valid_collection._log") as mocked_log,
+        ):
+            return_code, last_health_log = _wait_for_collector_child(
+                child,
+                output_root=Path("/tmp/output"),
+                supervisor_log=Mock(),
+                poll_seconds=15.0,
+                health_log_seconds=300.0,
+                last_health_log=42.0,
+            )
+
+        self.assertEqual((return_code, last_health_log), (23, 42.0))
+        child.wait.assert_called_once_with(timeout=15.0)
+        counts.assert_not_called()
+        mocked_log.assert_not_called()
+        child.terminate.assert_not_called()
+        child.kill.assert_not_called()
+        child.send_signal.assert_not_called()
+
     def test_lock_probe_distinguishes_free_and_held_lock(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             lock_path = Path(temporary) / ".collector.lock"

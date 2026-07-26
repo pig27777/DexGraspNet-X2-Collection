@@ -127,6 +127,34 @@ def route_counts(output_root: Path) -> tuple[int, int, int]:
     return counts["raw"], counts["valid"], counts["failed"]
 
 
+def _wait_for_collector_child(
+    child: subprocess.Popen[Any],
+    *,
+    output_root: Path,
+    supervisor_log: TextIO,
+    poll_seconds: float,
+    health_log_seconds: float,
+    last_health_log: float,
+) -> tuple[int, float]:
+    """Wait for an owned collector while emitting read-only health records."""
+
+    timeout = min(poll_seconds, health_log_seconds)
+    while True:
+        try:
+            return child.wait(timeout=timeout), last_health_log
+        except subprocess.TimeoutExpired:
+            now = time.monotonic()
+            if now - last_health_log < health_log_seconds:
+                continue
+            raw, valid, failed = route_counts(output_root)
+            _log(
+                supervisor_log,
+                f"collector child running pid={child.pid}; "
+                f"published raw/valid/failed={raw}/{valid}/{failed}",
+            )
+            last_health_log = now
+
+
 def formal_collector_command(
     *, conda_executable: Path, output_root: Path
 ) -> list[str]:
@@ -303,7 +331,14 @@ def run(args: argparse.Namespace) -> int:
                     start_new_session=True,
                 )
                 _log(supervisor_log, f"collector child started pid={child.pid}")
-                return_code = child.wait()
+                return_code, last_health_log = _wait_for_collector_child(
+                    child,
+                    output_root=output_root,
+                    supervisor_log=supervisor_log,
+                    poll_seconds=args.poll_seconds,
+                    health_log_seconds=args.health_log_seconds,
+                    last_health_log=last_health_log,
+                )
             elapsed = time.monotonic() - started
             _log(
                 supervisor_log,
