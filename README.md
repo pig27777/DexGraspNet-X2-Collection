@@ -22,7 +22,7 @@ This project extends DexGraspNet with X2-specific grasp generation, including fr
 
 ## Demo
 
-(Add grasping videos here)
+<video src="demo/grasp_demo.mp4" controls muted playsinline width="640"></video>
 
 ## Documentation
 
