@@ -87,7 +87,7 @@ cd /absolute/path/to/DexGraspNet-X2-Collection
 systemctl --user status x2-valid-collector-supervisor.service --no-pager
 tail -n 30 data/x2_valid_5000/collector_supervisor.log
 
-pgrep -af 'collect_x2_valid_dataset.py|generate_x2_primitive_dataset.py|generate_x2_mesh_grasps_stratified.py|validate_x2_primitive_dataset.py|validate_x2_mesh_grasps_physx.py'
+pgrep -af 'collect_x2_valid_dataset.py|generate_x2_primitive_dataset.py|generate_x2_mesh_grasps_stratified.py'
 
 nvidia-smi
 
@@ -158,14 +158,8 @@ JSON 绕过。
 
 最后还必须运行：
 
-```bash
-set -o pipefail
-conda run -n isaaclab --no-capture-output \
-  python scripts/audit_x2_valid_dataset.py \
-  --output-root data/x2_valid_5000 \
-  --general-mesh-root data/meshdata \
-  | tee data/x2_valid_5000/final_audit.json
-```
+最终审计器实现不随公开仓库分发；其输出契约不变（退出码 0 且 `final_audit.json` 为
+`passed=true`）。
 
 只有命令退出码为 0 且 `final_audit.json` 为 `passed=true`，才可把 goal 标记 complete。
 

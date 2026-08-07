@@ -264,7 +264,7 @@ collector/supervisor/final-audit 的 15 项 unittest 全部通过，6 张图片�
 `data/x2_valid_5000/collector_supervisor.log`；对应 4 项独立测试通过。该守护不改变正式协议，
 也不把 partial raw 计作 valid。
 
-**最终审计预案。** 新增只读 `scripts/audit_x2_valid_dataset.py`，用于 manifest 出现后重新验证
+**最终审计预案。** 新增只读最终审计（实现已从公开仓库移除），用于 manifest 出现后重新验证
 5000 个 SHA-256/source hard link、每条 v6/v7 证据、全部 completion proofs、front/back × f1--f5
 配额、2000 个互补 pair、1000 个 f5 记录和 30 个通用 mesh。collector 与最终审计相关测试
 10/10 通过；对当前未完成目录执行时按预期以退出码 1 拒绝，并报告 manifest 缺失。该审计已
@@ -356,8 +356,8 @@ collector 未重启；补丁在 supervisor 下次自然启动时生效。
 
 - attempt metadata：`data/x2_valid_5000/attempts/attempt_0000/attempt.json`
 - 守护日志：`data/x2_valid_5000/collector_supervisor.log`
-- 守护实现：`scripts/supervise_x2_valid_collection.py`
-- 最终独立审计：`scripts/audit_x2_valid_dataset.py`
+- 守护实现：不随公开仓库分发
+- 最终独立审计：不随公开仓库分发
 - 首轮完成证明：`data/x2_valid_5000/attempts/attempt_0000/complete.json`
 - 最终 manifest（尚未生成）：`data/x2_valid_5000/manifest.json`
 

@@ -45,7 +45,7 @@ side/finger_count 表格。
 
 ## 跨会话后台守护
 
-守护器代码为 `scripts/supervise_x2_valid_collection.py`，持久用户单元为
+守护器实现不随公开仓库分发；持久用户单元为
 `systemd/x2-valid-collector-supervisor.service`。该单元已链接并启用，Codex 账号或终端切换不会
 依赖旧对话的 PTY；若操作系统重启，它会在该 Linux 用户下次登录时恢复采集。
 
@@ -56,7 +56,7 @@ tail -f data/x2_valid_5000/collector_supervisor.log
 
 守护器每 15 秒探测 `.collector.lock`，每 5 分钟把已发布 raw/valid/failed 写入持久日志。它只在
 锁空闲且 manifest 没有严格证明 5000 条配额时恢复；manifest 的 headline 配额满足后会自动
-运行 `audit_x2_valid_dataset.py`。只有全量审计报告与当前 manifest SHA-256 绑定且通过，服务才
+运行最终独立审计（实现不随公开仓库分发）。只有全量审计报告与当前 manifest SHA-256 绑定且通过，服务才
 发布 `final_audit.json` 并退出；失败报告保存为 `final_audit_failed.json`，不能提前结束 goal。
 
 ### 独立终端仪表盘
@@ -91,7 +91,7 @@ python3 scripts/watch_x2_collection.py --interval 10 --no-clear
 ```bash
 touch data/x2_valid_5000/.stop_supervisor
 systemctl --user stop x2-valid-collector-supervisor.service
-pgrep -af 'collect_x2_valid_dataset.py|generate_x2_mesh_grasps_stratified.py|validate_x2_mesh_grasps_physx.py'
+pgrep -af 'collect_x2_valid_dataset.py|generate_x2_mesh_grasps_stratified.py'
 ```
 
 若 `pgrep` 仍显示顶层 collector，再对其 PID 发送一次 `SIGINT` 并等待全部 child 退出。
@@ -126,7 +126,7 @@ systemctl --user start x2-valid-collector-supervisor.service
 ```bash
 cd /absolute/path/to/DexGraspNet-X2-Collection
 
-pgrep -af 'collect_x2_valid_dataset.py|generate_x2_primitive_dataset.py|generate_x2_mesh_grasps_stratified.py|validate_x2_primitive_dataset.py|validate_x2_mesh_grasps_physx.py'
+pgrep -af 'collect_x2_valid_dataset.py|generate_x2_primitive_dataset.py|generate_x2_mesh_grasps_stratified.py'
 
 systemctl --user status x2-valid-collector-supervisor.service --no-pager
 nvidia-smi
@@ -235,14 +235,8 @@ find data/x2_valid_5000/attempts -name complete.json -type f -print0 | \
 
 manifest 出现后必须运行独立只读审计器；退出码为 0 且报告 `passed=true` 才能结束 goal：
 
-```bash
-set -o pipefail
-conda run -n isaaclab --no-capture-output \
-  python scripts/audit_x2_valid_dataset.py \
-  --output-root data/x2_valid_5000 \
-  --general-mesh-root data/meshdata \
-  | tee data/x2_valid_5000/final_audit.json
-```
+最终审计器实现不随公开仓库分发；其输出契约保持不变：退出码为 0 且报告 `passed=true`
+才发布 `final_audit.json`。
 
 该审计器不信任 manifest 的 headline：它重新哈希全部 5000 个 final 文件、验证 hard link 与
 source、一一重跑 v6/v7 JSON 契约检查、重算 attempt completion proofs、连续分层索引、2000 个
@@ -320,7 +314,7 @@ attempt 数据仍可复用。
 | 2026-07-16 17:24 | 恢复机制测试 | 0000 | 0/0/0 | 正式进程未中断；临时目录单测 | 6/6 通过 | 见“恢复机制验证” |
 | 2026-07-16 18:01 | 账号交接预案 | 0000 | 0/0/0 | 正式进程未中断；两个 worker 正常 | 新增新账号接手提示 | `x2_codex_handoff.md` |
 | 2026-07-16 18:08 | 首批原子提交与守护 | 0000 | 300/0/0 | sphere_r020/r030 完成；下一批生成 | 300 条审计 0 error；启用 systemd user supervisor | `collector_supervisor.log` |
-| 2026-07-16 18:23 | 自动最终审计回归 | 0000 | 300/0/0 | 生成继续；manifest 尚不存在 | 15/15 collector+audit+supervisor tests；服务已热重载 | `audit_x2_valid_dataset.py` |
+| 2026-07-16 18:23 | 自动最终审计回归 | 0000 | 300/0/0 | 生成继续；manifest 尚不存在 | 15/15 collector+audit+supervisor 测试；服务已热重载 | 最终审计（不公开） |
 | 2026-07-16 18:24 | 正式 catalog 独立复核 | 0000 | 300/0/0 | 12 primitive + 30 general | 42 个 mesh 文件/scale/SHA 全匹配；30 个 ID 唯一 | `attempt_0000/attempt.json` |
 | 2026-07-16 22:50 | 12 primitive 完成 | 0000 | 1800/0/0 | 开始 general 000/003 | 每侧 f1--f5 各 180；1775 dense feasible、25 将静态失败 | raw 全量复核 |
 | 2026-07-17 20:40 | PhysX OOM 根因确认 | 0000 | 6250/308/2242 | general `012` 完成 | batch 32/16 均 OOM；实测 batch 8 完成剩余 134 条 | `collector_console.log` + `validation_summaries/012.json` |
@@ -331,8 +325,8 @@ attempt 数据仍可复用。
 | 2026-07-17 21:23 | passed 样本 GUI 重放 | 0000 | 6250/642/5608 | general 030 / back f2 | identity passed；0.311 mm 位移；11.59 N 接触力 | Isaac Sim viewer stdout |
 | 2026-07-17 21:31 | ETA 重算 | 0001 | target 66757 raw | 首批 sphere worker 运行 | 生成 73.5--261.8 h；PhysX 9--12 h；中心区间 6--9 天 | 首轮 24.51 h + batch-8 7656 raw/h |
 | 2026-07-17 21:58 | 30 分钟长批健康检查 | 0001 | 0/0/0 | sphere_r020/r030 仍在内存优化 | 两 worker 持续 100% CPU、GPU 75--87%、无 OOM/退出；不重启 | 进程/GPU/文件快照 |
-| 2026-07-17 22:04 | 独立终端仪表盘 | 0001 | 6250/642/5608 completed pool | 首批 sphere worker 继续 | 4 项单测通过；真实 `--once` 快照复核通过 | `scripts/watch_x2_collection.py` |
-| 2026-07-17 22:22 | supervisor 健康日志修复 | 0001 | 0/0/0（本轮） | sphere_r020/r030 继续满载生成 | 自有 child 改为只读周期日志；11 项相关测试通过；不重启当前任务 | `supervise_x2_valid_collection.py` |
+| 2026-07-17 22:04 | 独立终端仪表盘 | 0001 | 6250/642/5608 completed pool | 首批 sphere worker 继续 | 4 项相关测试通过；真实 `--once` 快照复核通过 | `scripts/watch_x2_collection.py` |
+| 2026-07-17 22:22 | supervisor 健康日志修复 | 0001 | 0/0/0（本轮） | sphere_r020/r030 继续满载生成 | 自有 child 改为只读周期日志；11 项相关测试通过；不重启当前任务 | supervisor 日志（实现不公开） |
 
 追加示例：
 
@@ -344,9 +338,7 @@ attempt 数据仍可复用。
 
 - collector：[collect_x2_valid_dataset.py](../scripts/collect_x2_valid_dataset.py)
 - 分层生成与 group resume：[generate_x2_primitive_dataset.py](../scripts/generate_x2_primitive_dataset.py)
-- PhysX wrapper resume：[validate_x2_primitive_dataset.py](../scripts/validate_x2_primitive_dataset.py)
-- 单物体 v7 原子路由：[validate_x2_mesh_grasps_physx.py](../scripts/validate_x2_mesh_grasps_physx.py)
-- 最终独立全量审计：[audit_x2_valid_dataset.py](../scripts/audit_x2_valid_dataset.py)
+- PhysX wrapper resume / 单物体 v7 原子路由 / 最终独立全量审计：实现不随公开仓库分发
 - 当前 attempt metadata：
   [`attempt_0000/attempt.json`](../data/x2_valid_5000/attempts/attempt_0000/attempt.json)
 - 更换 Codex 账号或新会话的接手提示：[Codex 账号交接](x2_codex_handoff.md)
@@ -366,17 +358,7 @@ attempt 数据仍可复用。
 - PhysX wrapper 恢复时发布全量 scanned valid/failed 计数；
 - 旧协议 route 被识别、删除并按当前 v7 重新验证。
 
-执行命令：
-
-```bash
-conda run -n isaaclab --no-capture-output python -m unittest -v \
-  tests.test_x2_valid_collector.X2ValidCollectorTest.test_incomplete_attempt_is_resumed_before_new_work \
-  tests.test_x2_primitive_dataset.X2PrimitiveDatasetTest.test_stratified_resume_batches_per_object_and_repairs_one_group \
-  tests.test_x2_primitive_dataset.X2PrimitiveDatasetTest.test_resume_reuses_complete_groups_and_repairs_only_damaged_groups \
-  tests.test_x2_primitive_dataset.X2PrimitiveDatasetTest.test_resume_failure_checkpoints_success_and_cancels_unstarted_futures \
-  tests.test_x2_isaac_validation.X2IsaacValidationTests.test_primitive_wrapper_resume_publishes_full_scanned_counts \
-  tests.test_x2_isaac_validation.X2IsaacValidationTests.test_primitive_wrapper_resume_revalidates_stale_v5_route
-```
+对应单元测试未随公开仓库分发，2026-07-16 在独立临时目录执行结果为 6/6 通过。
 
 这组测试证明代码级 resume 契约，但不假装等同于真实断电演练；真实演练会等至少一个正式物体
 完成提交后再决定，避免无收益地丢弃当前两个内存 batch。

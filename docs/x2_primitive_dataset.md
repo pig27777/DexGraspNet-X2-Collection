@@ -334,19 +334,8 @@ finite，但 4 个接触距离之和 `E_dis` 的 mean/median/min 分别为
 penetration 不能替代 Isaac Sim/PhysX 抓取有效性验证。
 
 数据采集完成后使用独立 X2 validator；生成期间不与单卡 GPU 争用。完整协议见
-[`x2_physx_grasp_validation.md`](x2_physx_grasp_validation.md)，primitive 批量入口为：
-
-```bash
-conda run -n isaaclab --no-capture-output \
-  python scripts/validate_x2_primitive_dataset.py \
-  --input-root data/x2_primitive_grasps \
-  --shapes sphere cylinder cuboid cube \
-  --side both \
-  --batch-size 8 \
-  --sim-steps 100 \
-  --device cuda:0 \
-  --resume
-```
+[`x2_physx_grasp_validation.md`](x2_physx_grasp_validation.md)；验证器实现不随公开仓库分发，
+primitive 批量入口为闭源 wrapper（命令格式与协议文档一致）。
 
 当前正式采集状态、参数标定、正负实验结果与证据路径持续记录在
 [X2 抓取数据采集实验日志](x2_experiment_log.md)；中断、断电、验证失败后的同参数续采步骤见

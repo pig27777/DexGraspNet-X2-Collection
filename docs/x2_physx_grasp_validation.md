@@ -4,11 +4,7 @@
 
 X2 使用独立 validator：
 
-```text
-grasp_generation/x2_isaac_validation.py
-scripts/validate_x2_mesh_grasps_physx.py
-scripts/validate_x2_primitive_dataset.py
-```
+验证器实现代码不随公开仓库分发；本文件保留完整协议、判据与审计要求，供复现与验收核对。
 
 它不修改、导入或调用官方 DexGraspNet 的 ShadowHand Isaac Gym validator。官方入口只接受
 ShadowHand 22-DOF `.npy`，不能用于 X2 schema-1 JSON。
@@ -165,34 +161,9 @@ X2 articulation 拓扑、12 个 active actuator 的 ownership、四组 Newton fo
 和接触法向审计已经内置在 PhysX validator 中。任何审计失败都会直接非零退出，且不会把候选误写为
 `failed`，无需额外运行独立 articulation probe。
 
-单个 mesh 的 schema 与路由 dry-run（不启动 Isaac Sim）：
-
-```bash
-conda run -n isaaclab --no-capture-output \
-  python scripts/validate_x2_mesh_grasps_physx.py \
-  --input-root data/x2_primitive_grasps \
-  --mesh-path data/meshdata/x2_primitives/sphere/sphere_r020.obj \
-  --side both \
-  --dry-run \
-  --device cuda:0
-```
-
-单个 mesh 的物理验证：
-
-```bash
-conda run -n isaaclab --no-capture-output \
-  python scripts/validate_x2_mesh_grasps_physx.py \
-  --input-root data/x2_primitive_grasps \
-  --mesh-path data/meshdata/x2_primitives/sphere/sphere_r020.obj \
-  --side both \
-  --batch-size 8 \
-  --sim-steps 100 \
-  --criterion dexgraspnet-contact \
-  --collision-approximation convex-hull \
-  --device cuda:0 \
-  --viz none \
-  --resume
-```
+验证器入口（`scripts/validate_x2_mesh_grasps_physx.py`、`scripts/validate_x2_primitive_dataset.py`、
+`grasp_generation/x2_isaac_validation.py`）已从公开仓库移除，正式验证在本机闭源执行；本节只保留
+仍随仓库分发的交互查看命令。
 
 交互查看一条已通过候选时，使用同一套 v7 drive、TGS 和六方向验证代码；命令先完成六方向
 重放，再把 identity 环境的最终状态冻结在 Isaac Sim 窗口中，关闭窗口即退出：
@@ -207,38 +178,8 @@ conda run -n isaaclab --no-capture-output \
   --device cuda:0 --viz kit --max_visible_envs 6
 ```
 
-完整 primitive 数据集在采集结束后顺序验证：
-
-```bash
-conda run -n isaaclab --no-capture-output \
-  python scripts/validate_x2_primitive_dataset.py \
-  --input-root data/x2_primitive_grasps \
-  --shapes sphere cylinder cuboid cube \
-  --side both \
-  --batch-size 8 \
-  --sim-steps 100 \
-  --criterion dexgraspnet-contact \
-  --device cuda:0 \
-  --resume
-```
-
-正式 attempt 同时验证 12 个 primitive 和 30 个通用 mesh；闭环 collector 会自动构造等价于
-下面的 wrapper 调用：
-
-```bash
-conda run -n isaaclab --no-capture-output \
-  python scripts/validate_x2_primitive_dataset.py \
-  --input-root data/x2_valid_5000/attempts/attempt_0000 \
-  --shapes sphere cylinder cuboid cube \
-  --include-general-meshes \
-  --general-mesh-root data/meshdata \
-  --side both \
-  --batch-size 8 \
-  --sim-steps 100 \
-  --criterion dexgraspnet-contact \
-  --device cuda:0 \
-  --resume
-```
+完整 primitive 数据集验证与正式 attempt 验证（12 primitive + 30 通用 mesh）由同一闭源
+wrapper 执行，命令格式与公开版本一致；闭环 collector 会自动构造等价调用。
 
 `--resume` 跳过已经存在 valid/failed 副本的 raw；`--overwrite` 重新验证并保证同一文件不会同时
 残留在 valid 和 failed。两者互斥。collector 重启时会先恢复未完成 attempt；已有路由仍需通过

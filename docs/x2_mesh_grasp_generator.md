@@ -77,7 +77,6 @@ metadata 和 CLI 都在独立文件中实现。
 | `scripts/generate_x2_mesh_grasps_stratified.py` | 同物体多 side/finger row-policy 常驻批处理 |
 | `scripts/generate_x2_primitive_dataset.py` | 12 primitive + manifest 通用 mesh 的分层调度与 resume |
 | `scripts/collect_x2_valid_dataset.py` | completed-attempt 闭环、PhysX 补采和严格 5000-valid 物化 |
-| `scripts/diagnose_x2_self_collision.py` | 对单条 raw JSON 输出 capsule/hull 自碰撞逐 pair 审计 |
 | `grasp_generation/utils/x2_config.py` | 严格加载和校验 X2 mesh YAML |
 | `grasp_generation/utils/actuator_hand_model.py` | USD 校验、12→16 映射、FK、collision samples、自碰撞 proxy |
 | `grasp_generation/utils/x2_hand_model.py` | 21-D batch pose、contact FK、世界坐标碰撞和 hand distance |
@@ -85,7 +84,6 @@ metadata 和 CLI 都在独立文件中实现。
 | `grasp_generation/utils/mesh_object_model.py` | watertight mesh 加载、三角面 query 和物体表面采样 |
 | `grasp_generation/x2_mesh_generator.py` | convex-hull 初始化、能量、退火优化和记录序列化 |
 | `data/contact_points/contact_points_x2_mesh.json` | 运行时读取的持久化候选池 |
-| `tests/test_x2_mesh_generator.py` | 双掌面、contact、能量、CLI 和 builder 回归测试 |
 
 ## 4. 总调用链
 
@@ -582,14 +580,7 @@ PhysX validator 会把 `self_collision.feasible` 加入最终 success gate；它
 `simulation_success` 的纯物理语义。v4 raw 保持 loader 兼容，但不具备 v5/v6 dense 审计字段，
 不能作为新的正式采集结果。这两种 sampled diagnostic 都不是连续几何证书。
 
-可用只读 CLI 复核任意 raw（只向 stdout 输出，不修改输入）：
-
-```bash
-conda run -n isaaclab --no-capture-output \
-  python scripts/diagnose_x2_self_collision.py \
-  data/x2_formal_grasps_6000/sphere_r020_seed1/front_single/raw/\
-sphere_r020_front_000031.json
-```
+自碰撞诊断 CLI 不随公开仓库分发；其输出契约不变：只向 stdout 输出、不修改输入。
 
 报告包含逐 pair capsule signed separation/overlap、capsule 加权贡献、双向 hull sum/max、pair
 override 后及全局 hull weight 后的能量贡献，以及每个 link 的 visual/collision local bounds 和
@@ -802,14 +793,9 @@ front 7/8（最大 12.9060 mm）和 back 5/8（最大 5.19479 mm）。完整单�
 任何 cylinder PNG 都必须从同目录 raw 重新渲染，并在相邻 manifest/说明中记录对应 raw JSON
 的 SHA-256；图片文件名或“best”标签不能替代内容哈希关联。
 
-```bash
-conda run -n isaaclab --no-capture-output \
-  python scripts/render_x2_cylinder_smoke.py \
-  --input-root data/x2_mesh_grasps/cylinder_smoke_seed0
-```
-
-该命令使用 optimizer/PhysX 共用的低顶点 collision hull，重建四张 smoke PNG，并将完整 raw
-SHA-256 同时写入图片标题、PNG metadata 和 `visualizations/manifest.json`；它不运行 PhysX。
+该渲染命令不随公开仓库分发；其契约不变：使用 optimizer/PhysX 共用的低顶点 collision hull
+重建四张 smoke PNG，并将完整 raw SHA-256 同时写入图片标题、PNG metadata 和
+`visualizations/manifest.json`；它不运行 PhysX。
 
 ## 19. Primitive 与正式 30-mesh 数据集
 
