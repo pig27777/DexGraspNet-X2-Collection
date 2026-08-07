@@ -52,7 +52,7 @@ Representative X2 grasp configurations before PhysX validation (raw optimizer po
 
 ## Repository contents
 
-The public repository contains source code, tests, configuration, operational documentation, and sanitized sample visualizations. Raw/valid/failed records, simulator caches, checkpoints, the general-object meshes, and X2 USD/geometry assets are intentionally excluded. To run the pipeline, provide the locally licensed X2 asset at `x2_mujoco/x2_keypoints.usda` (including its payloads) and the general meshes under `data/meshdata/<object_id>/coacd/decomposed.obj`. Generated raw optimizer poses are not valid data until they pass the documented six-direction PhysX protocol.
+The public repository contains source code, configuration, operational documentation, and sanitized sample visualizations. Raw/valid/failed records, simulator caches, checkpoints, the general-object meshes, and X2 USD/geometry assets are intentionally excluded. To run the pipeline, provide the locally licensed X2 asset at `x2_mujoco/x2_keypoints.usda` (including its payloads) and the general meshes under `data/meshdata/<object_id>/coacd/decomposed.obj`. Generated raw optimizer poses are not valid data until they pass the documented six-direction PhysX protocol.
 
 ## Attribution
 
