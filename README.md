@@ -36,7 +36,11 @@ Representative X2 grasp configurations before PhysX validation (raw optimizer po
 
 ## Demo
 
-<video src="demo/grasp_demo.mp4" controls muted playsinline width="640"></video>
+<video controls muted playsinline width="640">
+  <source src="https://github.com/pig27777/DexGraspNet-X2-Collection/raw/main/demo/grasp_demo.mp4" type="video/mp4">
+</video>
+
+[Download demo video](demo/grasp_demo.mp4)
 
 ## Documentation
 
