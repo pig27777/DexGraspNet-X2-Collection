@@ -20,6 +20,20 @@ This project extends DexGraspNet with X2-specific grasp generation, including fr
 - **Simulation validation.** Isaac Sim / PhysX v7 protocol that accepts a grasp only after it passes six-direction physical checks.
 - **Dataset curation.** The formal collector targets exactly 5,000 audited valid records across 12 deterministic primitives and 30 selected general meshes, with balanced front/back and finger-count quotas.
 
+## Grasp samples
+
+Representative X2 grasp configurations before PhysX validation (raw optimizer poses):
+
+<img src="data/x2_valid_5000/sample_visualizations_20260716/grasp_samples_overview.png" alt="X2 1-5 finger grasp overview" width="820"/>
+
+| 1 finger · front · cylinder | 2 fingers · back · sphere | 3 fingers · front · cylinder |
+|---|---|---|
+| <img src="data/x2_valid_5000/sample_visualizations_20260716/sample_f1_front_cylinder_r018_h100.png" width="280"/> | <img src="data/x2_valid_5000/sample_visualizations_20260716/sample_f2_back_sphere_r020.png" width="280"/> | <img src="data/x2_valid_5000/sample_visualizations_20260716/sample_f3_front_cylinder_r025_h100.png" width="280"/> |
+
+| 4 fingers · back · mesh 003 | 5 fingers · front · sphere |
+|---|---|
+| <img src="data/x2_valid_5000/sample_visualizations_20260716/sample_f4_back_003.png" width="280"/> | <img src="data/x2_valid_5000/sample_visualizations_20260716/sample_f5_front_sphere_r040.png" width="280"/> |
+
 ## Demo
 
 <video src="demo/grasp_demo.mp4" controls muted playsinline width="640"></video>
