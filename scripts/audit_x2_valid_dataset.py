@@ -30,6 +30,7 @@ from scripts.collect_x2_valid_dataset import (  # noqa: E402
     FORMAL_PER_SIDE_FINGER_TARGET,
     FORMAL_TARGET_VALID,
     GENERATOR_PIPELINE_REVISION,
+    PAIRING_PROTOCOL_REVISION,
     REQUIRED_SIM_STEPS,
     SIDES,
     STRATIFIED_BATCH_SIZE,
@@ -41,6 +42,7 @@ from scripts.collect_x2_valid_dataset import (  # noqa: E402
     _file_sha256,
     _formal_general_mesh_catalog,
     _general_mesh_catalog,
+    _paired_sample_payload,
     _strict_json,
     _valid_candidate,
     _verify_selection_manifest,
@@ -95,6 +97,12 @@ def _audit_manifest_header(manifest: Mapping[str, Any]) -> None:
     _require(
         manifest.get("paired_entry_count") == FORMAL_PER_SIDE_FINGER_TARGET * 4,
         "manifest paired entry count is not 2000",
+    )
+    _require(
+        manifest.get("pairing_protocol_revision") == PAIRING_PROTOCOL_REVISION
+        and manifest.get("paired_sample_count")
+        == FORMAL_PER_SIDE_FINGER_TARGET * 4,
+        "manifest cross-object pairing protocol/count is stale",
     )
     _require(
         manifest.get("single_side_five_finger_entry_count")
@@ -225,10 +233,6 @@ def _audit_pairing(
             f"pair {pair_id} finger counts are not complementary",
         )
         _require(
-            front.get("object_id") == back.get("object_id"),
-            f"pair {pair_id} uses different objects",
-        )
-        _require(
             _record_finger_names(front, label=pair_id).isdisjoint(
                 _record_finger_names(back, label=pair_id)
             ),
@@ -276,8 +280,11 @@ def _audit_pairing(
         front = next(value for value in values if value.get("side") == "front")
         back = next(value for value in values if value.get("side") == "back")
         entry = pair_entries[pair_id]
+        expected_same_object = front.get("object_id") == back.get("object_id")
         _require(
-            entry.get("object_id") == front.get("object_id")
+            entry.get("front_object_id") == front.get("object_id")
+            and entry.get("back_object_id") == back.get("object_id")
+            and entry.get("same_object") is expected_same_object
             and entry.get("front_finger_count") == front.get("finger_count")
             and entry.get("back_finger_count") == back.get("finger_count")
             and entry.get("front_finger_names")
@@ -300,6 +307,103 @@ def _audit_pairing(
         "paired_entry_count": len(by_pair),
         "single_side_five_finger_entry_count": len(five_records),
     }
+
+
+def _audit_paired_samples(
+    *,
+    records: Sequence[Mapping[str, Any]],
+    merged_entries: Any,
+    paired_samples: Any,
+    final_pairs_root: Path,
+) -> int:
+    by_pair: dict[str, list[Mapping[str, Any]]] = defaultdict(list)
+    for record in records:
+        pair_id = record.get("pair_id")
+        if isinstance(pair_id, str):
+            by_pair[pair_id].append(record)
+    _require(
+        isinstance(paired_samples, list)
+        and len(paired_samples) == len(by_pair),
+        "paired_samples does not contain one file per front/back pair",
+    )
+    _require(isinstance(merged_entries, list), "merged_entries is not a list")
+    merged_by_pair = {
+        entry["pair_id"]: entry
+        for entry in merged_entries
+        if isinstance(entry, dict) and isinstance(entry.get("pair_id"), str)
+    }
+    seen_ids: set[str] = set()
+    seen_paths: set[Path] = set()
+    for descriptor in paired_samples:
+        _require(isinstance(descriptor, dict), "paired sample descriptor is invalid")
+        pair_id = descriptor.get("pair_id")
+        path_value = descriptor.get("path")
+        _require(
+            isinstance(pair_id, str)
+            and pair_id in by_pair
+            and pair_id not in seen_ids
+            and isinstance(path_value, str),
+            "paired sample id/path is invalid or duplicated",
+        )
+        seen_ids.add(pair_id)
+        path = _resolved_within(
+            Path(path_value), final_pairs_root, label=f"paired sample {pair_id}"
+        )
+        _require(path.is_file(), f"paired sample is missing: {path}")
+        _require(path not in seen_paths, f"paired sample path is duplicated: {path}")
+        seen_paths.add(path)
+        sha256 = _file_sha256(path)
+        _require(
+            descriptor.get("sha256") == sha256,
+            f"paired sample hash is stale: {path}",
+        )
+        values = by_pair[pair_id]
+        _require(len(values) == 2, f"paired sample {pair_id} lacks one side")
+        front_record = next(
+            value for value in values if value.get("side") == "front"
+        )
+        back_record = next(
+            value for value in values if value.get("side") == "back"
+        )
+        front_source = front_record.get("source")
+        back_source = back_record.get("source")
+        _require(
+            isinstance(front_source, str) and isinstance(back_source, str),
+            f"paired sample {pair_id} source paths are missing",
+        )
+        front = _valid_candidate(Path(front_source))
+        back = _valid_candidate(Path(back_source))
+        expected = _paired_sample_payload(
+            pair_id=pair_id, front=front, back=back
+        )
+        _require(
+            _strict_json(path) == expected,
+            f"paired sample does not reproduce both validated qposes: {pair_id}",
+        )
+        expected_directory = (
+            final_pairs_root
+            / f"front_f{front.finger_count}_back_f{back.finger_count}"
+        )
+        _require(
+            path.parent == expected_directory and path.name == f"{pair_id}.json",
+            f"paired sample path layout is invalid: {path}",
+        )
+        merged = merged_by_pair.get(pair_id)
+        _require(
+            isinstance(merged, dict)
+            and merged.get("combined_path") == str(path)
+            and merged.get("combined_sha256") == sha256,
+            f"merged entry does not reference paired sample {pair_id}",
+        )
+    _require(seen_ids == set(by_pair), "paired sample ids differ from final pairs")
+    actual_files = {
+        path.resolve() for path in final_pairs_root.glob("**/*.json")
+    }
+    _require(
+        actual_files == seen_paths,
+        "final_pairs contains missing or unmanifested JSON files",
+    )
+    return len(seen_paths)
 
 
 def audit_dataset(*, output_root: Path, general_mesh_root: Path) -> dict[str, Any]:
@@ -330,6 +434,7 @@ def audit_dataset(*, output_root: Path, general_mesh_root: Path) -> dict[str, An
     )
     records: list[Mapping[str, Any]] = []
     final_root = (output_root / "final_valid").resolve()
+    final_pairs_root = (output_root / "final_pairs").resolve()
     attempts_root = (output_root / "attempts").resolve()
     seen_paths: set[Path] = set()
     seen_sources: set[Path] = set()
@@ -411,6 +516,12 @@ def audit_dataset(*, output_root: Path, general_mesh_root: Path) -> dict[str, An
         manifest.get("merged_entries"),
         per_side_finger_target=FORMAL_PER_SIDE_FINGER_TARGET,
     )
+    paired_sample_count = _audit_paired_samples(
+        records=records,
+        merged_entries=manifest.get("merged_entries"),
+        paired_samples=manifest.get("paired_samples"),
+        final_pairs_root=final_pairs_root,
+    )
     object_ids = set(object_scales)
     _require(
         required_general_ids <= object_ids,
@@ -438,6 +549,7 @@ def audit_dataset(*, output_root: Path, general_mesh_root: Path) -> dict[str, An
         "valid_count": len(records),
         "side_finger_counts": manifest["side_finger_counts"],
         **pairing,
+        "paired_sample_count": paired_sample_count,
         "object_count": len(object_ids),
         "required_general_object_count": len(required_general_ids),
         "covered_general_object_count": len(required_general_ids & object_ids),

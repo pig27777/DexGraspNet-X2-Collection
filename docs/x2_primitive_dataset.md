@@ -20,8 +20,8 @@ catalog 顺序确定性选取 **30 个**（ID 为 `000,003,...,087`），并与 
 inventory 审计。
 
 正式完成条件是严格的 **5000 条 Isaac Sim/PhysX valid**：front/back 各 2500 条，且每侧
-f1、f2、f3、f4、f5 各 500 条。同物体的 front/back 只按互补手指数配对，两侧参与手指集合
-必须互斥；f5 因为已经使用全部五指，只保留单侧条目。raw 数量、能量下降或某个未完成 attempt
+f1、f2、f3、f4、f5 各 500 条。front/back 可以来自不同物体，只按互补手指数配对，两侧参与
+手指集合必须互斥；f5 因为已经使用全部五指，只保留单侧条目。raw 数量、能量下降或某个未完成 attempt
 都不是完成证据，最终以 `data/x2_valid_5000/manifest.json` 及其引用的 attempt
 `complete.json` 为准。
 
@@ -270,14 +270,15 @@ primitive 同样使用米制尺度 `1.0`。通用物体输出文件名前缀使�
 - back：f1/f2/f3/f4/f5 各 500 条，共 2500 valid；
 - `finger_participation` 中的 `target_count`、`actual_count` 和 `finger_names` 必须与
   `selected_contacts` 一致；palm 不计入手指数；
-- 同一物体按 `front f1 ↔ back f4`、`front f2 ↔ back f3`、`front f3 ↔ back f2`、
-  `front f4 ↔ back f1` 合并，两侧 `finger_names` 必须不相交；
+- 按 `front f1 ↔ back f4`、`front f2 ↔ back f3`、`front f3 ↔ back f2`、
+  `front f4 ↔ back f1` 合并；两侧物体可以不同，`finger_names` 必须不相交；
 - f5 已使用全部五指，不存在非空且不重叠的另一侧集合，因此 f5 保留为单侧 valid，
   manifest 中 `pair_id=null`，不伪造双侧配对。
 
-批量生成使用 `--complementary-side-fingers`，同一物体的上述 front/back 组合从初始化到
-退火 contact 重采样始终保持互补。f1–f4 使用 4 个唯一 contact，f5 使用 5 个唯一 contact；
-PhysX validator 按 contact 数拆 batch，避免混合 4/5-contact ragged tensor。
+批量生成使用 `--complementary-side-fingers`，在单个物体内部生成互补候选以提高候选池
+覆盖；最终选择阶段不要求沿用同一物体，可以跨物体匹配精确互补集合。f1–f4 使用 4 个唯一
+contact，f5 使用 5 个唯一 contact；PhysX validator 按 contact 数拆 batch，避免混合
+4/5-contact ragged tensor。
 
 闭环控制器会执行“生成 → PhysX 验证 → 审计已完成 attempt → 统计每个 side/finger 层和可配对
 数量 → 换 seed 补采”，直至达到全部配额，再将恰好 5000 条 valid 硬链接到
@@ -317,9 +318,10 @@ attempt 只有同时满足以下条件才会原子写入 `complete.json` 并进�
 已有 PhysX 路由，补齐缺失部分；未完成 attempt 在证明生成前不会贡献任何 valid 计数。
 
 最终 `manifest.json` 是完成证据，必须同时满足 `valid_count=5000`、每个 side/finger=500、
-所有非空 pair 同物体且两侧手指集合不相交、验证后端/协议为正式 PhysX v7、每条记录都有
+所有非空 pair 的两侧手指集合互补且不相交（物体可不同）、验证后端/协议为正式 PhysX v7、每条记录都有
 100 个逻辑仿真步和六个全部通过的方向，并且最终选择覆盖全部 30 个正式通用物体。manifest 还保存
-5000 条来源与 SHA-256、2000 个双侧 pair（共 4000 条配对记录）、1000 个单侧 f5 条目，以及所有被采用 attempt 的
+5000 条来源与 SHA-256、2000 个双侧 pair（共 4000 条配对记录）、对应的 2000 个双分支
+组合 JSON、1000 个单侧 f5 条目，以及所有被采用 attempt 的
 `complete.json` 路径和 SHA-256。最终抽样按物体轮询，避免按文件名截断造成后部物体没有进入
 数据集。
 

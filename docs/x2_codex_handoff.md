@@ -1,6 +1,6 @@
 # X2 5000-valid 采集的 Codex 账号交接
 
-最后更新：2026-07-17 22:04 CST
+最后更新：2026-07-27 10:53 CST
 
 ## 给新 Codex 会话的接手提示
 
@@ -13,7 +13,7 @@
 data/x2_valid_5000/manifest.json 严格证明恰好 5000 条 Isaac Sim/PhysX v7 valid。
 正式 catalog 必须是 12 个 primitive + 固定 30 个通用 mesh；front/back 各 2500，
 每侧 f1、f2、f3、f4、f5 各 500。front f1↔back f4、f2↔back f3、
-f3↔back f2、f4↔back f1 必须同物体且 finger set 不重叠；f5 为单侧记录。
+f3↔back f2、f4↔back f1 可以来自不同物体，但 finger set 必须互补且不重叠；f5 为单侧记录。
 
 开始操作前请完整阅读：
 1. docs/x2_codex_handoff.md
@@ -151,7 +151,7 @@ JSON 绕过。
 - front/back 各 2500；每侧 f1--f5 各 500；
 - 2000 个互补双侧 pair，即 4000 条配对记录；
 - 1000 条 f5 单侧记录；
-- 每个 pair 同物体且 front/back finger set 不相交；
+- pair 两侧物体可以不同，但 front/back finger set 必须互补且不相交；
 - 30 个固定通用 mesh 全部覆盖；
 - 全部记录来自 v6 raw 和 PhysX v7 六方向通过结果；
 - manifest 引用的所有 attempt `complete.json` 路径及 SHA-256 可重新验证。

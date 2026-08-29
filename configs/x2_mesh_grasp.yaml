@@ -1,5 +1,5 @@
 schema_version: 1
-pipeline_revision: x2_mesh_grasp_unselected_finger_side_v6
+pipeline_revision: x2_mesh_grasp_ownership_clean_v7
 
 # Hand-only X2 calibration for the side-conditioned generic mesh generator.
 robot:
@@ -94,11 +94,38 @@ contact_candidates:
 initialization:
   canonical_open_actuator: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
   jitter_strength: 0.10
+  # Dimensionless radial expansion of the convex hull about its centroid.
   hull_inflation: 0.20
-  distance_lower: 0.20
-  distance_upper: 0.30
+  # This is the palm-side surface offset in metres, not an object-scale
+  # parameter.  Initializing 20--30 cm from a tabletop object makes the
+  # optimizer's first valid checkpoint a free-space hand pose.  Keep the
+  # generator in the contact basin; downstream FCL/PlanR/PhysX remain the
+  # authority for real execution feasibility.
+  distance_lower: 0.01
+  distance_upper: 0.04
   theta_lower: -0.5235987755982988
   theta_upper: 0.5235987755982988
+  # Side-aware flex seeds for non-thumb fingers selected by the contact
+  # policy.  They place a palm-plus-fingers candidate in a closing basin
+  # instead of asking an optimizer to curl from a fully open hand while the
+  # object is already beside the palm.  The side changes the physical flex
+  # sign; unselected fingers and the thumb keep their existing open/jitter
+  # initialization.
+  contact_closure_seed_j3: 0.70
+  contact_closure_seed_j2: 0.60
+  # When a support plane is supplied, retain the sampled contact approach and
+  # evaluate this finite set of rolls about it.  Among rolls that already
+  # satisfy the source plane clearance, keep the one closest to the selected
+  # contact tuple; if none is table-admissible, keep the maximum-clearance
+  # fallback.  This avoids trading away the contact basin for excess height.
+  # This is a source initializer only; exact tabletop admission remains
+  # downstream authority.
+  table_aware_roll_samples: 16
+  # Select initial approach points from the support-normal-exposed half of an
+  # arbitrarily oriented stable object. Local mesh z is not a tabletop axis.
+  # This changes only the initialization basin; optimization and every hard
+  # output/downstream gate remain unchanged.
+  table_exposed_surface_fraction: 0.50
 
 generation:
   n_contact: 4
@@ -110,6 +137,10 @@ generation:
   dense_hand_surface_samples_per_set: 256
   dense_object_surface_samples: 8192
   dense_hand_object_penetration_threshold: 0.001
+  # A raw static record represents a contact-conditioned candidate only when
+  # every selected hand keypoint is this close to the object SDF surface.
+  # This is source-generation admission, not a collision or physical proof.
+  selected_contact_max_distance_m: 0.003
 
 # Differentiable link-link collision geometry.  Length values are metres.
 self_collision:
@@ -131,8 +162,25 @@ self_collision:
 
 optimization:
   switch_possibility: 0.5
+  # Hold one legal contact tuple fixed before annealing is allowed to replace
+  # individual markers.  The contact-realization objective is pointwise, so
+  # resampling markers on nearly every early proposal makes its target move
+  # faster than the hand pose can close.  This is a source-generation warmup;
+  # it does not relax the output contact gate or any downstream certificate.
+  contact_closure_warmup_iterations: 300
   mu: 0.98
+  # RMS-normalized coordinates do not share units: root translation is in
+  # metres, the 6D rotation representation is dimensionless, and actuators
+  # are in radians.  A single 0.005 step made every accepted translation
+  # proposal jump about 5 mm, which can skip the 3 mm contact-realization
+  # basin even while the rotational/joint step remains appropriate.  Keep the
+  # legacy scalar for old tools, but the X2 optimizer uses these explicit
+  # per-coordinate trust-region limits.
   step_size: 0.005
+  coordinate_step_limits:
+    translation_m: 0.0005
+    rotation_6d: 0.005
+    actuator_rad: 0.005
   stepsize_period: 50
   starting_temperature: 18.0
   annealing_period: 30
@@ -149,7 +197,19 @@ optimization:
     displacement_scale: 0.02
   weights:
     E_dis: 100.0
+    # A squared hinge on every selected contact's excess surface distance.
+    # Unlike aggregate E_dis this cannot trade one distant selected keypoint
+    # against two near ones when a contact-conditioned raw row is required.
+    # Units are m^2.  At the 3 mm gate a further 3 mm miss costs 9 under this
+    # term, which is comparable to force-closure energy and prevents a
+    # geometrically unrealized keypoint being traded for a better aggregate
+    # score.  Final output still uses the explicit pointwise hard gate.
+    E_contact: 1000000.0
     E_pen: 100.0
+    # Dimensionless hinge on maximum bidirectional penetration beyond the
+    # immutable 1 mm source feasibility gate.  This aligns the proposal
+    # objective with the hard output gate without replacing that gate.
+    E_hand_object_gate: 1.0
     E_joints: 1.0
     E_side: 1.0
     E_unselected_opposite_flex: 1.0

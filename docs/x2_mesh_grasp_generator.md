@@ -269,9 +269,10 @@ eligible pool 均匀抽取，同时排除其他 slot 已占用的点；原 slot 
 }
 ```
 
-批量入口的 `--complementary-side-fingers` 为同一物体生成互补集合：front f1 ↔ back f4、
+批量入口的 `--complementary-side-fingers` 在同一物体内生成互补集合：front f1 ↔ back f4、
 front f2 ↔ back f3、front f3 ↔ back f2、front f4 ↔ back f1，两侧集合交集严格为空。
-正式终选对每种映射各保留 500 个同物体 pair。f5 的集合包含全部五指，不存在非空的互斥
+正式终选允许把不同物体的两条独立 PhysX-passed 记录配成一对，每种映射各保留 500 个 pair，
+但仍要求精确互补且不重叠。f5 的集合包含全部五指，不存在非空的互斥
 对侧集合，因此 front f5 和 back f5 各自保留 500 条单侧 valid，最终 manifest 中
 `pair_id=null`。
 

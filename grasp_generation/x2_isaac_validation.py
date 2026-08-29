@@ -328,7 +328,11 @@ def _validate_self_collision_record(
 
 
 def _validate_v5_dense_hand_object_record(
-    record: Mapping[str, Any], source: Path, top_level_maximum: float
+    record: Mapping[str, Any],
+    source: Path,
+    top_level_maximum: float,
+    *,
+    self_collision_feasible: bool | None,
 ) -> tuple[bool, bool | None]:
     """Validate the exact v5 dense bidirectional hand/object gate contract."""
 
@@ -461,13 +465,29 @@ def _validate_v5_dense_hand_object_record(
             f"{source}: optimization.bidirectional_feasible_checkpoint_found "
             "must equal dense feasibility"
         )
-    if feasible and restored_checkpoint != "bidirectional_feasible":
+    if (
+        self_collision_feasible is True
+        and feasible
+        and restored_checkpoint != "bidirectional_feasible"
+    ):
         raise X2ValidationError(
             f"{source}: a feasible v5 record must restore bidirectional_feasible"
         )
-    if not feasible and restored_checkpoint == "bidirectional_feasible":
+    if (
+        self_collision_feasible is True
+        and not feasible
+        and restored_checkpoint != "bidirectional_fallback"
+    ):
         raise X2ValidationError(
-            f"{source}: an infeasible v5 record cannot restore bidirectional_feasible"
+            f"{source}: a dense-infeasible v5 record must restore "
+            "bidirectional_fallback"
+        )
+    if (
+        self_collision_feasible is False
+        and restored_checkpoint != "fallback"
+    ):
+        raise X2ValidationError(
+            f"{source}: a self-collision-infeasible v5 record must restore fallback"
         )
 
     optimization_counts = {
@@ -825,7 +845,10 @@ def load_raw_candidate(path: Path | str) -> X2RawCandidate:
     )
     hand_object_gate_required, hand_object_feasible = (
         _validate_v5_dense_hand_object_record(
-            record, source, maximum_penetration
+            record,
+            source,
+            maximum_penetration,
+            self_collision_feasible=self_collision_feasible,
         )
     )
     if record.get("finite") is not True:

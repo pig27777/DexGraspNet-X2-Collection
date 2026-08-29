@@ -3,8 +3,10 @@
 
 This is a read-only visualization helper.  It reconstructs the exact X2
 collision hull pose stored in each raw JSON, overlays the object and selected
-contact points, and records SHA-256 provenance.  It does not run PhysX and it
-never labels raw optimizer output as valid data.
+contact points, and records SHA-256 provenance.  It can render either raw
+optimizer records or records already routed to ``valid`` by PhysX.  It does not
+rerun PhysX; valid images therefore show the validated input pose rather than a
+frozen final simulation state.
 """
 
 from __future__ import annotations
@@ -85,7 +87,7 @@ def _finger_for_link(link_name: str) -> str | None:
     return None
 
 
-def _load_candidate(path: Path) -> dict[str, Any] | None:
+def _load_candidate(path: Path, route: str) -> dict[str, Any] | None:
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
@@ -94,7 +96,7 @@ def _load_candidate(path: Path) -> dict[str, Any] | None:
     self_collision = payload.get("self_collision")
     penetration = payload.get("hand_object_penetration")
     validation = payload.get("validation")
-    if not (
+    common_passed = (
         str(payload.get("pipeline_revision", "")).endswith("_v6")
         and payload.get("finite") is True
         and isinstance(participation, dict)
@@ -106,9 +108,32 @@ def _load_candidate(path: Path) -> dict[str, Any] | None:
         and penetration.get("evaluated") is True
         and penetration.get("feasible") is True
         and isinstance(validation, dict)
-        and validation.get("status") == "not_run"
-    ):
+    )
+    if not common_passed:
         return None
+    if route == "raw":
+        if validation.get("status") != "not_run":
+            return None
+    elif route == "valid":
+        orientations = validation.get("orientations")
+        if not (
+            validation.get("status") == "passed"
+            and validation.get("backend") == "isaac_sim_physx"
+            and str(validation.get("protocol_revision", "")).endswith("_v7")
+            and validation.get("passed_orientation_count") == 6
+            and validation.get("required_orientation_count") == 6
+            and isinstance(orientations, list)
+            and len(orientations) == 6
+            and all(
+                isinstance(orientation, dict)
+                and orientation.get("passed") is True
+                and orientation.get("finite") is True
+                for orientation in orientations
+            )
+        ):
+            return None
+    else:
+        raise X2SampleRenderError(f"Unsupported route: {route}")
     return payload
 
 
@@ -119,12 +144,14 @@ def _object_id(payload: dict[str, Any]) -> str:
     return mesh_path.stem
 
 
-def _select_samples(input_root: Path) -> list[tuple[Path, dict[str, Any]]]:
+def _select_samples(
+    input_root: Path, route: str
+) -> list[tuple[Path, dict[str, Any]]]:
     pools: dict[int, list[tuple[Path, dict[str, Any]]]] = {
         count: [] for count in SIDE_BY_FINGER_COUNT
     }
-    for path in sorted(input_root.glob("**/raw/*.json")):
-        payload = _load_candidate(path)
+    for path in sorted(input_root.glob(f"**/{route}/*.json")):
+        payload = _load_candidate(path, route)
         if payload is None:
             continue
         count = int(payload["finger_participation"]["actual_count"])
@@ -140,11 +167,12 @@ def _select_samples(input_root: Path) -> list[tuple[Path, dict[str, Any]]]:
         )
         choice = next(
             (item for item in ranked if _object_id(item[1]) not in used_objects),
-            None,
+            ranked[0] if ranked else None,
         )
         if choice is None:
             raise X2SampleRenderError(
-                f"Cannot select a unique-object f{count} {SIDE_BY_FINGER_COUNT[count]} sample"
+                f"Cannot select a PhysX-{route} f{count} "
+                f"{SIDE_BY_FINGER_COUNT[count]} sample"
             )
         selected.append(choice)
         used_objects.add(_object_id(choice[1]))
@@ -240,6 +268,13 @@ def _sample_title(geometry: dict[str, Any]) -> str:
     )
 
 
+def _validation_banner(payload: dict[str, Any]) -> tuple[str, str]:
+    validation = payload["validation"]
+    if validation.get("status") == "passed":
+        return "PHYSX PASSED — VALIDATED INPUT POSE", "#17823b"
+    return "RAW OPTIMIZER POSE — NOT YET PHYSX VALIDATED", "#9c1c1c"
+
+
 def _save_individual(geometry: dict[str, Any], output: Path) -> None:
     side = geometry["record"]["active_side"]
     primary_azimuth = -64.0 if side == "front" else 116.0
@@ -260,11 +295,13 @@ def _save_individual(geometry: dict[str, Any], output: Path) -> None:
             closeup=closeup,
         )
         axis.set_title(title, fontsize=9)
+    banner, banner_color = _validation_banner(geometry["record"])
     figure.suptitle(
-        f"{_sample_title(geometry)}\nRAW OPTIMIZER POSE — NOT YET PHYSX VALIDATED",
+        f"{_sample_title(geometry)}\n{banner}",
         fontsize=11,
-        color="#9c1c1c",
+        color=banner_color,
     )
+    is_valid = geometry["record"]["validation"].get("status") == "passed"
     figure.savefig(
         output,
         dpi=180,
@@ -272,7 +309,8 @@ def _save_individual(geometry: dict[str, Any], output: Path) -> None:
         metadata={
             "RawSHA256": geometry["raw_sha256"],
             "RawJSON": _portable(geometry["raw_path"]),
-            "PhysXValidated": "false",
+            "PhysXValidated": str(is_valid).lower(),
+            "RenderedState": "validated_input_pose" if is_valid else "raw_pose",
         },
     )
     plt.close(figure)
@@ -315,13 +353,14 @@ def _save_overview(geometries: list[dict[str, Any]], output: Path) -> None:
         )
     )
     legend_axis.legend(handles=handles, loc="center", frameon=False, fontsize=10)
+    banner, banner_color = _validation_banner(geometries[0]["record"])
     legend_axis.text(
         0.5,
         0.08,
-        "RAW / NOT YET PHYSX VALIDATED",
+        banner,
         ha="center",
         va="center",
-        color="#9c1c1c",
+        color=banner_color,
         fontsize=12,
         fontweight="bold",
         transform=legend_axis.transAxes,
@@ -334,7 +373,16 @@ def _save_overview(geometries: list[dict[str, Any]], output: Path) -> None:
         output,
         dpi=180,
         facecolor="white",
-        metadata={"PhysXValidated": "false"},
+        metadata={
+            "PhysXValidated": str(
+                geometries[0]["record"]["validation"].get("status") == "passed"
+            ).lower(),
+            "RenderedState": (
+                "validated_input_pose"
+                if geometries[0]["record"]["validation"].get("status") == "passed"
+                else "raw_pose"
+            ),
+        },
     )
     plt.close(figure)
 
@@ -343,8 +391,8 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def render(input_root: Path, output_dir: Path) -> dict[str, Any]:
-    chosen = _select_samples(input_root)
+def render(input_root: Path, output_dir: Path, route: str = "raw") -> dict[str, Any]:
+    chosen = _select_samples(input_root, route)
     config = load_x2_mesh_config()
     candidates = load_generic_contact_candidates(
         config.configured_path("contact_candidates.path", must_exist=True)
@@ -380,7 +428,11 @@ def render(input_root: Path, output_dir: Path) -> dict[str, Any]:
                 "raw_sha256": geometry["raw_sha256"],
                 "pipeline_revision": payload["pipeline_revision"],
                 "validation_status": payload["validation"]["status"],
-                "physx_validation_run": False,
+                "physx_validation_recorded": route == "valid",
+                "renderer_physx_simulation_run": False,
+                "rendered_state": (
+                    "validated_input_pose" if route == "valid" else "raw_pose"
+                ),
                 "object_id": object_id,
                 "object_mesh": _portable(Path(payload["object"]["mesh_path"])),
                 "active_side": payload["active_side"],
@@ -403,10 +455,19 @@ def render(input_root: Path, output_dir: Path) -> dict[str, Any]:
         "source_root": _portable(input_root),
         "selection": (
             "lowest energy per f1..f5 on alternating front/back sides, "
-            "with unique object ids"
+            "preferring unique object ids"
         ),
-        "status": "raw_unvalidated",
-        "physx_simulation_run": False,
+        "route": route,
+        "status": (
+            "physx_passed_validated_input_pose"
+            if route == "valid"
+            else "raw_unvalidated"
+        ),
+        "physx_validation_recorded": route == "valid",
+        "renderer_physx_simulation_run": False,
+        "rendered_state": (
+            "validated_input_pose" if route == "valid" else "raw_pose"
+        ),
         "overview_image": overview_path.name,
         "overview_sha256": _sha256(overview_path),
         "samples": sample_entries,
@@ -422,6 +483,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input-root", type=Path, default=DEFAULT_INPUT_ROOT)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
+    parser.add_argument(
+        "--route",
+        choices=("raw", "valid"),
+        default="raw",
+        help="Render unvalidated raw poses or records already passed by PhysX.",
+    )
     return parser
 
 
@@ -430,6 +497,7 @@ def main(argv: Sequence[str] | None = None) -> None:
     manifest = render(
         args.input_root.expanduser().resolve(),
         args.output_dir.expanduser().resolve(),
+        args.route,
     )
     print(json.dumps(manifest, indent=2, allow_nan=False))
 

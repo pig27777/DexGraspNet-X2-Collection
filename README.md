@@ -49,6 +49,7 @@ Representative X2 grasp configurations before PhysX validation (raw optimizer po
 - [Dataset protocol](docs/x2_primitive_dataset.md)
 - [Collection and recovery runbook](docs/x2_collection_runbook.md)
 - [Experiment log](docs/x2_experiment_log.md)
+- [Right/left modes and dual-object candidates](docs/x2_dual_object_dataset.md)
 
 ## Repository contents
 

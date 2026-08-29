@@ -56,8 +56,12 @@ FORMAL_GENERAL_MESH_IDS = tuple(
 )
 FORMAL_GENERAL_MESH_COUNT = 30
 SIDES = ("front", "back")
-COLLECTION_PROTOCOL_REVISION = "x2_balanced_complementary_30mesh_5000_v6"
-GENERATOR_PIPELINE_REVISION = "x2_mesh_grasp_unselected_finger_side_v6"
+ATTEMPT_COLLECTION_PROTOCOL_REVISION = "x2_balanced_complementary_30mesh_5000_v6"
+COLLECTION_PROTOCOL_REVISION = (
+    "x2_balanced_cross_object_complementary_30mesh_5000_v7"
+)
+PAIRING_PROTOCOL_REVISION = "x2_cross_object_disjoint_fingers_v1"
+GENERATOR_PIPELINE_REVISION = "x2_mesh_grasp_ownership_clean_v7"
 VALIDATION_BACKEND = "isaac_sim_physx"
 VALIDATION_PROTOCOL_REVISION = ISAAC_VALIDATION_PROTOCOL_REVISION
 VALIDATION_CRITERION = "dexgraspnet-contact"
@@ -796,7 +800,7 @@ def _attempt_metadata(
     raw_target = sum(normalized_targets.values())
     return {
         "schema_version": 4,
-        "collection_protocol_revision": COLLECTION_PROTOCOL_REVISION,
+        "collection_protocol_revision": ATTEMPT_COLLECTION_PROTOCOL_REVISION,
         "raw_target": raw_target,
         "seed": seed,
         "generation": {
@@ -924,7 +928,7 @@ def _attempt_completion_payload(
     if (
         metadata.get("schema_version") != 4
         or metadata.get("collection_protocol_revision")
-        != COLLECTION_PROTOCOL_REVISION
+        != ATTEMPT_COLLECTION_PROTOCOL_REVISION
     ):
         raise ValidDatasetError(f"{attempt_root}: attempt protocol metadata is stale")
     raw_target = metadata.get("raw_target")
@@ -1154,7 +1158,7 @@ def _attempt_completion_payload(
     metadata_path = attempt_root / "attempt.json"
     return {
         "passed": True,
-        "collection_protocol_revision": COLLECTION_PROTOCOL_REVISION,
+        "collection_protocol_revision": ATTEMPT_COLLECTION_PROTOCOL_REVISION,
         "attempt_metadata_sha256": _file_sha256(metadata_path),
         "generation_summary_sha256": _file_sha256(generation_summary),
         "generation_report_sha256": _file_sha256(generation_report_path),
@@ -1375,51 +1379,61 @@ def pair_candidates(
     grouped: dict[tuple[str, int], list[ValidCandidate]],
     per_side_finger_target: int,
 ) -> dict[int, list[tuple[ValidCandidate, ValidCandidate]]]:
-    """Greedily pair complementary strata on the same object with disjoint fingers."""
+    """Pair complementary front/back strata across independently grasped objects.
+
+    A pair is a training composition of two independently PhysX-passed grasps,
+    not a claim that both qposes form one simultaneous physical scene.  Object
+    identity is therefore allowed to differ.  Since the two finger counts sum
+    to five, disjointness also proves that their finger-name sets are exact
+    complements.
+    """
+
+    def round_robin_all(
+        candidates: Sequence[ValidCandidate],
+    ) -> list[ValidCandidate]:
+        by_object: dict[str, list[ValidCandidate]] = {}
+        for candidate in candidates:
+            by_object.setdefault(candidate.object_id, []).append(candidate)
+        ordered: list[ValidCandidate] = []
+        depth = 0
+        while True:
+            added = False
+            for object_id in sorted(by_object):
+                values = by_object[object_id]
+                if depth < len(values):
+                    ordered.append(values[depth])
+                    added = True
+            if not added:
+                return ordered
+            depth += 1
 
     result: dict[int, list[tuple[ValidCandidate, ValidCandidate]]] = {}
+    all_fingers = frozenset(FINGER_NAMES)
     for front_count in (1, 2, 3, 4):
         back_count = 5 - front_count
-        front_by_object: dict[str, list[ValidCandidate]] = {}
-        back_by_object: dict[str, list[ValidCandidate]] = {}
-        for candidate in grouped[("front", front_count)]:
-            front_by_object.setdefault(candidate.object_id, []).append(candidate)
-        for candidate in grouped[("back", back_count)]:
-            back_by_object.setdefault(candidate.object_id, []).append(candidate)
-        pairs_by_object: dict[
-            str, list[tuple[ValidCandidate, ValidCandidate]]
-        ] = {}
-        for object_id in sorted(set(front_by_object) & set(back_by_object)):
-            used_back: set[Path] = set()
-            object_pairs: list[tuple[ValidCandidate, ValidCandidate]] = []
-            for front in front_by_object[object_id]:
-                match = next(
-                    (
-                        back
-                        for back in back_by_object[object_id]
-                        if back.path not in used_back
-                        and front.finger_names.isdisjoint(back.finger_names)
-                    ),
-                    None,
-                )
-                if match is not None:
-                    used_back.add(match.path)
-                    object_pairs.append((front, match))
-            pairs_by_object[object_id] = object_pairs
-        pairs = []
-        depth = 0
-        while len(pairs) < per_side_finger_target:
-            added = False
-            for object_id in sorted(pairs_by_object):
-                values = pairs_by_object[object_id]
-                if depth < len(values):
-                    pairs.append(values[depth])
-                    added = True
-                    if len(pairs) == per_side_finger_target:
-                        break
-            if not added:
+        back_by_fingers: dict[frozenset[str], list[ValidCandidate]] = {}
+        for candidate in round_robin_all(grouped[("back", back_count)]):
+            back_by_fingers.setdefault(candidate.finger_names, []).append(candidate)
+        pairs: list[tuple[ValidCandidate, ValidCandidate]] = []
+        for front in round_robin_all(grouped[("front", front_count)]):
+            complement = all_fingers - front.finger_names
+            candidates = back_by_fingers.get(complement)
+            if not candidates:
+                continue
+            # Prefer a different object when one is available, while retaining
+            # same-object candidates as valid fallbacks.
+            match_index = next(
+                (
+                    index
+                    for index, back in enumerate(candidates)
+                    if back.object_id != front.object_id
+                ),
+                0,
+            )
+            back = candidates.pop(match_index)
+            pairs.append((front, back))
+            if len(pairs) == per_side_finger_target:
                 break
-            depth += 1
         result[front_count] = pairs
     return result
 
@@ -1447,6 +1461,118 @@ def _round_robin_candidates(
     return result
 
 
+def _paired_side_payload(candidate: ValidCandidate) -> dict[str, Any]:
+    payload = _strict_json(candidate.path)
+    _finger_count(candidate.path, payload)
+    hand_pose = payload.get("hand_pose")
+    joint_names = payload.get("joint_names")
+    joint = payload.get("joint")
+    actuator_names = payload.get("actuator_names")
+    actuator = payload.get("actuator")
+    object_record = payload.get("object")
+    validation = payload.get("validation")
+    participation = payload.get("finger_participation")
+    closing = (
+        validation.get("preflight", {}).get("collision_aware_closing")
+        if isinstance(validation, dict)
+        else None
+    )
+    if (
+        not isinstance(hand_pose, dict)
+        or not isinstance(joint_names, list)
+        or not isinstance(joint, list)
+        or len(joint_names) != len(joint)
+        or not isinstance(actuator_names, list)
+        or not isinstance(actuator, list)
+        or len(actuator_names) != len(actuator)
+        or not isinstance(object_record, dict)
+        or not isinstance(validation, dict)
+        or not isinstance(participation, dict)
+        or not isinstance(closing, dict)
+    ):
+        raise ValidDatasetError(
+            f"{candidate.path}: qpose/object fields are incomplete for pairing"
+        )
+    return {
+        "source": str(candidate.path),
+        "source_sha256": _file_sha256(candidate.path),
+        "object_id": candidate.object_id,
+        "object": object_record,
+        "finger_count": candidate.finger_count,
+        "finger_names": sorted(candidate.finger_names),
+        "validated_input_qpose": {
+            "hand_pose": hand_pose,
+            "joint_names": joint_names,
+            "joint": joint,
+            "actuator_names": actuator_names,
+            "actuator": actuator,
+        },
+        "selected_contact_ids": payload.get("selected_contact_ids"),
+        "validation": {
+            "status": validation.get("status"),
+            "backend": validation.get("backend"),
+            "protocol_revision": validation.get("protocol_revision"),
+            "passed_orientation_count": validation.get(
+                "passed_orientation_count"
+            ),
+            "required_orientation_count": validation.get(
+                "required_orientation_count"
+            ),
+        },
+        "closing": {
+            "selected_alpha": closing.get("selected_alpha"),
+            "selected_maximum_actuator_adjustment_rad": closing.get(
+                "selected_maximum_actuator_adjustment_rad"
+            ),
+            "selected_actuator_target_saved": False,
+        },
+    }
+
+
+def _paired_sample_payload(
+    *, pair_id: str, front: ValidCandidate, back: ValidCandidate
+) -> dict[str, Any]:
+    if not front.finger_names.isdisjoint(back.finger_names):
+        raise ValidDatasetError(f"{pair_id}: front/back finger sets overlap")
+    return {
+        "schema_version": 1,
+        "pairing_protocol_revision": PAIRING_PROTOCOL_REVISION,
+        "pair_id": pair_id,
+        "composition_semantics": (
+            "two_independently_physx_validated_grasps; "
+            "not_one_simultaneous_physical_qpose"
+        ),
+        "finger_sets_disjoint": True,
+        "finger_counts_complementary": (
+            front.finger_count + back.finger_count == len(FINGER_NAMES)
+        ),
+        "same_object": front.object_id == back.object_id,
+        "front": _paired_side_payload(front),
+        "back": _paired_side_payload(back),
+    }
+
+
+def _write_paired_sample(
+    *,
+    final_pairs_root: Path,
+    pair_id: str,
+    front: ValidCandidate,
+    back: ValidCandidate,
+) -> dict[str, Any]:
+    directory = (
+        final_pairs_root
+        / f"front_f{front.finger_count}_back_f{back.finger_count}"
+    )
+    path = directory / f"{pair_id}.json"
+    payload = _paired_sample_payload(pair_id=pair_id, front=front, back=back)
+    _atomic_json(path, payload)
+    return {
+        "pair_id": pair_id,
+        "path": str(path.resolve()),
+        "sha256": _file_sha256(path),
+    }
+
+
 def materialize_final(
     *,
     output_root: Path,
@@ -1455,10 +1581,14 @@ def materialize_final(
     required_general_ids: set[str] | None = None,
 ) -> dict[str, Any]:
     final_root = output_root / "final_valid"
+    final_pairs_root = output_root / "final_pairs"
     if final_root.exists():
         shutil.rmtree(final_root)
+    if final_pairs_root.exists():
+        shutil.rmtree(final_pairs_root)
     records: list[dict[str, Any]] = []
     merged_entries: list[dict[str, Any]] = []
+    paired_samples: list[dict[str, Any]] = []
     object_ids: set[str] = set()
     object_scales: dict[str, float] = {}
     pairs = pair_candidates(grouped, per_side_finger_target)
@@ -1469,21 +1599,33 @@ def materialize_final(
         if len(values) != per_side_finger_target:
             raise ValidDatasetError(
                 f"front f{front_count}/back f{5-front_count} has "
-                f"{len(values)} disjoint same-object pairs; need {per_side_finger_target}"
+                f"{len(values)} disjoint cross-object-allowed pairs; "
+                f"need {per_side_finger_target}"
             )
         for index, (front, back) in enumerate(values):
             pair_id = f"front_f{front_count}_back_f{5-front_count}_{index:06d}"
             selected_by_stratum[("front", front_count)].append((front, pair_id))
             selected_by_stratum[("back", 5 - front_count)].append((back, pair_id))
+            paired_sample = _write_paired_sample(
+                final_pairs_root=final_pairs_root,
+                pair_id=pair_id,
+                front=front,
+                back=back,
+            )
+            paired_samples.append(paired_sample)
             merged_entries.append(
                 {
                     "pair_id": pair_id,
-                    "object_id": front.object_id,
+                    "front_object_id": front.object_id,
+                    "back_object_id": back.object_id,
+                    "same_object": front.object_id == back.object_id,
                     "front_finger_count": front_count,
                     "front_finger_names": sorted(front.finger_names),
                     "back_finger_count": 5 - front_count,
                     "back_finger_names": sorted(back.finger_names),
                     "disjoint": front.finger_names.isdisjoint(back.finger_names),
+                    "combined_path": paired_sample["path"],
+                    "combined_sha256": paired_sample["sha256"],
                 }
             )
 
@@ -1594,7 +1736,6 @@ def materialize_final(
         if (
             len(values) != 2
             or {value["side"] for value in values} != set(SIDES)
-            or len({value["object_id"] for value in values}) != 1
             or not set(values[0]["finger_names"]).isdisjoint(
                 values[1]["finger_names"]
             )
@@ -1625,14 +1766,17 @@ def materialize_final(
             "sim_steps": REQUIRED_SIM_STEPS,
             "required_orientations": list(EXPECTED_ORIENTATIONS),
         },
+        "pairing_protocol_revision": PAIRING_PROTOCOL_REVISION,
         "target_valid": expected_valid,
         "valid_count": len(records),
         "per_side_finger_target": per_side_finger_target,
         "side_finger_counts": side_finger_counts,
         "paired_entry_count": sum(entry["pair_id"] is not None for entry in merged_entries),
+        "paired_sample_count": len(paired_samples),
         "single_side_five_finger_entry_count": sum(
             entry["pair_id"] is None for entry in merged_entries
         ),
+        "paired_samples": paired_samples,
         "object_count": len(object_ids),
         "object_ids": sorted(object_ids),
         "object_scale_by_id": {

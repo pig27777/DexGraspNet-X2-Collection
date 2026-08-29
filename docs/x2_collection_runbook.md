@@ -1,6 +1,6 @@
 # X2 正式数据采集运行日志与断点恢复手册
 
-最后更新：2026-07-17 22:22 CST
+最后更新：2026-07-27 10:53 CST
 
 ## 技术摘要
 
@@ -24,24 +24,27 @@
 
 | 项目 | 当前值 |
 |---|---|
-| 首次启动 / 最近恢复 | 2026-07-16 17:06 / 2026-07-17 20:56:10 CST |
+| 首次启动 / 最近恢复 | 2026-07-16 17:06 / 2026-07-26 14:21:07 CST |
 | 输出根目录 | `data/x2_valid_5000` |
 | 已完成 / 当前 attempt | `attempt_0000` / `attempt_0001` |
 | `attempt_0001` raw target | 66757；f1--f5 为 16081/14247/11955/12746/11728；非全局 cap |
 | catalog | 12 primitive + 固定 30 general mesh |
 | 生成协议 | `x2_mesh_grasp_unselected_finger_side_v6`，6000 iterations |
 | 验证协议 | `x2_object_centered_dexgraspnet_six_orientation_v7` |
-| 采集协议 | `x2_balanced_complementary_30mesh_5000_v6` |
+| 最终物化协议 | `x2_balanced_cross_object_complementary_30mesh_5000_v7`；运行中 attempt 元数据仍为 v6 |
 | 21:19 状态 | `attempt_0000` 完成；`attempt_0001` 已自动开始生成 |
 | 已完成 raw/valid/failed | 6250/642/5608；42/42 物体；`complete.json passed=true` |
 | 首轮 valid 分层 | front f1--f5 = 45/67/86/72/74；back = 62/53/57/63/63 |
 | 首轮互补 / f5 | pair f1--f4 = 32/35/41/33；f5 front/back = 74/63 |
 | 验证执行策略 | 固定 `batch=8`；明确 OOM fail-fast；不自动降 batch，不设 attempt raw cap |
-| 已审计候选池 / 最终完成 | 642 valid / 0 of 5000；尚无最终 `manifest.json` |
+| 已审计 completed 候选池 / 当前 passed route | 642 / 7061；最终仍为 0 of 5000，尚无 `manifest.json` |
+| 2026-07-27 10:58 生成进度 | attempt 0001 为 63589/66757 raw；剩余 `084/087` 仍在内存生成 |
+| 提前 PhysX | 前 38 个物体已路由 60421 条：6419 valid + 54002 failed |
+| 跨物体热加载 | `x2-cross-object-pairing-reload.service` 等 generation summary 后一次性重启 supervisor |
 
-当前没有趋势图：还没有 completed attempt。partial route 可用于诊断，但不能作为正式
-吞吐或完成证明。每个 attempt 完成后再追加同协议下的 raw/valid/failed 与
-side/finger_count 表格。
+当前没有趋势图：只有一个 completed attempt，样本不足以形成稳定趋势。partial route 可用于
+诊断，但不能作为正式吞吐或完成证明。每个 attempt 完成后再追加同协议下的
+raw/valid/failed 与 side/finger_count 表格。
 
 ## 跨会话后台守护
 
@@ -58,6 +61,16 @@ tail -f data/x2_valid_5000/collector_supervisor.log
 锁空闲且 manifest 没有严格证明 5000 条配额时恢复；manifest 的 headline 配额满足后会自动
 运行最终独立审计（实现不随公开仓库分发）。只有全量审计报告与当前 manifest SHA-256 绑定且通过，服务才
 发布 `final_audit.json` 并退出；失败报告保存为 `final_audit_failed.json`，不能提前结束 goal。
+
+双物体派生数据另由
+`x2-dual-object-physx-after-completion.service` 等待正式 collection manifest。它不会在
+采集/生成期间占用 GPU；正式 5000-valid 完成后才重建四类各 500 条跨物体组合并执行联合六方向
+PhysX。状态和日志：
+
+```bash
+systemctl --user status x2-dual-object-physx-after-completion.service --no-pager
+journalctl --user -u x2-dual-object-physx-after-completion.service -f
+```
 
 ### 独立终端仪表盘
 
@@ -231,7 +244,8 @@ find data/x2_valid_5000/attempts -name complete.json -type f -print0 | \
 
 这个累计 valid 仍只是可供最终配对选择的池，不等于最终 5000。正式结束必须由
 `manifest.json` 同时证明每侧 f1--f5 各 500、2000 个互补双侧 pair、1000 个 f5 单侧条目和
-30 个通用 mesh 全覆盖。
+30 个通用 mesh 全覆盖。front/back pair 可以来自不同物体，但手指集合必须互补且不相交；
+每对另有一份 `final_pairs/` 组合记录，分别保留两侧物体与 qpose。
 
 manifest 出现后必须运行独立只读审计器；退出码为 0 且报告 `passed=true` 才能结束 goal：
 
@@ -240,7 +254,7 @@ manifest 出现后必须运行独立只读审计器；退出码为 0 且报告 `
 
 该审计器不信任 manifest 的 headline：它重新哈希全部 5000 个 final 文件、验证 hard link 与
 source、一一重跑 v6/v7 JSON 契约检查、重算 attempt completion proofs、连续分层索引、2000 个
-同物体互补 pair、1000 个 f5 单侧条目以及固定 30-mesh 覆盖。当前 manifest 尚不存在时，它按
+跨物体允许的互补 pair 及其 `final_pairs/` 组合文件、1000 个 f5 单侧条目以及固定 30-mesh 覆盖。当前 manifest 尚不存在时，它按
 预期返回退出码 1 和 `final manifest is missing`，不会把 partial 数据误判完成。
 
 ## 不同中断位置会损失多少计算
@@ -299,7 +313,7 @@ attempt 数据仍可复用。
 4. 每个已完成 attempt 都有可重新计算的 `complete.json`，且 raw = valid + failed。
 5. 新 attempt 只由 collector 根据真实分层缺口与已观测 valid 率创建。
 6. 最终 manifest 必须恰好 5000，front/back 各 2500，每侧 f1--f5 各 500。
-7. front f1↔back f4、f2↔b3、f3↔b2、f4↔b1 必须同物体且 finger set 不相交；f5 单侧。
+7. front f1↔back f4、f2↔b3、f3↔b2、f4↔b1 的物体可以不同，但 finger set 必须互补且不相交；f5 单侧。
 8. 最终选择必须覆盖固定 30 个通用 mesh，不能用 primitive 或重复少数物体代替。
 
 ## 运行日志追加格式
@@ -327,6 +341,10 @@ attempt 数据仍可复用。
 | 2026-07-17 21:58 | 30 分钟长批健康检查 | 0001 | 0/0/0 | sphere_r020/r030 仍在内存优化 | 两 worker 持续 100% CPU、GPU 75--87%、无 OOM/退出；不重启 | 进程/GPU/文件快照 |
 | 2026-07-17 22:04 | 独立终端仪表盘 | 0001 | 6250/642/5608 completed pool | 首批 sphere worker 继续 | 4 项相关测试通过；真实 `--once` 快照复核通过 | `scripts/watch_x2_collection.py` |
 | 2026-07-17 22:22 | supervisor 健康日志修复 | 0001 | 0/0/0（本轮） | sphere_r020/r030 继续满载生成 | 自有 child 改为只读周期日志；11 项相关测试通过；不重启当前任务 | supervisor 日志（实现不公开） |
+| 2026-07-26 14:21 | 登录后自动续采 | 0001 | 60421/0/0（本轮） | 380/420 group；生成 078/081 | supervisor 同参数恢复；复用全部完整 group | `collector_supervisor.log` |
+| 2026-07-26 14:53 | 提前验证 fail-fast | 0001 | 60421/0/0（启动前） | Raw schema 预扫描 | 暴露 fallback/checkpoint 交叉契约错误；未启动仿真、未写正式 summary | `early_physx_60421/console.log` |
+| 2026-07-26 15:03 | 提前 PhysX 启动 | 0001 | 60421；首批 1/191 valid/failed | sphere_r020；生成 078/081 并行 | 修复 112 条合法 fallback 的加载契约；30/30 测试；隔离 summary | `x2-early-physx-attempt1.service` |
+| 2026-07-26 15:32 | 同-attempt验证互斥启用 | 0001 | sphere_r020 177/1417 | sphere_r030；生成 078/081 并行 | `.physx_validation.lock`；重启后 1594 条全量复用；正式 validator 将等待并续验 | early service + sphere_r020 summary |
 
 追加示例：
 
@@ -365,7 +383,7 @@ attempt 数据仍可复用。
 
 ## 下一步与待回答问题
 
-1. 继续 `attempt_0001` 的 66757 raw 生成，以首个原子 group 实测重算 ETA。
-2. 完成后继续固定 batch 8 的 PhysX fail-fast 验证，不自动改参。
+1. 继续 `attempt_0001` 剩余 6336 raw 生成，同时观察提前 PhysX 的原子 route。
+2. 生成完成后继续固定 batch 8 的正式 PhysX `--resume`，复核已有 route 并补验剩余对象。
 3. 每个 completed attempt 后重算 f1--f5 缺口、互补 pair 和 30-mesh 覆盖。
 4. 保留 passed 记录的 Isaac Sim GUI 重放流程，不用 raw 图片充当 valid 证据。

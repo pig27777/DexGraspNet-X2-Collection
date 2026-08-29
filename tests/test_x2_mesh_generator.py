@@ -17,11 +17,19 @@ import yaml
 
 from grasp_generation.x2_mesh_generator import (
     MeshEnergy,
+    TabletopPlaneConstraint,
     X2MeshAnnealing,
+    _collision_mesh_vertices_world,
+    _freeze_unselected_finger_actuators,
+    _project_pose_to_table_clearance,
+    _table_roll_is_better,
+    _table_exposed_surface_points,
+    _tabletop_collision_mesh_clearances,
     _valid_checkpoint_rows,
     cal_unselected_opposite_flex_energy,
     cal_x2_mesh_energy,
     initialize_x2_convex_hull,
+    tabletop_plane_collision_mesh_minimum_clearance,
 )
 from grasp_generation.utils.mesh_object_model import MeshObjectModel
 from grasp_generation.utils.x2_config import load_x2_mesh_config
@@ -30,7 +38,11 @@ from grasp_generation.utils.x2_mesh_contacts import (
     GenericDexterousContactPolicy,
     load_generic_contact_candidates,
 )
-from scripts.generate_x2_mesh_grasps import _parse_args, run
+from scripts.generate_x2_mesh_grasps import (
+    _parse_args,
+    _source_table_nonpenetrating,
+    run,
+)
 from scripts.build_x2_mesh_contact_candidates import build as build_contact_candidates
 
 
@@ -105,6 +117,32 @@ class X2MeshGeneratorTest(unittest.TestCase):
             )
             projection = torch.dot(object_root[index] - self.hand.palm_centers[side], normal)
             self.assertGreater(float(projection.detach()), 0.0)
+
+    def test_unselected_finger_actuators_are_frozen_at_canonical_open(self) -> None:
+        selected = [
+            next(
+                index
+                for index, candidate in enumerate(self.candidates)
+                if candidate.finger_name == "index"
+            ),
+            next(
+                index
+                for index, candidate in enumerate(self.candidates)
+                if candidate.finger_name == "palm"
+            ),
+        ]
+        actuators = torch.arange(1, 13, dtype=torch.float64).unsqueeze(0)
+        canonical = torch.zeros(12, dtype=torch.float64)
+        result = _freeze_unselected_finger_actuators(
+            self.hand,
+            actuators,
+            torch.tensor([selected], dtype=torch.long),
+            canonical,
+        )
+        mutable = {"rh_FFJ3", "rh_FFJ2"}
+        for column, name in enumerate(self.hand.actuator_names):
+            expected = actuators[0, column] if name in mutable else canonical[column]
+            torch.testing.assert_close(result[0, column], expected)
 
     def test_unselected_fingers_are_penalized_only_when_bending_to_opposite_side(self) -> None:
         def selection(side: str, *, include_index: bool) -> list[int]:
@@ -264,6 +302,35 @@ class X2MeshGeneratorTest(unittest.TestCase):
             } & known
             self.assertEqual(actual, set(required))
 
+    def test_require_palm_is_preserved_for_unstratified_and_exact_masks(self) -> None:
+        rng = np.random.default_rng(413)
+        for policy in (
+            GenericDexterousContactPolicy(
+                self.candidates,
+                active_side="front",
+                n_contact=4,
+                allow_thumb=True,
+                require_palm=True,
+            ),
+            GenericDexterousContactPolicy(
+                self.candidates,
+                active_side="back",
+                n_contact=3,
+                allow_thumb=True,
+                target_finger_count=2,
+                required_finger_names=("index", "thumb"),
+                require_palm=True,
+            ),
+        ):
+            values = policy.sample(rng)
+            self.assertTrue(
+                any(self.candidates[index].finger_name == "palm" for index in values)
+            )
+            policy.validate(values)
+            for slot in range(policy.n_contact):
+                values = policy.resample_slot(values, slot, rng)
+                policy.validate(values)
+
     def test_row_policies_mix_same_side_exact_masks_and_front_back(self) -> None:
         class TrackingPolicy(GenericDexterousContactPolicy):
             def __init__(self, *args: object, **kwargs: object) -> None:
@@ -327,6 +394,7 @@ class X2MeshGeneratorTest(unittest.TestCase):
 
         annealing_data = copy.deepcopy(self.config.data)
         annealing_data["optimization"]["switch_possibility"] = 1.0
+        annealing_data["optimization"]["contact_closure_warmup_iterations"] = 0
         annealing_config = type(self.config)(
             data=annealing_data,
             path=self.config.path,
@@ -395,6 +463,115 @@ class X2MeshGeneratorTest(unittest.TestCase):
             torch.tensor([False, False, True]),
         )
 
+    def test_contact_closure_warmup_holds_legal_tuple_before_resampling(self) -> None:
+        policy = GenericDexterousContactPolicy(
+            self.candidates,
+            active_side="front",
+            n_contact=4,
+            allow_thumb=True,
+        )
+        torch.manual_seed(73)
+        _, initial_contacts = initialize_x2_convex_hull(
+            self.hand,
+            self._object(batch_size=1),
+            ("front",),
+            (policy,),
+            self.config,
+            np.random.default_rng(73),
+        )
+        warmup_data = copy.deepcopy(self.config.data)
+        warmup_data["optimization"]["switch_possibility"] = 1.0
+        warmup_data["optimization"]["contact_closure_warmup_iterations"] = 2
+        warmup_config = type(self.config)(
+            data=warmup_data,
+            path=self.config.path,
+            project_root=self.config.project_root,
+        )
+        assert self.hand.hand_pose is not None
+        annealer = X2MeshAnnealing(
+            self.hand, (policy,), ("front",), warmup_config, seed=74
+        )
+        for _ in range(2):
+            self.hand.hand_pose.grad = torch.zeros_like(self.hand.hand_pose)
+            _, _, _, proposed = annealer.try_step()
+            torch.testing.assert_close(proposed, initial_contacts)
+        self.hand.hand_pose.grad = torch.zeros_like(self.hand.hand_pose)
+        _, _, _, proposed = annealer.try_step()
+        self.assertFalse(torch.equal(proposed, initial_contacts))
+
+    def test_optimizer_uses_unit_aware_coordinate_step_limits(self) -> None:
+        policy = GenericDexterousContactPolicy(
+            self.candidates,
+            active_side="front",
+            n_contact=4,
+            allow_thumb=True,
+        )
+        annealer = X2MeshAnnealing(
+            self.hand, (policy,), ("front",), self.config, seed=7401
+        )
+        expected = self.config.require("optimization.coordinate_step_limits")
+        torch.testing.assert_close(
+            annealer.coordinate_step_size[:3],
+            torch.full(
+                (3,), float(expected["translation_m"]), dtype=self.hand.dtype
+            ),
+        )
+        torch.testing.assert_close(
+            annealer.coordinate_step_size[3:9],
+            torch.full(
+                (6,), float(expected["rotation_6d"]), dtype=self.hand.dtype
+            ),
+        )
+        torch.testing.assert_close(
+            annealer.coordinate_step_size[9:],
+            torch.full(
+                (12,), float(expected["actuator_rad"]), dtype=self.hand.dtype
+            ),
+        )
+        self.assertLess(
+            float(expected["translation_m"]), float(expected["actuator_rad"])
+        )
+
+    def test_selected_finger_closure_seed_follows_active_palm_side(self) -> None:
+        active_sides = ("front", "back")
+        policies = tuple(
+            GenericDexterousContactPolicy(
+                self.candidates,
+                active_side=side,
+                n_contact=3,
+                allow_thumb=True,
+                target_finger_count=2,
+                required_finger_names=("index", "middle"),
+                require_palm=True,
+            )
+            for side in active_sides
+        )
+        torch.manual_seed(75)
+        pose, contacts = initialize_x2_convex_hull(
+            self.hand,
+            self._object(batch_size=2),
+            active_sides,
+            policies,
+            self.config,
+            np.random.default_rng(75),
+        )
+        index = {name: offset for offset, name in enumerate(self.hand.actuator_names)}
+        expected = {
+            "rh_FFJ3": float(self.config.require("initialization.contact_closure_seed_j3")),
+            "rh_FFJ2": float(self.config.require("initialization.contact_closure_seed_j2")),
+            "rh_MFJ3": float(self.config.require("initialization.contact_closure_seed_j3")),
+            "rh_MFJ2": float(self.config.require("initialization.contact_closure_seed_j2")),
+        }
+        for row, side in enumerate(active_sides):
+            policies[row].validate(contacts[row].tolist())
+            direction = 1.0 if side == "front" else -1.0
+            for name, magnitude in expected.items():
+                self.assertAlmostEqual(
+                    float(pose[row, 9 + index[name]].detach()),
+                    direction * magnitude,
+                    places=12,
+                )
+
     def test_thumb_candidates_come_from_seventeen_authored_usd_keypoints(self) -> None:
         thumb = [value for value in self.candidates if value.finger_name == "thumb"]
         self.assertEqual(len(thumb), 17)
@@ -460,6 +637,27 @@ class X2MeshGeneratorTest(unittest.TestCase):
         self.assertGreater(len(observed_palm_counts), 1)
         self.assertTrue(observed_thumb)
 
+    def test_distal_contact_mode_preserves_exact_palm_and_finger_contract(self) -> None:
+        policy = GenericDexterousContactPolicy(
+            self.candidates,
+            active_side="front",
+            n_contact=3,
+            allow_thumb=True,
+            target_finger_count=2,
+            required_finger_names=("index", "middle"),
+            require_palm=True,
+            prefer_distal_contacts=True,
+        )
+        for _ in range(32):
+            selected = policy.sample(np.random.default_rng(801 + _))
+            policy.validate(selected)
+            for index in selected:
+                candidate = self.candidates[index]
+                self.assertTrue(
+                    candidate.finger_name == "palm"
+                    or candidate.link_name.endswith("distal")
+                )
+
     def test_twelve_actuators_expand_and_receive_fk_gradients(self) -> None:
         actuator = torch.linspace(-0.2, 0.2, 12, dtype=torch.float64, requires_grad=True)
         joints = self.hand.backend.expand_actuators(actuator)
@@ -515,6 +713,38 @@ class X2MeshGeneratorTest(unittest.TestCase):
         self.assertTrue(torch.isfinite(reverse).all())
         self.assertTrue(torch.isfinite(self_collision).all())
 
+    def test_forward_hand_object_penetration_has_pose_gradient(self) -> None:
+        object_model = self._object(batch_size=1)
+        pose = torch.zeros(1, self.hand.POSE_DIMENSION, dtype=torch.float64)
+        pose[:, 3:9] = torch.tensor(
+            [1.0, 0.0, 0.0, 0.0, 1.0, 0.0], dtype=torch.float64
+        )
+        contacts = torch.tensor(
+            [self.policies["front"].sample(np.random.default_rng(83))],
+            dtype=torch.long,
+        )
+        self.hand.set_parameters(pose, contacts)
+        first_vertex = _collision_mesh_vertices_world(self.hand)[0, 0].detach()
+        pose[:, :3] = -first_vertex
+        pose.requires_grad_()
+        self.hand.set_parameters(pose, contacts)
+        depth = object_model.penetration_depth(
+            _collision_mesh_vertices_world(self.hand)
+        )
+        self.assertGreater(float(depth.max().detach()), 0.0)
+        depth.sum().backward()
+        self.assertTrue(torch.isfinite(pose.grad).all())
+        self.assertTrue(torch.any(pose.grad[:, :3] != 0.0))
+
+        energy = cal_x2_mesh_energy(
+            self.hand,
+            object_model,
+            ("front",),
+            self.config.require("optimization.weights"),
+        )
+        assert energy.E_hand_object_gate is not None
+        self.assertGreater(float(energy.E_hand_object_gate[0].detach()), 0.0)
+
     def test_front_and_back_use_same_dexgraspnet_mesh_energy(self) -> None:
         object_model = self._object()
         torch.manual_seed(19)
@@ -549,6 +779,165 @@ class X2MeshGeneratorTest(unittest.TestCase):
             value = getattr(energy, name)
             self.assertEqual(tuple(value.shape), (2,))
             self.assertTrue(torch.isfinite(value).all())
+
+    def test_table_energy_uses_nonzero_plane_offset(self) -> None:
+        object_model = self._object(batch_size=1)
+        torch.manual_seed(29)
+        initialize_x2_convex_hull(
+            self.hand,
+            object_model,
+            ("front",),
+            (self.policies["front"],),
+            self.config,
+            np.random.default_rng(29),
+        )
+        plane = TabletopPlaneConstraint(
+            normal=(0.0, 0.0, 1.0),
+            offset_m=-0.04,
+            clearance_m=0.002,
+            weight=10000.0,
+        )
+        energy = cal_x2_mesh_energy(
+            self.hand,
+            object_model,
+            ("front",),
+            self.config.require("optimization.weights"),
+            table_plane=plane,
+        )
+        assert energy.E_table is not None
+        normal = plane.normalized(device=self.hand.device, dtype=self.hand.dtype)
+        signed_clearance = (
+            _tabletop_collision_mesh_clearances(self.hand, normal)
+            - plane.offset_m
+        )
+        expected = torch.relu(
+            signed_clearance.new_tensor(plane.clearance_m) - signed_clearance
+        ).amax(dim=-1).square()
+        torch.testing.assert_close(energy.E_table, expected, rtol=0.0, atol=1.0e-15)
+        assert energy.minimum_table_clearance is not None
+        torch.testing.assert_close(
+            energy.minimum_table_clearance,
+            signed_clearance.amin(dim=-1),
+            rtol=0.0,
+            atol=1.0e-15,
+        )
+
+    def test_table_exposed_surface_uses_plane_normal_not_local_z(self) -> None:
+        points = np.asarray(
+            [
+                [0.0, 0.0, -2.0],
+                [0.0, 0.0, -1.0],
+                [0.0, 0.0, 1.0],
+                [0.0, 0.0, 2.0],
+            ],
+            dtype=np.float64,
+        )
+        plane = TabletopPlaneConstraint(
+            normal=(0.0, 0.0, -1.0),
+            offset_m=0.0,
+            clearance_m=0.002,
+            weight=10000.0,
+        )
+        selected = _table_exposed_surface_points(
+            points, plane, exposed_fraction=0.5, minimum_count=1
+        )
+        self.assertEqual(
+            selected.tolist(),
+            [[0.0, 0.0, -2.0], [0.0, 0.0, -1.0]],
+        )
+
+    def test_source_table_gate_rejects_crossing_not_unmet_requested_margin(self) -> None:
+        self.assertTrue(_source_table_nonpenetrating(0.0006))
+        self.assertTrue(_source_table_nonpenetrating(0.0))
+        self.assertFalse(_source_table_nonpenetrating(-1.0e-9))
+        self.assertFalse(_source_table_nonpenetrating(float("nan")))
+
+    def test_table_aware_initializer_selects_no_worse_roll(self) -> None:
+        plane = TabletopPlaneConstraint(
+            normal=(0.0, 0.0, 1.0),
+            offset_m=-0.04,
+            clearance_m=0.002,
+            weight=10000.0,
+        )
+        torch.manual_seed(31)
+        initialize_x2_convex_hull(
+            self.hand,
+            self._object(batch_size=1),
+            ("front",),
+            (self.policies["front"],),
+            self.config,
+            np.random.default_rng(31),
+        )
+        baseline = tabletop_plane_collision_mesh_minimum_clearance(
+            self.hand, plane
+        ).detach().clone()
+
+        torch.manual_seed(31)
+        initialize_x2_convex_hull(
+            self.hand,
+            self._object(batch_size=1),
+            ("front",),
+            (self.policies["front"],),
+            self.config,
+            np.random.default_rng(31),
+            table_plane=plane,
+        )
+        conditioned = tabletop_plane_collision_mesh_minimum_clearance(
+            self.hand, plane
+        ).detach()
+        self.assertGreaterEqual(float(conditioned[0]), float(baseline[0]))
+
+    def test_table_projection_changes_only_root_translation_and_meets_clearance(self) -> None:
+        plane = TabletopPlaneConstraint(
+            normal=(0.0, 0.0, 2.0),
+            offset_m=-0.04,
+            clearance_m=0.002,
+            weight=10000.0,
+        )
+        torch.manual_seed(37)
+        pose, contacts = initialize_x2_convex_hull(
+            self.hand,
+            self._object(batch_size=1),
+            ("front",),
+            (self.policies["front"],),
+            self.config,
+            np.random.default_rng(37),
+        )
+        lowered = pose.detach().clone()
+        lowered[:, 2] -= 0.1
+        projected, correction = _project_pose_to_table_clearance(
+            self.hand, lowered, contacts, plane
+        )
+        self.assertGreater(float(correction[0]), 0.0)
+        torch.testing.assert_close(
+            projected[:, 3:], lowered[:, 3:], rtol=0.0, atol=0.0
+        )
+        torch.testing.assert_close(
+            projected[:, :2], lowered[:, :2], rtol=0.0, atol=0.0
+        )
+        minimum = tabletop_plane_collision_mesh_minimum_clearance(
+            self.hand, plane
+        )
+        self.assertGreaterEqual(float(minimum[0]), plane.clearance_m)
+
+    def test_table_roll_prefers_contact_only_inside_admissible_set(self) -> None:
+        improve = _table_roll_is_better(
+            best_clearance=torch.tensor([0.001, 0.004, 0.004, 0.001]),
+            best_contact_distance=torch.tensor([0.001, 0.010, 0.002, 0.001]),
+            proposed_clearance=torch.tensor([0.003, 0.003, 0.001, 0.0015]),
+            proposed_contact_distance=torch.tensor([0.100, 0.005, 0.0001, 0.100]),
+            required_clearance=0.002,
+        )
+        # 0: feasibility dominates contact; 1: contact dominates excess
+        # clearance inside the admissible set; 2: an inadmissible proposal
+        # cannot replace an admissible one; 3: clearance is the fallback when
+        # neither roll is admissible.
+        torch.testing.assert_close(
+            improve,
+            torch.tensor([True, True, False, True]),
+            rtol=0.0,
+            atol=0.0,
+        )
 
     def test_generic_mesh_modules_have_no_legacy_domain_dependencies(self) -> None:
         paths = (

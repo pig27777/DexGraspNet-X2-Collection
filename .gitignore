@@ -29,6 +29,8 @@ graspdata
 dataset
 
 # Generated datasets, caches, and runtime state
+artifacts/
+relation_act/
 data/*
 !data/contact_points/
 !data/x2_valid_5000/
@@ -62,3 +64,7 @@ outputs/
 
 # X2 robot USD/mesh assets are local dependencies with separate licensing.
 x2_mujoco/
+
+# Standalone local research checkouts (each keeps its own Git history).
+thirdparty/GraspDiffuser/
+thirdparty/graspqp/

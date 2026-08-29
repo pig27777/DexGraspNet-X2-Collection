@@ -76,6 +76,20 @@ class X2ValidCollectorTest(unittest.TestCase):
         return {
             "pipeline_revision": collector.GENERATOR_PIPELINE_REVISION,
             "active_side": side,
+            "hand_pose": {
+                "translation": [0.0, 0.0, 0.0],
+                "rotation_matrix": [
+                    [1.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0],
+                    [0.0, 0.0, 1.0],
+                ],
+                "quaternion_wxyz": [1.0, 0.0, 0.0, 0.0],
+            },
+            "joint_names": [f"joint_{index}" for index in range(16)],
+            "joint": [0.0] * 16,
+            "actuator_names": [f"actuator_{index}" for index in range(12)],
+            "actuator": [0.0] * 12,
+            "selected_contact_ids": [],
             "success": True,
             "simulation_success": True,
             "maximum_penetration": 0.0,
@@ -150,6 +164,8 @@ class X2ValidCollectorTest(unittest.TestCase):
                         "positive_alphas": positive_alphas,
                         "raw_penetration_cap_m": 0.001,
                         "target_penetration_cap_m": 0.0015,
+                        "selected_alpha": 1.0,
+                        "selected_maximum_actuator_adjustment_rad": 0.01,
                     },
                 },
                 "orientations": [
@@ -196,7 +212,9 @@ class X2ValidCollectorTest(unittest.TestCase):
         )
         self.assertGreaterEqual(planned, 736)
 
-    def test_pair_candidates_requires_same_object_and_disjoint_fingers(self) -> None:
+    def test_pair_candidates_allows_different_objects_and_requires_disjoint_fingers(
+        self,
+    ) -> None:
         grouped: dict[tuple[str, int], list[ValidCandidate]] = {
             (side, value): []
             for side in ("front", "back")
@@ -260,14 +278,10 @@ class X2ValidCollectorTest(unittest.TestCase):
         )
         self.assertTrue(
             all(
-                front.object_id == back.object_id
+                front.object_id != back.object_id
                 and front.finger_names.isdisjoint(back.finger_names)
                 for front, back in pairs[1]
             )
-        )
-        self.assertNotIn(
-            Path("/back_a_overlap.json"),
-            {back.path for _, back in pairs[1]},
         )
 
     def test_materialize_final_is_exact_and_balanced(self) -> None:
@@ -342,6 +356,11 @@ class X2ValidCollectorTest(unittest.TestCase):
                 },
             )
             self.assertEqual(report["paired_entry_count"], 4)
+            self.assertEqual(report["paired_sample_count"], 4)
+            self.assertEqual(
+                report["pairing_protocol_revision"],
+                collector.PAIRING_PROTOCOL_REVISION,
+            )
             self.assertEqual(report["object_scale_by_id"], {"object": 1.0})
             self.assertTrue(
                 report["generation_protocol"]["stratified_batching"]
@@ -359,6 +378,10 @@ class X2ValidCollectorTest(unittest.TestCase):
                 )
             )
             self.assertEqual(len(list((root / "output" / "final_valid").glob("**/*.json"))), 10)
+            self.assertEqual(
+                len(list((root / "output" / "final_pairs").glob("**/*.json"))),
+                4,
+            )
 
     def test_incomplete_attempt_is_resumed_before_new_work(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -401,7 +424,9 @@ class X2ValidCollectorTest(unittest.TestCase):
             selection_manifest.write_text("{}", encoding="utf-8")
             metadata = {
                 "schema_version": 4,
-                "collection_protocol_revision": collector.COLLECTION_PROTOCOL_REVISION,
+                "collection_protocol_revision": (
+                    collector.ATTEMPT_COLLECTION_PROTOCOL_REVISION
+                ),
                 "raw_target": 10,
                 "generation": {
                     "pipeline_revision": collector.GENERATOR_PIPELINE_REVISION,

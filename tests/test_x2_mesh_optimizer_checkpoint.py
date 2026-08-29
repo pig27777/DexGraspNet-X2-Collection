@@ -29,6 +29,7 @@ from grasp_generation.x2_mesh_generator import (
     _fallback_improvement_mask,
     _feasible_improvement_mask,
     _proposal_protection_masks,
+    _table_contact_improvement_mask,
 )
 from grasp_generation.utils.x2_config import (
     X2Config,
@@ -122,6 +123,85 @@ class _DummyHand:
 
 
 class CheckpointRankingTest(unittest.TestCase):
+    def test_table_contact_checkpoint_requires_both_source_conditions(self) -> None:
+        hand = _DummyHand(4)
+        collision = _self_collision(
+            [0.0002] * 4, [0.0003] * 4, [True, True, True, False]
+        )
+        base = _energy([4.0] * 4)
+        energy = MeshEnergy(
+            **{
+                **vars(base),
+                "E_contact": torch.tensor(
+                    [0.0, 1.0e-8, 0.0, 0.0], dtype=torch.float64
+                ),
+                "forward_maximum_penetration": torch.tensor(
+                    [0.0004, 0.0002, 0.0003, 0.0001], dtype=torch.float64
+                ),
+                "minimum_table_clearance": torch.tensor(
+                    [0.001, 0.001, -0.001, 0.003], dtype=torch.float64
+                ),
+            }
+        )
+        bank = _CheckpointBank.empty(hand, energy, collision)
+        mask = _table_contact_improvement_mask(
+            bank,
+            torch.ones(4, dtype=torch.bool),
+            energy,
+            collision,
+            requested_clearance_m=0.002,
+        )
+        torch.testing.assert_close(mask, torch.tensor([True, False, False, False]))
+
+    def test_table_contact_checkpoint_prefers_margin_then_penetration(self) -> None:
+        hand = _DummyHand(2)
+        collision = _self_collision([0.0002] * 2, [0.0003] * 2, [True] * 2)
+        base = _energy([1.0, 1.0])
+        baseline = MeshEnergy(
+            **{
+                **vars(base),
+                "E_contact": torch.zeros(2, dtype=torch.float64),
+                "forward_maximum_penetration": torch.tensor(
+                    [0.0001, 0.0005], dtype=torch.float64
+                ),
+                "minimum_table_clearance": torch.tensor(
+                    [0.001, 0.003], dtype=torch.float64
+                ),
+            }
+        )
+        bank = _CheckpointBank.empty(hand, baseline, collision)
+        bank.update(
+            torch.ones(2, dtype=torch.bool),
+            hand,
+            baseline,
+            collision,
+            step=0,
+        )
+        proposal = MeshEnergy(
+            **{
+                **vars(base),
+                "total": torch.tensor([99.0, 99.0], dtype=torch.float64),
+                "E_contact": torch.zeros(2, dtype=torch.float64),
+                "forward_maximum_penetration": torch.tensor(
+                    [0.0009, 0.0004], dtype=torch.float64
+                ),
+                "minimum_table_clearance": torch.tensor(
+                    [0.003, 0.003], dtype=torch.float64
+                ),
+            }
+        )
+        mask = _table_contact_improvement_mask(
+            bank,
+            torch.ones(2, dtype=torch.bool),
+            proposal,
+            collision,
+            requested_clearance_m=0.002,
+        )
+        # Row 0 upgrades to the requested-margin class despite worse proxy
+        # penetration/energy; row 1 remains in that class and improves the
+        # sampled bidirectional penetration proxy.
+        torch.testing.assert_close(mask, torch.tensor([True, True]))
+
     def test_sparse_pool_preserves_energy_and_penetration_candidates(self) -> None:
         hand = _DummyHand(1)
         pool = _SparseCheckpointPool.empty(hand, capacity=3)
@@ -169,7 +249,7 @@ class CheckpointRankingTest(unittest.TestCase):
         config = load_x2_mesh_config()
         self.assertEqual(
             config.require("pipeline_revision"),
-            "x2_mesh_grasp_unselected_finger_side_v6",
+            "x2_mesh_grasp_ownership_clean_v7",
         )
         self.assertEqual(
             config.require("generation.dense_hand_surface_samples_per_set"),
@@ -521,7 +601,7 @@ class V4RecordTest(unittest.TestCase):
         )
         self.assertEqual(
             saved["pipeline_revision"],
-            "x2_mesh_grasp_unselected_finger_side_v6",
+            "x2_mesh_grasp_ownership_clean_v7",
         )
         collision = saved["self_collision"]
         self.assertEqual(

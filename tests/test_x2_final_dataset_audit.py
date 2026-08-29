@@ -24,7 +24,7 @@ class X2FinalDatasetAuditTest(unittest.TestCase):
                         "side": "front",
                         "finger_count": front_count,
                         "finger_names": front_names,
-                        "object_id": "object",
+                        "object_id": f"front_object_{front_count}",
                         "pair_id": pair_id,
                     },
                     {
@@ -32,7 +32,7 @@ class X2FinalDatasetAuditTest(unittest.TestCase):
                         "side": "back",
                         "finger_count": back_count,
                         "finger_names": back_names,
-                        "object_id": "object",
+                        "object_id": f"back_object_{back_count}",
                         "pair_id": pair_id,
                     },
                 ]
@@ -40,7 +40,9 @@ class X2FinalDatasetAuditTest(unittest.TestCase):
             merged.append(
                 {
                     "pair_id": pair_id,
-                    "object_id": "object",
+                    "front_object_id": f"front_object_{front_count}",
+                    "back_object_id": f"back_object_{back_count}",
+                    "same_object": False,
                     "front_finger_count": front_count,
                     "front_finger_names": sorted(front_names),
                     "back_finger_count": back_count,
@@ -76,6 +78,20 @@ class X2FinalDatasetAuditTest(unittest.TestCase):
         report = _audit_pairing(records, merged, per_side_finger_target=1)
         self.assertEqual(report["paired_entry_count"], 4)
         self.assertEqual(report["single_side_five_finger_entry_count"], 2)
+
+    def test_pairing_audit_allows_different_objects(self) -> None:
+        records, merged = self._balanced_records()
+        paired_records = [
+            record for record in records if record.get("pair_id") is not None
+        ]
+        self.assertTrue(
+            all(
+                paired_records[index]["object_id"]
+                != paired_records[index + 1]["object_id"]
+                for index in range(0, len(paired_records), 2)
+            )
+        )
+        _audit_pairing(records, merged, per_side_finger_target=1)
 
     def test_pairing_audit_rejects_overlapping_fingers(self) -> None:
         records, merged = self._balanced_records()

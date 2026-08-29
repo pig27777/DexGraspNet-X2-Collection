@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 from pathlib import Path
 from typing import Any
 
@@ -73,9 +74,9 @@ def _validate_x2_mesh_config(
 ) -> None:
     if int(config.require("schema_version")) != 1:
         raise X2ConfigurationError("Only schema_version=1 is supported")
-    if str(config.require("pipeline_revision")) != "x2_mesh_grasp_unselected_finger_side_v6":
+    if str(config.require("pipeline_revision")) != "x2_mesh_grasp_ownership_clean_v7":
         raise X2ConfigurationError(
-            "pipeline_revision must be x2_mesh_grasp_unselected_finger_side_v6"
+            "pipeline_revision must be x2_mesh_grasp_ownership_clean_v7"
         )
 
     dense_hand_samples = config.require(
@@ -167,6 +168,48 @@ def _validate_x2_mesh_config(
 
     if int(config.require("generation.n_contact")) <= 0:
         raise X2ConfigurationError("generation.n_contact must be positive")
+    for key in (
+        "generation.selected_contact_max_distance_m",
+        "initialization.distance_lower",
+        "initialization.distance_upper",
+    ):
+        value = float(config.require(key))
+        if not value == value or abs(value) == float("inf") or value < 0.0:
+            raise X2ConfigurationError(f"{key} must be finite and non-negative")
+    if float(config.require("initialization.distance_lower")) >= float(
+        config.require("initialization.distance_upper")
+    ):
+        raise X2ConfigurationError(
+            "initialization.distance_lower must be strictly below initialization.distance_upper"
+        )
+    for key in (
+        "initialization.contact_closure_seed_j3",
+        "initialization.contact_closure_seed_j2",
+    ):
+        value = float(config.require(key))
+        if not math.isfinite(value) or value < 0.0:
+            raise X2ConfigurationError(f"{key} must be finite and non-negative")
+    table_aware_roll_samples = config.require(
+        "initialization.table_aware_roll_samples"
+    )
+    if (
+        not isinstance(table_aware_roll_samples, int)
+        or isinstance(table_aware_roll_samples, bool)
+        or table_aware_roll_samples <= 0
+    ):
+        raise X2ConfigurationError(
+            "initialization.table_aware_roll_samples must be a positive integer"
+        )
+    table_exposed_surface_fraction = float(
+        config.require("initialization.table_exposed_surface_fraction")
+    )
+    if (
+        not math.isfinite(table_exposed_surface_fraction)
+        or not 0.0 <= table_exposed_surface_fraction <= 1.0
+    ):
+        raise X2ConfigurationError(
+            "initialization.table_exposed_surface_fraction must lie in [0, 1]"
+        )
     for key, expected in (
         ("contact_candidates.expected_finger_markers_per_finger", 47),
         ("contact_candidates.expected_palm_markers_per_side", 41),
@@ -193,6 +236,25 @@ def _validate_x2_mesh_config(
         raise X2ConfigurationError("normal_side_threshold must lie in (0,1)")
     if not 0.0 <= float(config.require("optimization.switch_possibility")) <= 1.0:
         raise X2ConfigurationError("switch_possibility must lie in [0,1]")
+    for key in (
+        "optimization.coordinate_step_limits.translation_m",
+        "optimization.coordinate_step_limits.rotation_6d",
+        "optimization.coordinate_step_limits.actuator_rad",
+    ):
+        value = float(config.require(key))
+        if not math.isfinite(value) or value <= 0.0:
+            raise X2ConfigurationError(f"{key} must be finite and positive")
+    contact_closure_warmup_iterations = config.require(
+        "optimization.contact_closure_warmup_iterations"
+    )
+    if (
+        not isinstance(contact_closure_warmup_iterations, int)
+        or isinstance(contact_closure_warmup_iterations, bool)
+        or contact_closure_warmup_iterations < 0
+    ):
+        raise X2ConfigurationError(
+            "optimization.contact_closure_warmup_iterations must be a non-negative integer"
+        )
     opposite_margin = float(
         config.require("optimization.unselected_finger_opposite_flex.margin")
     )
@@ -297,6 +359,17 @@ def _validate_x2_mesh_config(
     ):
         raise X2ConfigurationError(
             "optimization.weights.E_unselected_opposite_flex must be non-negative"
+        )
+    if "E_contact" not in weights or float(weights["E_contact"]) < 0.0:
+        raise X2ConfigurationError(
+            "optimization.weights.E_contact must be non-negative"
+        )
+    if (
+        "E_hand_object_gate" not in weights
+        or float(weights["E_hand_object_gate"]) < 0.0
+    ):
+        raise X2ConfigurationError(
+            "optimization.weights.E_hand_object_gate must be non-negative"
         )
 
 

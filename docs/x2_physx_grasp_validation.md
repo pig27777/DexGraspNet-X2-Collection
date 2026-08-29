@@ -224,8 +224,8 @@ metadata、生成 CSV/JSON、验证 summary 的 SHA-256 以及 raw/valid/failed 
 重新计算这些字段，缺失或陈旧的 `complete.json` 所属 attempt 完全不计数。
 
 最终 `data/x2_valid_5000/manifest.json` 还会逐条复核正式后端/协议、恰好 100 个逻辑步、六个
-方向名称和六方向全部 passed，并证明 front/back 各 2500、每侧 f1..f5 各 500、同物体互斥
-手指配对、f5 单侧以及全部 30 个正式通用 mesh 的覆盖。只有这份 manifest 和其中引用的
+方向名称和六方向全部 passed，并证明 front/back 各 2500、每侧 f1..f5 各 500、跨物体允许的
+互补且互斥手指配对、f5 单侧以及全部 30 个正式通用 mesh 的覆盖。只有这份 manifest 和其中引用的
 `complete.json` hash 全部成立，才能称为 5000 valid 已完成。
 
 ## 8. 历史 v3 PhysX 基线与 v4 A/B

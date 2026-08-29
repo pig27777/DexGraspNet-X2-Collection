@@ -1,6 +1,6 @@
 # X2 抓取数据采集实验日志
 
-最后更新：2026-07-17 22:22 CST
+最后更新：2026-07-27 16:44 CST
 
 ## 技术摘要
 
@@ -10,16 +10,24 @@
   `000,003,...,087`，并保留 12 个 primitive，共 42 个正式物体。
 - 当前生成协议为 `x2_mesh_grasp_unselected_finger_side_v6`，验证协议为
   `x2_object_centered_dexgraspnet_six_orientation_v7`，采集协议为
-  `x2_balanced_complementary_30mesh_5000_v6`。
+  `x2_balanced_cross_object_complementary_30mesh_5000_v7`；已有 attempt 仍使用其元数据中
+  固化的 v6 采集协议，避免运行中改写历史完成证明。
 - `attempt_0000` 已于 2026-07-17 21:19:40 CST 通过完成审计：**6250 raw = 642 valid +
   5608 failed**，完整通过率 10.27%；42/42 个物体均有验证 summary，`complete.json`
   `passed=true`。这 642 条现在可进入累计候选池，但最终 `manifest.json` 尚未生成，
   因此还不是完成的 5000 条数据集。
 - collector 已于 21:19:42 自动创建 `attempt_0001`并开始生成：seed 1009，
   f1--f5 raw target 为 16081/14247/11955/12746/11728，总计 **66757 raw**。
-- 正式验证固定 `batch=8`。wrapper 只对明确的结构化 CUDA OOM 做 fail-fast 报错；
-  不自动降 batch、不设 attempt raw 上限、不隐藏子进程错误，以便低通过率或资源故障
-  直接暴露。恢复只复用已通过 SHA/协议审计的原子 route。
+- `attempt_0001` 于 2026-07-26 14:21 自动恢复时已有 **60421/66757 raw**、
+  380/420 个完整 object/side/finger group；剩余 general `078/081/084/087` 正在生成。
+  15:03 已另启隔离 summary 的提前 PhysX 验证，对前 38 个完整物体的 60421 条 raw
+  使用正式 v7、固定 batch 8 和 `--resume` 路由。正式 `validation_summary.csv`
+  不会被提前发布，剩余 raw 完成后 collector 仍会复核已有 route 并补验。
+- 正式 validator 默认固定 `batch=8`。wrapper 只对明确的结构化 CUDA OOM 做 fail-fast
+  报错，不自动降 batch、不设 attempt raw 上限、不隐藏子进程错误。2026-07-26 并发生成
+  明确占用约 11.6 GiB 后，提前验证按用户继续验证的指令人工改为 `batch=6`；这只改变并行
+  环境容量，v7 六方向、100 steps、2 substeps、drive 与判定门限均未改变。恢复只复用已通过
+  SHA/协议审计的原子 route。
 - 当前最重要的负结果是：静态 dense/self-collision gate 全部通过并不保证动态 valid。
   041/back/f3 的 4 条 top-16 候选为 4/4 静态通过，但 PhysX 为 0/4 valid。因此正式启动前
   必须保留六方向 PhysX 闭环，不能用能量或静态穿透代替。
@@ -31,7 +39,7 @@
 | 最终数量 | 恰好 5000 条 `validation.status=passed` |
 | 双侧配额 | front 2500、back 2500 |
 | 手指数配额 | 每侧 f1--f5 各 500；palm 不计入手指数 |
-| 配对 | front f1↔back f4、f2↔b3、f3↔b2、f4↔b1；同物体且手指集合不相交 |
+| 配对 | front f1↔back f4、f2↔b3、f3↔b2、f4↔b1；物体可不同，手指集合必须不相交 |
 | f5 | front/back 各 500 条单侧记录，`pair_id=null` |
 | 通用物体 | 从已审计 88 个中固定选择 30 个：`000,003,...,087` |
 | 其他物体 | 12 个 primitive；最终正式 catalog 共 42 个物体 |
@@ -41,6 +49,63 @@
 
 只有最终 manifest 同时证明数量、分层、配对、30-mesh 覆盖、v6/v7 协议及 attempt 哈希时，
 才能把目标标记为完成。
+
+### 2026-07-27 — front/back 跨物体组合规则
+
+用户确认 front 与 back 不需要关联同一物体：两侧可以分别抓取不同物体，再按
+`front f1↔back f4`、`f2↔b3`、`f3↔b2`、`f4↔b1` 组合。正式配对文件分别保存两侧的
+物体、输入 `hand_pose`、16 维 joint qpose、12 维 actuator、手指集合、source SHA-256 和
+PhysX v7 通过证明；同物体只作为允许的 fallback，不再是配对门槛。
+
+基于当时已落盘的 7061 条 passed route 已生成中间快照
+`data/x2_valid_5000/front_back_pairs_20260727_104951`。四类组合分别为
+451 / 500 / 500 / 397，共 1848 对、使用 3696 条不重复 valid 源，其中 1615 对是不同物体、
+233 对是同物体。该快照是对当前 passed route 的组合结果，不是最终 5000-valid manifest。
+此外，若把两侧 actuator 合成一只手同时抓两个物体，只能标记为 dual-object
+`not_run` warm-start；必须重新做双物体联合静态门和六方向 PhysX，不能继承两次单物体
+`passed` 直接称为双物体 valid。现有 route 只保存 closing 的选中 alpha/最大调整量，没有
+序列化完整最终 closing actuator target。
+
+同一批 7061 条 passed route 另生成
+`data/x2_dual_object_20260727_105600`：强制两侧物体不同并最大化互补匹配，四类候选为
+451 / 468 / 500 / 397，共 **1816 条 dual-object warm-start**。逐文件复核了不同物体、
+手指集合不相交且覆盖五指、12 actuator、16 joint qpose、源记录不复用以及
+`dual_object_validation.status=not_run`，全部通过；manifest SHA-256 为
+`f46839d45627c610df891518f993071782b0fceaf0f22524876b0c55d69925a7`。
+
+10:58 已创建一次性 systemd 热加载单元 `x2-cross-object-pairing-reload.service`。它只等待
+`attempt_0001/generation_summary.json` 出现，随后重启 collector supervisor，使正式验证和
+最终物化加载新的跨物体协议；不会中断当前已运行数小时的 084/087 生成 worker。
+
+12:39 将 canonical 派生目录 `data/x2_dual_object` 从首轮 642 个单物体源/80 个组合更新为
+当前 7061 个 passed route/1816 个不同物体组合。四类仍为 451 / 468 / 500 / 397；全量复核
+不同物体、互补五指、12 actuator、16 joint qpose、源不复用及
+`dual_object_validation.status=not_run` 通过，manifest SHA-256 为
+`36f3d7fd4ce44065e66b9a13552ff863e7d9ca1188b119b999461344a893bb85`。
+用户级 transient 单元 `x2-dual-object-continuous-refresh.service` 曾用于先行刷新；13:37 已由
+下面的持久验证服务接管并停止，避免正式完成时两个 builder 并发改写 canonical 目录。持久服务
+同样会在每个新 attempt 写出 `complete.json` 后从 completed attempts 确定性重建。
+
+13:36 新增真正的双物体联合验证协议
+`x2_dual_object_six_orientation_physx_v1`、resume 原子路由和完成 summary。验证场景同时包含
+一只 X2 和两个独立 dynamic rigid object；sampled 联合静态门先拒绝合成手自碰撞、手物穿透或
+物物穿透，随后禁用物物 PhysX collision，使两只 object sensor 的末态接触只能来自手。每条
+执行六方向 × 100 logical steps × 2 substeps，要求两个物体分别保持接触/位移门，且手部
+finite、active tracking 和 Newton mimic 均通过。协议/调度相关 24 项测试通过；当前候选
+`right_f1_left_f4_000000` 的 CPU 联合静态 pilot 通过，手物最大穿透为
+0 / 0.604 mm，物物最大穿透 0。为避免与仍在生成 084/087 的 GPU worker 争抢显存，尚未提前
+启动 Isaac 动态 pilot。
+
+持久用户服务 `x2-dual-object-physx-after-completion.service` 已于 13:36 启用并处于 waiting
+状态。它只在正式 5000-valid manifest 出现后，从 completed attempts 重建四类组合，再用
+batch 4 启动联合 PhysX；route 位于
+`data/x2_dual_object/physx_validation/{valid,failed}`。
+
+16:44 按“继续生成更多 front、back、front&back”的要求取消联合数据的 500/类硬上限。正式
+单物体数据仍保持 front/back 各 2500、每侧 f1--f5 各 500 的审计配额；派生组合要求四类各
+至少 500，但会保留并验证 completed attempts 中所有满足不同物体、互补且不重叠手指约束的
+候选。最终 summary 动态绑定 composition manifest 的实际候选数，并证明全部候选均已原子
+路由，不再假设总数固定为 2000。
 
 ## 当前受控参数
 
@@ -87,6 +152,42 @@
 | EXP-042-V6-CROSS | 正式 mesh 042；front/back × f1--f5；每层2条 | v6 / v7 | dense 20/20，自碰撞 20/20，finite 20/20 | 2/20 valid；front f2、f3 各1条；120/120 orientation finite | 正式链路能产生真实 valid；主要瓶颈是动态丢失接触 | 否，pilot |
 | EXP-COLLECT-A0000 | 12 primitive + 30 mesh；f1--f5 各1250 raw | v6 / v7 | 6250/6250 raw 生成完成 | 642 valid + 5608 failed；10.27% | 42/42 物体完成，completion proof 通过 | 可进入候选池；尚未满 5000 |
 | EXP-A0000-VIEW-030 | general `030`；back f2；index + middle | v6 / v7 GUI 重放 | raw 只作为重放输入 | route `passed`；identity 位移 0.311 mm；接触力 11.59 N | Isaac Sim 已显示 `validated-final` | 是，来自 completed attempt |
+| EXP-A0001-EARLY-PHYSX | attempt 0001 已发布的前 38 个完整物体；60421 raw | v6 / v7；batch 8；隔离 summary | 380/420 group 已提交 | sphere_r020 为 177 valid + 1417 failed；15:39 累计 204 + 2438，sphere_r030 进行中 | 提前路由不等待最后 4 个物体；最终仍由正式 summary/completion proof 定案 | partial route，仅完成 attempt 后正式计数 |
+
+### 2026-07-26 — 提前 PhysX 验证与 fallback 契约修复
+
+提前验证首次启动时，加载器拒绝
+`cube_e040_f1_back_000127.json`：该记录 dense 手物穿透合格，但自碰撞不合格，因此生成器
+正确恢复普通 `fallback`；加载器却错误要求所有 dense 合格记录都恢复
+`bidirectional_feasible`。全量字段组合审计显示现有 60421 条中共有 112 条属于
+`fallback + dense feasible + self-collision infeasible`，其余为 59834 条双向合格和
+475 条双向 fallback。
+
+修复后 checkpoint 交叉契约为：自碰撞与 dense 都合格时必须是
+`bidirectional_feasible`；自碰撞合格但 dense 不合格时必须是
+`bidirectional_fallback`；自碰撞不合格时必须是普通 `fallback`。这没有放宽 Valid
+标准：上述 112 条仍会因 `self_collision_not_feasible` 路由到 Failed。验证链单测
+30/30 通过；服务 `x2-early-physx-attempt1.service` 于 15:03 重启后持续运行。为避免
+最后 4 个物体生成完成时正式 validator 与提前 validator 重复路由，同一 input root
+新增 `.physx_validation.lock` 内核互斥；异常或进程退出会自动释放，等待者随后
+`--resume`。15:32 短暂重启启用该锁，已完成的 sphere_r020 1594 条全部复用。
+15:39 已累计原子路由 2642 条。并发显存实测 18.6/32.6 GB，未出现 OOM。
+
+### 2026-07-26 — 并发 OOM 暴露与 batch 6 续验
+
+提前验证的 `batch=8` 服务于 20:03 在 general `012` 的第二个 batch 明确 fail-fast：
+当时两个生成 worker 分别占用约 5.74/5.81 GiB，验证子进程占用约 19.30 GiB，GPU
+仅余 60.88 MiB，申请额外 16 MiB 时触发 CUDA OOM。中断点为 **25507/60421 routed =
+2894 valid + 22613 failed**，16/38 个物体完成；`012` 的前 8 条 route 已原子保存，
+没有数据损失。
+
+用户先要求继续生成、随后要求继续验证，因此没有终止已运行约 8 小时的 `078/081`
+生成 worker。22:34 人工启动 `x2-early-physx-attempt1-b6.service`，保持相同 v7 物理
+协议并仅将并行容量改为 `batch=6`。resume 完整复核前 16 个物体后，于 23:05 回到
+`012`；初始化时验证器约占 10.9 GiB，连续 batch 后稳定在约 18.7 GiB，总显存约
+31.0/32.6 GiB，仍保留约 1.6 GiB。23:08 路由数增长到 25687，
+证明多个新增 batch 已写出且没有再次 OOM。日志为
+`early_physx_60421/console_batch6.log`。
 
 ## 逐实验记录
 
@@ -383,8 +484,8 @@ collector 未重启；补丁在 supervisor 下次自然启动时生效。
 
 ## 下一步
 
-1. 持续生成 `attempt_0001` 的 66757 raw，记录首个原子提交耗时并校准 ETA。
-2. 保持当前 passed 样本的 Isaac Sim `validated-final` 窗口供人工查看；关闭窗口不影响采集。
+1. 持续生成 `attempt_0001` 剩余 6336 raw，同时完成前 38 个物体的提前 PhysX 路由。
+2. 生成结束后由正式 validator 复核已有 route、补验剩余 4 个物体并发布正式 summary。
 3. 每个 completed attempt 后追加 raw/valid/failed、分层有效率、累计配对数和 30-mesh 覆盖；
    按真实缺口让 collector 创建下一 attempt。
 4. 达到配额后复核最终 manifest、5000 个 SHA-256、2000 个双侧 pair、1000 个单侧 f5 条目

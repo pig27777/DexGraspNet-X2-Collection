@@ -200,7 +200,7 @@ class X2StratifiedMeshGeneratorTest(unittest.TestCase):
                         {
                             "schema_version": 1,
                             "pipeline_revision": (
-                                "x2_mesh_grasp_unselected_finger_side_v6"
+                                "x2_mesh_grasp_ownership_clean_v7"
                             ),
                             "sample_index": 999,
                             "active_side": side,
@@ -275,7 +275,7 @@ class X2StratifiedMeshGeneratorTest(unittest.TestCase):
             self.assertEqual(report["num_output_samples"], 6)
             self.assertEqual(
                 report["pipeline_revision"],
-                "x2_mesh_grasp_unselected_finger_side_v6",
+                "x2_mesh_grasp_ownership_clean_v7",
             )
             self.assertEqual(
                 report["dense_hand_object_gate"]["evaluated_count"], 6

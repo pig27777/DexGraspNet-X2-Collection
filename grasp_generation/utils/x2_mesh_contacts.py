@@ -140,6 +140,8 @@ class GenericDexterousContactPolicy:
         allow_thumb: bool = True,
         target_finger_count: int | None = None,
         required_finger_names: Sequence[str] | None = None,
+        require_palm: bool = False,
+        prefer_distal_contacts: bool = False,
     ) -> None:
         if active_side not in SIDES:
             raise GenericContactError(f"active_side must be front or back, got {active_side!r}")
@@ -177,17 +179,38 @@ class GenericDexterousContactPolicy:
             raise GenericContactError("A five-finger selection requires allow_thumb=true")
         self.target_finger_count = target_finger_count
         self.required_finger_names = required
-        self.eligible_indices = tuple(
+        self.require_palm = bool(require_palm)
+        self.prefer_distal_contacts = bool(prefer_distal_contacts)
+        if self.require_palm and n_contact < (target_finger_count or 1) + 1:
+            raise GenericContactError("require_palm needs one slot beyond the finger stratum")
+        eligible_indices = tuple(
             index
             for index, candidate in enumerate(self.candidates)
             if candidate.enabled
             and active_side in candidate.supported_sides
             and (self.allow_thumb or candidate.finger_name != "thumb")
         )
+        if self.prefer_distal_contacts:
+            # For the palm-plus-fingers contact mode used to seed tabletop
+            # grasps, proximal/middle link markers can be close only after the
+            # object has already penetrated a finger link.  Prefer real distal
+            # contact surfaces while retaining every palm marker.  The policy
+            # still validates the exact required finger stratum below.
+            eligible_indices = tuple(
+                index
+                for index in eligible_indices
+                if self.candidates[index].finger_name == "palm"
+                or self.candidates[index].link_name.endswith("distal")
+            )
+        self.eligible_indices = eligible_indices
         if len(self.eligible_indices) < n_contact:
             raise GenericContactError(
                 f"Only {len(self.eligible_indices)} candidates support {active_side}; need {n_contact}"
             )
+        if self.require_palm and not any(
+            self.candidates[index].finger_name == "palm" for index in self.eligible_indices
+        ):
+            raise GenericContactError("No palm candidate supports the requested active side")
         available_fingers = self._finger_names(self.eligible_indices)
         if (
             self.target_finger_count is not None
@@ -212,10 +235,35 @@ class GenericDexterousContactPolicy:
 
     def sample(self, rng: np.random.Generator) -> tuple[int, ...]:
         if self.target_finger_count is None:
-            chosen = rng.choice(
-                self.eligible_indices, size=self.n_contact, replace=False
-            )
-            result = tuple(int(v) for v in chosen)
+            if self.require_palm:
+                palms = tuple(
+                    index
+                    for index in self.eligible_indices
+                    if self.candidates[index].finger_name == "palm"
+                )
+                non_palm = tuple(
+                    index
+                    for index in self.eligible_indices
+                    if self.candidates[index].finger_name != "palm"
+                )
+                if len(non_palm) < self.n_contact - 1:
+                    raise GenericContactError(
+                        "Not enough non-palm contacts for require_palm selection"
+                    )
+                chosen = [int(rng.choice(palms))]
+                chosen.extend(
+                    int(value)
+                    for value in rng.choice(
+                        non_palm, size=self.n_contact - 1, replace=False
+                    )
+                )
+                rng.shuffle(chosen)
+                result = tuple(chosen)
+            else:
+                chosen = rng.choice(
+                    self.eligible_indices, size=self.n_contact, replace=False
+                )
+                result = tuple(int(v) for v in chosen)
         else:
             available_fingers = self._finger_names(self.eligible_indices)
             selected_fingers = self.required_finger_names or tuple(
@@ -232,6 +280,12 @@ class GenericDexterousContactPolicy:
                     if self.candidates[index].finger_name == finger_name
                 ]
                 chosen.append(int(rng.choice(candidates)))
+            if self.require_palm:
+                palms = [
+                    index for index in self.eligible_indices
+                    if self.candidates[index].finger_name == "palm" and index not in chosen
+                ]
+                chosen.append(int(rng.choice(palms)))
             allowed = [
                 index
                 for index in self.eligible_indices
@@ -296,13 +350,17 @@ class GenericDexterousContactPolicy:
                 raise GenericContactError(
                     f"Selection uses {actual} fingers; expected {self.target_finger_count}"
                 )
-            if self.required_finger_names and set(actual_names) != set(
-                self.required_finger_names
-            ):
-                raise GenericContactError(
-                    f"Selection uses fingers {actual_names}; expected "
-                    f"{self.required_finger_names}"
-                )
+        if self.require_palm and not any(
+            self.candidates[index].finger_name == "palm" for index in values
+        ):
+            raise GenericContactError("Selection lacks required palm contact")
+        if self.required_finger_names and set(actual_names) != set(
+            self.required_finger_names
+        ):
+            raise GenericContactError(
+                f"Selection uses fingers {actual_names}; expected "
+                f"{self.required_finger_names}"
+            )
 
 
 def selected_candidates(

@@ -440,6 +440,56 @@ class X2IsaacValidationTests(unittest.TestCase):
                 failed["validation"]["preflight"]["hand_object_passed"]
             )
 
+    def test_v5_fallback_may_be_dense_feasible_when_self_collision_is_infeasible(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            mesh = root / "mesh.obj"
+            mesh.write_text("o mesh\n", encoding="utf-8")
+            raw = self._write_raw(root, mesh)
+            payload = json.loads(raw.read_text(encoding="utf-8"))
+            _add_v5_dense_gate(payload, maximum=0.0008)
+            payload["self_collision"] = {
+                "maximum_penetration": 0.0006,
+                "total_penetration": 0.0012,
+                "worst_pair": ["rh_thdistal", "rh_ffmiddle"],
+                "feasible": False,
+                "threshold": 0.0005,
+            }
+            payload["optimization"]["restored_checkpoint"] = "fallback"
+            raw.write_text(json.dumps(payload, allow_nan=False), encoding="utf-8")
+
+            candidate = load_raw_candidate(raw)
+            self.assertFalse(candidate.self_collision_feasible)
+            self.assertTrue(candidate.hand_object_feasible)
+            outcomes = [
+                OrientationOutcome(name, True, 0.01, 0.02, 0.1, 0.01, True)
+                for name, _ in GRAVITY_TESTS_WXYZ
+            ]
+            failed = make_validated_record(
+                candidate,
+                outcomes,
+                ValidationThresholds(),
+                collision_aware_closing=_closing_audit(raw_maximum=0.0008),
+            )
+            self.assertTrue(failed["simulation_success"])
+            self.assertFalse(failed["success"])
+            self.assertIn(
+                "self_collision_not_feasible",
+                failed["validation"]["failure_reasons"],
+            )
+
+            payload["optimization"]["restored_checkpoint"] = (
+                "bidirectional_feasible"
+            )
+            raw.write_text(json.dumps(payload, allow_nan=False), encoding="utf-8")
+            with self.assertRaisesRegex(
+                X2ValidationError,
+                "self-collision-infeasible v5 record must restore fallback",
+            ):
+                load_raw_candidate(raw)
+
     def test_v5_dense_hand_object_gate_rejects_inconsistent_structure(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

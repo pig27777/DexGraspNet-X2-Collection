@@ -3,14 +3,16 @@
 
 Each object instance is a separate Isaac Sim process so its cloned environments
 share exactly one converted collision asset.  Processes run sequentially on the
-selected device; this wrapper is intended to run after grasp generation has
-finished, not concurrently with it.
+selected device.  Different wrappers may validate already-published objects while
+generation continues, but a per-input-root kernel lock prevents two wrappers from
+routing the same attempt concurrently.
 """
 
 from __future__ import annotations
 
 import argparse
 import csv
+import fcntl
 import hashlib
 import json
 import math
@@ -666,9 +668,7 @@ def _resolve_summary_paths(
     )
 
 
-def main(argv: Sequence[str] | None = None) -> int:
-    args = _parse_args(argv)
-    input_root = args.input_root.expanduser().resolve()
+def _run_validation(args: argparse.Namespace, input_root: Path) -> int:
     mesh_root = args.mesh_root.expanduser().resolve()
     summary_dir, summary_csv = _resolve_summary_paths(input_root, args)
     general_specs = (
@@ -778,6 +778,25 @@ def main(argv: Sequence[str] | None = None) -> int:
     }
     print(json.dumps(result, indent=2, allow_nan=False))
     return 0
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    args = _parse_args(argv)
+    input_root = args.input_root.expanduser().resolve()
+    input_root.mkdir(parents=True, exist_ok=True)
+    validation_lock_path = input_root / ".physx_validation.lock"
+    print(
+        f"[lock] waiting for exclusive PhysX validation lock: "
+        f"{validation_lock_path}",
+        flush=True,
+    )
+    with validation_lock_path.open("a+", encoding="utf-8") as validation_lock:
+        fcntl.flock(validation_lock.fileno(), fcntl.LOCK_EX)
+        print(
+            f"[lock] acquired by pid={os.getpid()} for input_root={input_root}",
+            flush=True,
+        )
+        return _run_validation(args, input_root)
 
 
 if __name__ == "__main__":

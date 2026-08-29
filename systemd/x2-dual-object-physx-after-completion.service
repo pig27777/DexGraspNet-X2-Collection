@@ -1,0 +1,14 @@
+[Unit]
+Description=X2 dual-object PhysX validation after formal collection completion
+After=graphical-session.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+WorkingDirectory=%h/DexGraspNet-X2-Collection
+ExecStart=/usr/bin/python3 %h/DexGraspNet-X2-Collection/scripts/supervise_x2_dual_object_validation.py --repo-root %h/DexGraspNet-X2-Collection --formal-root %h/DexGraspNet-X2-Collection/data/x2_valid_5000 --dataset-root %h/DexGraspNet-X2-Collection/data/x2_dual_object --poll-seconds 30 --batch-size 4 --device cuda:0
+Restart=on-failure
+RestartSec=30s
+
+[Install]
+WantedBy=default.target
